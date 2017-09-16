@@ -21,8 +21,6 @@ public class BallChase extends AutoProgram {
 	private String parsedInput = "";
 	private String lastGoodParse = "!";
 	
-	private String parsedIndex = "";
-	
 	// Angles and sizes
 	private double lastAngleOffset = -1.0;
 	private double angleOffset = 0.0;
@@ -61,20 +59,12 @@ public class BallChase extends AutoProgram {
 			if (angleOffset >= -absTargetOffset && angleOffset <= absTargetOffset) {
 					subsystems.driveSystem.drive4Motors(maxspeed, maxspeed);
 			} else {
-				//subsystems.driveSystem.drive4Motors(0, 0);
-				//subsystems.driveSystem.turnToAngle(angleOffset);
-				//subsystems.driveSystem.centerToAngle(angleOffset);
-				//System.out.println("Angle Index:" + angleIndex);
-				//if (angleIndex > lastAngleIndex) {
-					//double turnAngle = angleOffset / 2;
 				if (turnState) {
 					turnState = subsystems.driveSystem.turnToAnglePID(angleOffset);
 				}
 				if (angleOffset != lastAngleOffset) {
 					turnState = true;
 				}
-				//lastAngleIndex = angleIndex;
-				//}
 			}
 		} else {
 			subsystems.driveSystem.drive4Motors(0, 0);
