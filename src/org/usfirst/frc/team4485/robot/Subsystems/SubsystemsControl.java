@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4485.robot.Subsystems;
 
+import org.usfirst.frc.team4485.robot.Robot;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.SerialSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.UniformDrive;
 
@@ -15,6 +16,9 @@ public class SubsystemsControl {
 	// Subsystems
 	public UniformDrive driveSystem;
 	public SerialSystem serialSystem;
+	
+	// This System is weird. To use this one it needs to be declared only once so we will just make this a reference to a static SensorController in Robot.java
+	public SensorController sensorController;
 	
 	public SubsystemsControl() {
 		createAll();
@@ -34,8 +38,12 @@ public class SubsystemsControl {
 	}
 	
 	private void createAll() {
+		sensorController = Robot.sensorController;	// This is where we refer to Robot
+		
+		// Create the other systems like normal
 		driveSystem = new UniformDrive();
-		driveSystem.setID(0);
+		driveSystem.setID(0);	// Set the ID so the system doesn't complain and fill up the log.
+								// I'll probably remove that or implement it in a better way
 		
 		serialSystem = new SerialSystem();
 		serialSystem.setID(1);

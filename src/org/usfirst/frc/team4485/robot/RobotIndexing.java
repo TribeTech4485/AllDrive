@@ -54,6 +54,7 @@ public class RobotIndexing {
 	//// Sensor Indexes
 	// Analog inputs
 	public int gearOpticalSensor = 3;
+	public int cameraDistanceSensor = 0;
 	////
 	
 	//// Pnewmatic indexes

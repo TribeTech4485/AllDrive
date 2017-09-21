@@ -9,7 +9,7 @@ public class SensorController {
 	RobotIndexing id;
 	
 	// Create your sensor objects here
-	AnalogInput gearOpticalSensor;
+	public AnalogInput cameraDistanceSensor;
 	
 	// Create the value objects here. You will update these with update()
 	//private double gearOpticalSensorVal;
@@ -21,7 +21,7 @@ public class SensorController {
 	
 	private void init() {
 		// Here is where you initialize sensors
-		gearOpticalSensor = new AnalogInput(id.gearOpticalSensor);
+		cameraDistanceSensor = new AnalogInput(id.cameraDistanceSensor);
 	}
 	
 	public void update() {

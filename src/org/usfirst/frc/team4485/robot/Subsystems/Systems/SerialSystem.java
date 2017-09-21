@@ -11,7 +11,6 @@ public class SerialSystem extends Subsystem {
 	// Text parsing
 	String input = "";
 	String parsedInput = "";
-	String parsedIndex = "";
 	
 	@Override
 	protected void initSystem() {
@@ -30,7 +29,6 @@ public class SerialSystem extends Subsystem {
 		
 		parsedInput = parseInput('a', 'e');
 		if (parsedInput != "") serialController.clearSerialInput();
-		//parsedIndex = parseInput('<', '>');
 		
 	}
 
@@ -72,8 +70,5 @@ public class SerialSystem extends Subsystem {
 	}
 	public String getParsedInput() {
 		return parsedInput;
-	}
-	public String getParsedIndex() {
-		return parsedIndex;
 	}
 }
