@@ -1,6 +1,8 @@
 package org.usfirst.frc.team4485.robot.Subsystems;
 
 import org.usfirst.frc.team4485.robot.Robot;
+import org.usfirst.frc.team4485.robot.Subsystems.Systems.BoxPneumaticSystem;
+import org.usfirst.frc.team4485.robot.Subsystems.Systems.LiftSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.SerialSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.UniformDrive;
 
@@ -15,6 +17,8 @@ import edu.wpi.first.wpilibj.SPI;
 public class SubsystemsControl {
 	// Subsystems
 	public UniformDrive driveSystem;
+	public BoxPneumaticSystem boxPneumaticSystem;
+	public LiftSystem liftSystem;
 	public SerialSystem serialSystem;
 	
 	// This System is weird. To use this one it needs to be declared only once so we will just make this a reference to a static SensorController in Robot.java
@@ -45,7 +49,13 @@ public class SubsystemsControl {
 		driveSystem.setID(0);	// Set the ID so the system doesn't complain and fill up the log.
 								// I'll probably remove that or implement it in a better way
 		
+		boxPneumaticSystem = new BoxPneumaticSystem();
+		boxPneumaticSystem.setID(1);
+		
+		liftSystem = new LiftSystem();
+		liftSystem.setID(2);
+		
 		serialSystem = new SerialSystem();
-		serialSystem.setID(1);
+		serialSystem.setID(3);
 	}
 }

@@ -3,13 +3,13 @@ package org.usfirst.frc.team4485.robot;
 import org.usfirst.frc.team4485.robot.Subsystems.SubsystemsControl;
 
 public class TeleOpControl {
-	//private RobotIndexing id;
+	private RobotIndexing id;
 	
 	private UserControl userControl;
 	private SubsystemsControl subsystems;
 	
 	public TeleOpControl(SubsystemsControl _subsystems, UserControl _userControl) {
-		//id = new RobotIndexing();
+		id = new RobotIndexing();
 		
 		subsystems = _subsystems;
 		userControl = _userControl;
@@ -21,9 +21,32 @@ public class TeleOpControl {
 				
 		// Drive using the drive subsystem
 		subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY);
+		subsystems.driveSystem.setBraking(userControl.getRawDriveButton(id.d_brakeButton));
 		// Update the drive system
 		subsystems.driveSystem.update();
 		
+		
+		// Control the box pneumatics
+		// Cntrol the guide
+		if (userControl.getRawControlButton(id.c_guideOutButton)) subsystems.boxPneumaticSystem.setGuideOut(true);
+		else if (userControl.getRawControlButton(id.c_guideInButton)) subsystems.boxPneumaticSystem.setGuideOut(false);
+		
+		// Control the door
+		if (userControl.getRawControlButton(id.c_doorOutButton)) subsystems.boxPneumaticSystem.setDoorOut(true);
+		else if (userControl.getRawControlButton(id.c_doorInButton)) subsystems.boxPneumaticSystem.setDoorOut(false);
+		
+		// Control the pusher
+		// Only set it out here because the subsystem will bring it in when its clear
+		if (userControl.getRawControlButton(id.c_pusherOutButton)) subsystems.boxPneumaticSystem.setPusherOut(true);
+		
+		// Update the box pneumatic system
+		subsystems.boxPneumaticSystem.update();
+		
+		
+		// Control the lifter
+		subsystems.liftSystem.setLift(userControl.getRawControlButton(id.c_liftButton));
+		subsystems.liftSystem.setPower(userControl.getAxis(id.controlController, id.c_liftAxis));
+		subsystems.liftSystem.update();
 		
 		testPrint();
 	}
