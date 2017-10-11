@@ -26,7 +26,11 @@ public class UniformDrive extends Subsystem {
 		rightMotorSlave = new CANTalon(id.rightDriveMotorSlave);
 		leftMotorMaster = new CANTalon(id.leftDriveMotorMaster);
 		leftMotorSlave = new CANTalon(id.leftDriveMotorSlave);
+		
+		
+		
 		setMotorsForNoPID();
+		setBraking(false);
 		
 		pid = new PIDController();
 		{
@@ -287,6 +291,13 @@ public class UniformDrive extends Subsystem {
 		//System.out.println("Left: " + leftRotations + " Right: " + rightRotations);
 		
 		return false;
+	}
+	public void setBraking(boolean brake) {
+		leftMotorMaster.enableBrakeMode(brake);
+		leftMotorSlave.enableBrakeMode(brake);
+		rightMotorMaster.enableBrakeMode(brake);
+		rightMotorSlave.enableBrakeMode(brake);
+		//System.out.println("Warning: Set brake to: " + brake);
 	}
 	public void zeroYaw() {
 		Timer.delay(0.020);
