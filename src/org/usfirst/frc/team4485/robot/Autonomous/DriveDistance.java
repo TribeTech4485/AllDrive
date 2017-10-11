@@ -18,11 +18,13 @@ public class DriveDistance extends AutoProgram {
 	@Override
 	protected void run() {
 		// TODO Auto-generated method stub
+		subsystems.driveSystem.setBraking(true);
 		
 		//subsystems.driveSystem.drive4Motors(0.25, 0.25);
 		subsystems.driveSystem.update();
 		if (subsystems.driveSystem.driveDistance(0.25,0.25,6)) {
 			auto_complete = true;
+			//subsystems.driveSystem.setBraking(false);
 		}
 	}
 	

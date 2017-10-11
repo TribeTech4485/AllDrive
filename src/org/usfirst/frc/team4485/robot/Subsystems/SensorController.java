@@ -27,4 +27,12 @@ public class SensorController {
 	public void update() {
 		
 	}
+	
+	public double getDistanceSensorDistance(AnalogInput sensor, double mV_in) {
+		// TODO: Figure out scaling
+		
+		// For now just divide by 2
+		if (sensor == null) return -1;
+		return sensor.getValue() / 2;
+	}
 }

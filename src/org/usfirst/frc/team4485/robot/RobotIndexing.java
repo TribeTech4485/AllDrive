@@ -49,6 +49,7 @@ public class RobotIndexing {
 	public int c_liftButton = 6;
 	
 	public int d_turnToAngleButton = 6;
+	public int d_brakeButton = 5;	// Left Shoulder Button
 	////
 	
 	//// Sensor Indexes
