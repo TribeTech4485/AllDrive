@@ -19,23 +19,34 @@ public class TestSerial extends AutoProgram {
 	}
 
 	private String rawInput = "";
-	private String parsedInput = "";
-	private String lastGoodParse = "";
+	private String parsedAngleInput = "";
+	private String lastGoodAngleParse = "";
+	
+	private String parsedDistanceInput = "";
+	private String lastGoodDistanceParse = "";
 	
 	@Override
 	protected void run() {
 		subsystems.serialSystem.update();
 		rawInput = subsystems.serialSystem.getRawInput();
-		parsedInput = subsystems.serialSystem.getParsedInput();
+		parsedAngleInput = subsystems.serialSystem.getParsedAngleInput();
 		
-		if (parsedInput != "") {
-			lastGoodParse = parsedInput;
-			subsystems.serialSystem.clearSerial();
+		if (parsedAngleInput != "") {
+			lastGoodAngleParse = parsedAngleInput;
+			//subsystems.serialSystem.clearSerial();
+		}
+		
+		parsedDistanceInput = subsystems.serialSystem.getParsedDistanceInput();
+		
+		if (parsedDistanceInput != "") {
+			lastGoodDistanceParse = parsedDistanceInput;
 		}
 		
 		SmartDashboard.putString("Raw Serial", rawInput);
-		SmartDashboard.putString("Parsed Serial", parsedInput);
-		SmartDashboard.putString("Last Good Parse", lastGoodParse);
+		SmartDashboard.putString("Parsed Angle Serial", parsedAngleInput);
+		SmartDashboard.putString("Last Good Angle Parse", lastGoodAngleParse);
+		SmartDashboard.putString("Parsed Distance Serial", parsedDistanceInput);
+		SmartDashboard.putString("Last Good Distance Parse", lastGoodDistanceParse);
 	}
 	
 }
