@@ -40,6 +40,10 @@ public class UserControl {
 		if (button < 1) return false;
 		return controlController.getRawButton(button);
 	}
+	public boolean getRawDriveButton(int button) {
+		if (button < 1) return false;
+		return driveController.getRawButton(button);
+	}
 	// Debounce function for control buttons
 	public boolean getDebounceControlButton(int button) {
 		boolean currentButtonState = getRawControlButton(button);
