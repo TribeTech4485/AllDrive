@@ -17,10 +17,15 @@ public class DriveToPeg extends AutoProgram {
 
 	// Distance available in front of the robot
 	private double cameraDistance_in = -1.0;
+	private double slowDistMin_in = 70;
+	private double slowDistMax_in = 230;
 	
 	// Serial
-	private String parsedInput = "";
-	private String lastGoodInput = "!";
+	private String parsedAngleInput = "";
+	private String lastGoodAngleInput = "!";
+	
+	private String parsedDistanceInput = "";
+	private String lastGoodDistanceInput = "-1.00";
 	
 	// Angles and sizes
 	private double lastAngleOffset = -1.0;
@@ -30,40 +35,57 @@ public class DriveToPeg extends AutoProgram {
 	private boolean turnState = true;	// False if the robot has completed current turn
 	
 	// Driving Speeds
-	private double farFromSpeed = -0.25;	// Negative because the camera is mounted on the back right now
-	private double closeToSpeed = -0.15;
+	private double farFromSpeed = 0.50;	// Negative because the camera is mounted on the back right now
+	private double closeToSpeed = 0.30;	// Not negative anymore because the camera is on the front now
 	
 	@Override
 	protected void run() {
 		// Update the serial system
 		subsystems.serialSystem.update();
-		parsedInput = subsystems.serialSystem.getParsedInput();
+		parsedAngleInput = subsystems.serialSystem.getParsedAngleInput();
 		
-		//System.out.println("Last Good Parse: " + lastGoodInput);
+		//System.out.println("Last Good Parse: " + lastGoodAngleInput);
 		
 		// Put this in the Serial Controller later
-		if (parsedInput != "") {
-			lastGoodInput = parsedInput;
-			subsystems.serialSystem.clearSerial();
+		if (parsedAngleInput != "") {
+			lastGoodAngleInput = parsedAngleInput;
+			//subsystems.serialSystem.clearSerial();
+		}
+		
+		parsedDistanceInput = subsystems.serialSystem.getParsedDistanceInput();
+		if (parsedDistanceInput != "") {
+			lastGoodDistanceInput = parsedDistanceInput;
 		}
 		
 		// Get the distance from the camera distance sensor
 		// Scaling on this sensor with 5v is ~9.8mV/in
 		// Analog is 0-1024 on the RoboRio so divide by 2
-		cameraDistance_in = subsystems.sensorController.cameraDistanceSensor.getValue() / 2;
+		
+		// Don't use the sensor right now
+		//cameraDistance_in = subsystems.sensorController.cameraDistanceSensor.getValue() / 2;
+		
+		// Get the distance over Serial for now
+		try {
+			cameraDistance_in = Double.parseDouble(lastGoodDistanceInput);
+		} catch (Exception ex) {
+			System.out.println("Error Parsing Serial!");
+		}
+		if (cameraDistance_in < 0) {
+			cameraDistance_in = slowDistMax_in + 1;
+		}
 	
 		System.out.println("Camera Distance: " + cameraDistance_in);
 		
-		if (cameraDistance_in <= 72) {
-			if (cameraDistance_in >= 30) {
+		if (cameraDistance_in <= slowDistMax_in) {
+			if (cameraDistance_in >= slowDistMin_in) {
 				subsystems.driveSystem.drive4Motors(closeToSpeed, closeToSpeed);
 			} else {
 				subsystems.driveSystem.drive4Motors(0, 0);
 			}
 		} else {
-			if (!lastGoodInput.contains("!")) {
+			if (!lastGoodAngleInput.contains("!")) {
 				try {
-					currentAngleOffset = Double.parseDouble(lastGoodInput);
+					currentAngleOffset = Double.parseDouble(lastGoodAngleInput);
 				} catch (Exception ex) {
 					System.out.println("Error Parsing Serial!");
 				}

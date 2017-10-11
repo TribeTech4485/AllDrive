@@ -34,7 +34,7 @@ public class BallChase extends AutoProgram {
 	protected void run() {
 		// TODO Auto-generated method stub
 		subsystems.serialSystem.update();
-		parsedInput = subsystems.serialSystem.getParsedInput();
+		parsedInput = subsystems.serialSystem.getParsedAngleInput();
 		
 		SmartDashboard.putString("Last Good Parse", lastGoodParse);
 		

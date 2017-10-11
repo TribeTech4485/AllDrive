@@ -10,7 +10,8 @@ public class SerialSystem extends Subsystem {
 	
 	// Text parsing
 	String input = "";
-	String parsedInput = "";
+	String parsedAngleInput = "";
+	String parsedDistanceInput = "";
 	
 	@Override
 	protected void initSystem() {
@@ -27,8 +28,9 @@ public class SerialSystem extends Subsystem {
 			createError(false, "SerialController has error.");
 		}
 		
-		parsedInput = parseInput('a', 'e');
-		if (parsedInput != "") serialController.clearSerialInput();
+		parsedAngleInput = parseInput('a', 'e');
+		parsedDistanceInput = parseInput('d', 'i');
+		if (parsedAngleInput != "" || parsedDistanceInput != "") serialController.clearSerialInput();
 		
 	}
 
@@ -68,7 +70,10 @@ public class SerialSystem extends Subsystem {
 	public String getRawInput() {
 		return input;
 	}
-	public String getParsedInput() {
-		return parsedInput;
+	public String getParsedAngleInput() {
+		return parsedAngleInput;
+	}
+	public String getParsedDistanceInput() {
+		return parsedDistanceInput;
 	}
 }
