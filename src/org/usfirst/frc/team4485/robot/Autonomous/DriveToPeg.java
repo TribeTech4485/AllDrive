@@ -17,8 +17,8 @@ public class DriveToPeg extends AutoProgram {
 
 	// Distance available in front of the robot
 	private double cameraDistance_in = -1.0;
-	private double slowDistMin_in = 70;
-	private double slowDistMax_in = 230;
+	private double slowDistMin_in = 80;
+	private double slowDistMax_in = 200;
 	
 	// Serial
 	private String parsedAngleInput = "";
@@ -30,13 +30,13 @@ public class DriveToPeg extends AutoProgram {
 	// Angles and sizes
 	private double lastAngleOffset = -1.0;
 	private double currentAngleOffset = 0.0;
-	private double absTargetOffset = 5.0;
+	private double absTargetOffset = 1.5;
 	
 	private boolean turnState = true;	// False if the robot has completed current turn
 	
 	// Driving Speeds
-	private double farFromSpeed = 0.50;	// Negative because the camera is mounted on the back right now
-	private double closeToSpeed = 0.30;	// Not negative anymore because the camera is on the front now
+	private double farFromSpeed = 0.25; //0.50;	// Negative because the camera is mounted on the back right now
+	private double closeToSpeed = 0.15; //0.30;	// Not negative anymore because the camera is on the front now
 	
 	@Override
 	protected void run() {

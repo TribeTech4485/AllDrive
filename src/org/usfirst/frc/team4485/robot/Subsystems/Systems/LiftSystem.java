@@ -50,6 +50,6 @@ public class LiftSystem extends Subsystem {
 	
 	// Control functions
 	public void setLift(boolean _lift) { lift = _lift; }
-	public void setPower(double _power) { power = Math.abs(_power); }
+	public void setPower(double _power) { power = -Math.abs(_power); }
 	
 }
