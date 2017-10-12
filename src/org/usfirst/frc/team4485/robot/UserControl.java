@@ -1,6 +1,7 @@
 // Class for getting user input from the drive and control controllers
 package org.usfirst.frc.team4485.robot;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -20,7 +21,7 @@ public class UserControl {
 	
 	private Joystick driveController;
 	private Joystick controlController;
-	private static double kDeadBand = 0.18;
+	private static double kDeadBand = 0.13;
 	
 	// Boolean array for debounce
 	private boolean[] lastControlButtonState = new boolean[9];
@@ -77,6 +78,12 @@ public class UserControl {
 		Joystick tempStick = new Joystick(joystickID);
 		double pov = tempStick.getPOV();
 		return pov;
+	}
+	public void rumbleController(int joystickID, double rumble) {
+		Joystick tempStick = new Joystick(joystickID);
+		rumble = Math.abs(rumble);
+		tempStick.setRumble(RumbleType.kLeftRumble, rumble);
+		tempStick.setRumble(RumbleType.kRightRumble, rumble);
 	}
 	////
 	
