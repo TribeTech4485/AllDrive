@@ -17,11 +17,13 @@ public class BoxPneumaticSystem extends Subsystem {
 	
 	// Control variables
 	private boolean guideOut = false, doorOut = false, pusherOut = false;
-	private boolean closeDoor = true;
+	private boolean closeDoor = false, expelGear = false;
 	
 	private double closeDoorStartTime = -1;
 	private double closeDoorDuration = 0;
 	
+	// Timing for gear expulsion
+	private double expelStartTime = -1;
 	
 	@Override
 	protected void initSystem() {		
@@ -41,6 +43,7 @@ public class BoxPneumaticSystem extends Subsystem {
 
 	@Override
 	protected void updateSystem() {
+		expelGearProcess();
 		closeDoorProcess();
 		updateDashboardValues();
 		guideSolenoid1_in.set(guideOut);
@@ -83,6 +86,24 @@ public class BoxPneumaticSystem extends Subsystem {
 		
 		pusherOut = false;
 	}
+	// Function to expel the gear
+	private void expelGearProcess() {
+		if (!expelGear) return;
+		if (expelStartTime < 0) expelStartTime = System.currentTimeMillis();
+		double duration = System.currentTimeMillis() - expelStartTime;
+		
+		if (duration < 500) {
+			setDoorOut(true);
+			return;
+		} else if (duration < 800) {
+			setPusherOut(true);
+			return;
+		}
+		
+		setDoorOut(false);
+		expelGear = false;
+		expelStartTime = -1;
+	}
 	private void updateDashboardValues() {
 		if (guideOut) SmartDashboard.putString("Box Guide", "OUT");
 		else SmartDashboard.putString("Box Guide", "IN");
@@ -108,5 +129,13 @@ public class BoxPneumaticSystem extends Subsystem {
 		if (doorOut && _out) pusherOut = _out;	// if the door is open, move the pusher
 		else if (doorOut) pusherOut = false;	// if the door is not open, don't
 	}
+	
+	// Control the expel gear function
+	public void expel() {
+		expelGear = true;
+	}
+	
+	// Getters for pneumatic states
+	public boolean getDoorState() { return doorOut; }
 	
 }

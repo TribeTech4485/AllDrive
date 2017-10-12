@@ -43,6 +43,7 @@ public class RobotIndexing {
 	public int c_doorOutButton = 1;
 	public int c_doorInButton = 2;
 	public int c_pusherOutButton = 5;
+	public int c_expelGearButton = 10;
 	
 	public int c_hopperButton = 0;	// 0 is unassigned
 	public int c_liftAxis = 1;

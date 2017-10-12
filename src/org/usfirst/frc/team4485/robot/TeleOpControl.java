@@ -25,6 +25,8 @@ public class TeleOpControl {
 		// Update the drive system
 		subsystems.driveSystem.update();
 		
+		// Make the drive controller rumble with drive amount
+		//userControl.rumbleController(id.driveController, (Math.abs(userControl.drive_leftStickY) + Math.abs(userControl.drive_rightStickY)) / 2);
 		
 		// Control the box pneumatics
 		// Cntrol the guide
@@ -39,6 +41,8 @@ public class TeleOpControl {
 		// Only set it out here because the subsystem will bring it in when its clear
 		if (userControl.getRawControlButton(id.c_pusherOutButton)) subsystems.boxPneumaticSystem.setPusherOut(true);
 		
+		// Expel the gear
+		if (userControl.getRawControlButton(id.c_expelGearButton)) subsystems.boxPneumaticSystem.expel();
 		// Update the box pneumatic system
 		subsystems.boxPneumaticSystem.update();
 		
@@ -47,6 +51,10 @@ public class TeleOpControl {
 		subsystems.liftSystem.setLift(userControl.getRawControlButton(id.c_liftButton));
 		subsystems.liftSystem.setPower(userControl.getAxis(id.controlController, id.c_liftAxis));
 		subsystems.liftSystem.update();
+		
+		// Rumble the controllers depending on the state of the robot
+		if (subsystems.boxPneumaticSystem.getDoorState()) userControl.rumbleController(id.controlController, 0.25);
+		else userControl.rumbleController(id.controlController, 0);
 		
 		testPrint();
 	}
