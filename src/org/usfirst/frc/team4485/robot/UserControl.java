@@ -32,6 +32,14 @@ public class UserControl {
 	public double drive_rightStickY;
 	public double drive_leftStickY;
 	
+	// Private rumble values
+	private int rumbleStickID;
+	private int rumbleType;
+	private double rumbleVal = 0.0;
+	private static int kRumbleSolid = 1, kRumbleDash = 300, kRumbleBeep = 1000;
+	// Timing for rumble patterns
+	private double rumbleStartTime = -1;
+	
 	////Public functions
 	public void updateControls() {
 		updateAxis();
@@ -95,6 +103,20 @@ public class UserControl {
 		// Adjust for dead band
 		if (drive_rightStickY > -kDeadBand && drive_rightStickY < kDeadBand) drive_rightStickY = 0.0;
 		if (drive_leftStickY > -kDeadBand && drive_leftStickY < kDeadBand) drive_leftStickY = 0.0;
+	}
+	private void updateRumble() {
+		Joystick tempStick = new Joystick(rumbleStickID);
+		if (rumbleStartTime < 0) rumbleStartTime = System.currentTimeMillis();
+		
+		double delayTime = -1;
+		
+		if (rumbleType == kRumbleDash) delayTime = kRumbleDash;
+		if (delayTime < 0) return;
+		if (System.currentTimeMillis() - rumbleStartTime >= delayTime) {
+			rumbleStartTime = -1;
+			if (rumbleVal == 0.0) rumbleVal = 1.0;
+			else if (rumbleVal > 0) rumbleVal = 0.0;
+		}
 	}
 	private void publishControls() {
 		SmartDashboard.putNumber("RightStick Y", drive_rightStickY);
