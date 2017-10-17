@@ -53,8 +53,10 @@ public class TeleOpControl {
 		subsystems.liftSystem.update();
 		
 		// Rumble the controllers depending on the state of the robot
-		if (subsystems.boxPneumaticSystem.getDoorState()) userControl.rumbleController(id.controlController, 0.25);
-		else userControl.rumbleController(id.controlController, 0);
+		//if (subsystems.boxPneumaticSystem.getDoorState()) userControl.rumbleController(id.controlController, 0.25);
+		//else userControl.rumbleController(id.controlController, 0);
+		if (subsystems.boxPneumaticSystem.getDoorState()) userControl.rumbleController(userControl.kRumbleDash, id.controlController);
+		else userControl.rumbleController(userControl.kRumbleNone, id.controlController);
 		
 		testPrint();
 	}

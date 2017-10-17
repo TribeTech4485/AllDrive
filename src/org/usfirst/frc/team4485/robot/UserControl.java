@@ -32,11 +32,11 @@ public class UserControl {
 	public double drive_rightStickY;
 	public double drive_leftStickY;
 	
-	// Private rumble values
-	private int rumbleStickID;
-	private int rumbleType;
+	// Private rumble values.
+	public final int kRumbleNone = -1, kRumbleSolid = 0, kRumbleDash = 300, kRumbleBeep = 1000;
+	private int rumbleStickID = 0;
+	private int rumbleType = kRumbleSolid;
 	private double rumbleVal = 0.0;
-	private static int kRumbleSolid = 1, kRumbleDash = 300, kRumbleBeep = 1000;
 	// Timing for rumble patterns
 	private double rumbleStartTime = -1;
 	
@@ -44,6 +44,7 @@ public class UserControl {
 	public void updateControls() {
 		updateAxis();
 		publishControls();
+		updateRumble();
 	}
 	public boolean getRawControlButton(int button) {
 		if (button < 1) return false;
@@ -87,11 +88,9 @@ public class UserControl {
 		double pov = tempStick.getPOV();
 		return pov;
 	}
-	public void rumbleController(int joystickID, double rumble) {
-		Joystick tempStick = new Joystick(joystickID);
-		rumble = Math.abs(rumble);
-		tempStick.setRumble(RumbleType.kLeftRumble, rumble);
-		tempStick.setRumble(RumbleType.kRightRumble, rumble);
+	public void rumbleController(int rType, int joystickID) {
+		rumbleType = rType;
+		rumbleStickID = joystickID;
 	}
 	////
 	
@@ -110,13 +109,17 @@ public class UserControl {
 		
 		double delayTime = -1;
 		
-		if (rumbleType == kRumbleDash) delayTime = kRumbleDash;
-		if (delayTime < 0) return;
-		if (System.currentTimeMillis() - rumbleStartTime >= delayTime) {
+		delayTime = rumbleType;
+		if (delayTime < 0) rumbleVal = 0.0;
+		else if (delayTime == 0) rumbleVal = 1.0;
+		else if (System.currentTimeMillis() - rumbleStartTime >= delayTime) {
 			rumbleStartTime = -1;
 			if (rumbleVal == 0.0) rumbleVal = 1.0;
 			else if (rumbleVal > 0) rumbleVal = 0.0;
 		}
+		
+		tempStick.setRumble(RumbleType.kLeftRumble, rumbleVal);
+		tempStick.setRumble(RumbleType.kRightRumble, rumbleVal);
 	}
 	private void publishControls() {
 		SmartDashboard.putNumber("RightStick Y", drive_rightStickY);
