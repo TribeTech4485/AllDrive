@@ -20,9 +20,14 @@ public class TeleOpControl {
 		userControl.updateControls();
 				
 		// Drive using the drive subsystem
-		subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY);
-		subsystems.driveSystem.setBraking(userControl.getRawDriveButton(id.d_brakeButton));
+		//subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY);
+		subsystems.driveSystem.drive4Motors(userControl.drive_rightStickY, userControl.drive_leftStickY); 	// Flip the input sticks for some robots
+		if (userControl.getRawDriveButton(id.d_shiftDown)) subsystems.shifterPneumaticSystem.shiftDown();
+		else if (userControl.getRawDriveButton(id.d_shiftUp)) subsystems.shifterPneumaticSystem.shiftUp();
+		//subsystems.driveSystem.setBraking(userControl.getRawDriveButton(id.d_brakeButton));
 		// Update the drive system
+		subsystems.shifterPneumaticSystem.setAutoShift(true);
+		subsystems.shifterPneumaticSystem.update();
 		subsystems.driveSystem.update();
 		
 		// Make the drive controller rumble with drive amount
