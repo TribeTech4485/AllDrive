@@ -9,6 +9,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import org.usfirst.frc.team4485.robot.Subsystems.PIDController.*;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -26,6 +27,7 @@ public class UniformDrive extends Subsystem {
 		rightMotorSlave = new CANTalon(id.rightDriveMotorSlave);
 		leftMotorMaster = new CANTalon(id.leftDriveMotorMaster);
 		leftMotorSlave = new CANTalon(id.leftDriveMotorSlave);
+		
 		
 		
 		
@@ -72,6 +74,7 @@ public class UniformDrive extends Subsystem {
 	private CANTalon leftMotorMaster;
 	private CANTalon leftMotorSlave;
 	
+	
 	// Time stuff
 	double motorUpdateStart = -1;
 	double waitForMotorUpdateDuration= -1;
@@ -86,6 +89,8 @@ public class UniformDrive extends Subsystem {
 	private double leftRotations = -1;
 	private double rightRotations = -1;
 	//
+	
+	private double avgCurrentDraw = 0.0;
 	
 	//// Drive functions
 	// Private functions
