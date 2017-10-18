@@ -27,16 +27,16 @@ public class BoxPneumaticSystem extends Subsystem {
 	
 	@Override
 	protected void initSystem() {		
-		guideSolenoid1_in = new Solenoid(id.boxGuideSolenoid1_in);
-		guideSolenoid1_out = new Solenoid(id.boxGuideSolenoid1_out);
-		guideSolenoid2_in = new Solenoid(id.boxGuideSolenoid2_in);
-		guideSolenoid2_out = new Solenoid(id.boxGuideSolenoid2_out);
+		guideSolenoid1_in = new Solenoid(id.boxSolenoidsModule, id.boxGuideSolenoid1_in);
+		guideSolenoid1_out = new Solenoid(id.boxSolenoidsModule, id.boxGuideSolenoid1_out);
+		guideSolenoid2_in = new Solenoid(id.boxSolenoidsModule, id.boxGuideSolenoid2_in);
+		guideSolenoid2_out = new Solenoid(id.boxSolenoidsModule, id.boxGuideSolenoid2_out);
 		
-		doorSolenoid_in = new Solenoid(id.doorSolenoid_in);
-		doorSolenoid_out = new Solenoid(id.doorSolenoid_out);
+		doorSolenoid_in = new Solenoid(id.boxSolenoidsModule, id.doorSolenoid_in);
+		doorSolenoid_out = new Solenoid(id.boxSolenoidsModule, id.doorSolenoid_out);
 		
-		pusherSolenoid_in = new Solenoid(id.pusherSolenoid_in);
-		pusherSolenoid_out = new Solenoid(id.pusherSolenoid_out);
+		pusherSolenoid_in = new Solenoid(id.boxSolenoidsModule, id.pusherSolenoid_in);
+		pusherSolenoid_out = new Solenoid(id.boxSolenoidsModule, id.pusherSolenoid_out);
 		
 		update();
 	}
