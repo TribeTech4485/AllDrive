@@ -16,6 +16,12 @@ public class RobotIndexing {
 	public int leftDriveMotorMaster = 5;	// Changed from 9
 	public int leftDriveMotorSlave = 8;
 	
+	// PDP power channels for the motors
+	public int rightDriveMotorMasterPDP = 14;
+	public int rightDriveMotorSlavePDP = 13;
+	public int leftDriveMotorMasterPDP = 12;
+	public int leftDriveMotorSlavePDP = 15;
+	
 	// Shooter motors	-	DON'T USE
 	public int shooterMotorMaster = 9;
 	public int shooterMotorSlave = 4;
@@ -50,7 +56,9 @@ public class RobotIndexing {
 	public int c_liftButton = 6;
 	
 	public int d_turnToAngleButton = 6;
-	public int d_brakeButton = 5;	// Left Shoulder Button
+	public int d_brakeButton = 0;//5;	// Left Shoulder Button (Unassigned)
+	public int d_shiftUp = 6;		// Right Shoulder Button
+	public int d_shiftDown = 5;		// Left Shoulder Button
 	////
 	
 	//// Sensor Indexes
@@ -61,7 +69,7 @@ public class RobotIndexing {
 	
 	//// Pnewmatic indexes
 	// Box Guide Solenoids & Modules
-	public int guideSolenoidsModule = 0;
+	public int boxSolenoidsModule = 1;//0;
 	public int boxGuideSolenoid1_out = 1;
 	public int boxGuideSolenoid1_in = 0;
 	public int boxGuideSolenoid2_out = 4;
@@ -73,6 +81,11 @@ public class RobotIndexing {
 	public int pusherSolenoid_in = 2;
 	public int doorSolenoid_out = 7;
 	public int doorSolenoid_in = 6;
+	
+	// Shifting Gear Box Solenoids & Modules
+	public int shifterSolenoidsModule = 0;//1;
+	public int shifterSolenoid_in = 0;
+	public int shifterSolenoid_out = 1;
 	////
 	
 	// PID speed vals
