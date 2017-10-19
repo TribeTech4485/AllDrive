@@ -26,7 +26,7 @@ public class TeleOpControl {
 		else if (userControl.getRawDriveButton(id.d_shiftUp)) subsystems.shifterPneumaticSystem.shiftUp();
 		//subsystems.driveSystem.setBraking(userControl.getRawDriveButton(id.d_brakeButton));
 		// Update the drive system
-		subsystems.shifterPneumaticSystem.setAutoShift(true);
+		//subsystems.shifterPneumaticSystem.setAutoShift(true);
 		subsystems.shifterPneumaticSystem.update();
 		subsystems.driveSystem.update();
 		
