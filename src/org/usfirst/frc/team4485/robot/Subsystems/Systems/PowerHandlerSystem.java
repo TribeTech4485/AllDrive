@@ -11,13 +11,13 @@ public class PowerHandlerSystem extends Subsystem {
 	private PowerDistributionPanel pdp;
 	
 	// The information we get from the board
-	private double totalCurrent = 0.0, temperature = 0.0;
+	private double totalCurrent = 0.0, totalVoltage = 0.0, temperature = 0.0;
 	private double currentPerChannel[];
 	
 	@Override
 	protected void initSystem() {
 		currentPerChannel = new double[16];
-		pdp = new PowerDistributionPanel(0);
+		pdp = new PowerDistributionPanel(1);
 		update();
 	}
 
@@ -28,6 +28,7 @@ public class PowerHandlerSystem extends Subsystem {
 			currentPerChannel[i] = pdp.getCurrent(i);
 		}
 		totalCurrent = pdp.getTotalCurrent();
+		totalVoltage = pdp.getVoltage();
 		temperature = pdp.getTemperature();
 	}
 
@@ -44,6 +45,7 @@ public class PowerHandlerSystem extends Subsystem {
 	
 	// Getters for the info
 	public double getPDPTotalCurrent() { return totalCurrent; }
+	public double getPDPTotalVoltage() { return totalVoltage; }
 	public double getPDPTemperature() { return temperature; }
 	public double getChannelCurrent(int channel) { 
 		try {
