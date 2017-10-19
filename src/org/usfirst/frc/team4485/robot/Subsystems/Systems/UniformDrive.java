@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4485.robot.Subsystems.Systems;
 
+import org.usfirst.frc.team4485.robot.Robot;
 import org.usfirst.frc.team4485.robot.Subsystems.Subsystem;
 
 import com.ctre.CANTalon;
@@ -9,7 +10,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import org.usfirst.frc.team4485.robot.Subsystems.PIDController.*;
 
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+//import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -90,7 +91,7 @@ public class UniformDrive extends Subsystem {
 	private double rightRotations = -1;
 	//
 	
-	private double avgCurrentDraw = 0.0;
+	//private double avgCurrentDraw = 0.0;
 	
 	//// Drive functions
 	// Private functions
@@ -142,6 +143,8 @@ public class UniformDrive extends Subsystem {
 	private void publishEncoderVals() {
 		SmartDashboard.putNumber("Right Encoder Velocity Value", rightMotorMaster.getEncVelocity());
 		SmartDashboard.putNumber("Left Encoder Velocity Value", leftMotorMaster.getEncVelocity());
+		
+		Robot.sensorController.setRPMs(leftMotorMaster.getSpeed(), rightMotorMaster.getSpeed());
 	}
 	/*
 	private void getDashboardTurnPIDVals() {

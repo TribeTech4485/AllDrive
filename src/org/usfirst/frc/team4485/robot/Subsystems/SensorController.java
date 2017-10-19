@@ -17,6 +17,8 @@ public class SensorController {
 	// Create the value objects here. You will update these with update()
 	//private double gearOpticalSensorVal;
 	
+	private double leftDriveRPM = 0.0, rightDriveRPM = 0.0;
+	
 	public SensorController() {
 		id = new RobotIndexing();
 		init();
@@ -39,5 +41,14 @@ public class SensorController {
 		// For now just divide by 2
 		if (sensor == null) return -1;
 		return sensor.getValue() / 2;
+	}
+	
+	public void setRPMs(double left, double right) {
+		leftDriveRPM = left;
+		rightDriveRPM = right;
+	}
+	
+	public double getAverageRPM() {
+		return (leftDriveRPM + rightDriveRPM) / 2;
 	}
 }
