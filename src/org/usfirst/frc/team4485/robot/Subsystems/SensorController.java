@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.SPI;
 
 /*
  * TODO:
- * Add control variables and functions for the AHRS
+ * ------ COMMENTS --------
  */
 
 

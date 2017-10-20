@@ -5,6 +5,8 @@ import org.usfirst.frc.team4485.robot.Subsystems.Subsystem;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
 
+// TODO: Comments????
+
 public class LiftSystem extends Subsystem {
 
 	// The lift motors

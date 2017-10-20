@@ -5,6 +5,8 @@ import org.usfirst.frc.team4485.robot.Subsystems.Subsystem;
 
 import edu.wpi.first.wpilibj.Solenoid;
 
+// TODO: Add comments
+
 public class ShifterPneumaticSystem extends Subsystem {
 
 	// Two solenoids for shifter in and out

@@ -2,6 +2,8 @@ package org.usfirst.frc.team4485.robot.Subsystems;
 
 import org.usfirst.frc.team4485.robot.RobotIndexing;
 
+// TODO: Put a whole lot of comments in here
+
 public abstract class Subsystem {
 	protected RobotIndexing id;
 	
