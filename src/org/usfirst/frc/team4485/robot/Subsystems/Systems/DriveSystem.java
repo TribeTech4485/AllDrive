@@ -11,47 +11,73 @@
  */
 package org.usfirst.frc.team4485.robot.Subsystems.Systems;
 
+import org.usfirst.frc.team4485.robot.Robot;
 import org.usfirst.frc.team4485.robot.Subsystems.Subsystem;
+import org.usfirst.frc.team4485.robot.Subsystems.PIDController.PIDController;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 
 
 public class DriveSystem extends Subsystem {
-	
-	// Control Variables
-	private boolean motorPIDEnabled = false;		// Is PID Enabled?? Here's a boolean
-	private boolean motorPIDSetup = false;			// Is PID Setup?? Here's another boolean B)
-	private double motorLeftDriveValue, motorRightDriveValue;	// The values for driving the left and right sides of the drive base
 
-	// Objects for drive motors
-	// Robot Objects (Motors, etc.)
-	private CANTalon rightMotorMaster, rightMotorSlave;		// Right master and slave motor controllers
-	private CANTalon leftMotorMaster, leftMotorSlave;		// Left master and slaver motor controllers
+	// Robot Objects (Motors, sensors, etc.)
+	private PIDController pid;
+	private CANTalon rightMotorMaster, rightMotorSlave;
+	private CANTalon leftMotorMaster, leftMotorSlave;
 	
-	// Time Stuff	-	it takes 15ms for the SRX Talons to update
-	private double motorUpdateStartTime = -1;				// When we last updated the motors
-	private double motorUpdateWaitTimeDuration = -1;		// How long is been since we updated the motors
+	// Control variables for the motors
+	private double rightDriveSetVal = 0.0, leftDriveSetVal = 0.0;
+	private double speedModPercent = 1.0;
+	private boolean brakingEnabled = false;
 	
+	//Values for motor update delay
+	double motorUpdateStart = -1, motorUpdateDelayDuration = -1;
+	
+	// enums for control types
+	public enum ControlType {Percentage, Speed};
+	private ControlType driveControlType = ControlType.Percentage;
+	
+	// Max Speed variables for driving with PID with a percentage input (-1.0 to 1.0)
+	private double driveMaxSpeed = 500;	// Set the max speed to x number of RPMs
+	private double driveBaseSpeed = 500;	// Set the base speed to 500 too. The base speed is used when using a percentage to drive the motors with PID. Example: baseSpeed * 0.1 = 50 RPMs
+	
+	// Encoder values
+	private double leftEncVelocity = 0.0, rightEncVelocity = 0.0;
+	private double leftLastEncTicks = 0.0, rightLastEncTicks = 0.0;
+	private double leftRotations = 0.0, rightRotations = 0.0;
+	private double leftEncTicks = 0.0, rightEncTicks = 0.0;
+	private final double encTicksPerRotation = 4096;
+	private final double wheelSize = 6.0;
+	
+	// GYRO turning values
+	private boolean yawZeroed = false;
+	private double currentTurnError = 0.0;
+	private double turnErrorTollerance = 0.02;
 	
 	@Override
 	protected void initSystem() {
-		// TODO Auto-generated method stub
+		// Set up the motors using the indexing class
+		leftMotorMaster = new CANTalon(id.leftDriveMotorMaster);
+		leftMotorSlave = new CANTalon(id.leftDriveMotorSlave);
+		rightMotorMaster = new CANTalon(id.rightDriveMotorMaster);
+		rightMotorSlave = new CANTalon(id.rightDriveMotorSlave);
+		
+		// Set the feedback devices for the masters (Encoders should be plugged into these controllers
+		leftMotorMaster.setFeedbackDevice(FeedbackDevice.EncRising);
+		rightMotorMaster.setFeedbackDevice(FeedbackDevice.EncRising);
+		// Set the slave motors to follower so they copy the outputs of the master controllers
+		leftMotorSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
+		rightMotorSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
 	}
 
 	@Override
 	protected void updateSystem() {
-		// Check the time (wait for motors to update without stopping code)
-		if (motorUpdateWaitTimeDuration < 0 || motorUpdateWaitTimeDuration >= 15 || motorUpdateStartTime < 0) {
-			motorUpdateStartTime = System.currentTimeMillis();
-		} else {
-			motorUpdateWaitTimeDuration = System.currentTimeMillis() - motorUpdateStartTime;
-			return;
-		}
-		// All code that controls motors goes after checking for the update duration
+		updateEncoderVals();
 		
-		if (!motorPIDEnabled) drive4Motors(motorLeftDriveValue, motorRightDriveValue);		// If PID motor control is not enabled use percentage drive
-		if (motorPIDEnabled) drive4MotorsPID(motorLeftDriveValue, motorRightDriveValue);	// If PID motor control is enabled use PID speed drive
+		updateMotorsForDriveControl();
+		updateMotors();
 	}
 
 	@Override
@@ -66,59 +92,151 @@ public class DriveSystem extends Subsystem {
 		
 	}
 	
+	//// Private functions
+	// Function to control the motors
+	private void updateMotors() {
+		// Check what control mode we are in so we can check the motor control values accordingly
+		switch (driveControlType) {
+		case Percentage:
+			// Check if the drive set values are in the correct range for percentage drive mode
+			// for the left
+			if (leftDriveSetVal > 1.0) leftDriveSetVal = 1.0;
+			else if (leftDriveSetVal < -1.0) leftDriveSetVal = -1.0;
+			// for the right
+			if (rightDriveSetVal > 1.0) rightDriveSetVal = 1.0;
+			else if (rightDriveSetVal < -1.0) rightDriveSetVal = -1.0;
+			break;
+		case Speed:
+			if (driveMaxSpeed == 0.0) break;	// If there is no max we don't check because there is no range
+			// Check if the drive set values are in the correct range for the speed drive mode
+			// for the left
+			if (leftDriveSetVal > driveMaxSpeed) leftDriveSetVal = driveMaxSpeed;
+			else if (leftDriveSetVal < -driveMaxSpeed) leftDriveSetVal = -driveMaxSpeed;
+			// for the right
+			if (rightDriveSetVal > driveMaxSpeed) rightDriveSetVal = driveMaxSpeed;
+			else if (rightDriveSetVal < -driveMaxSpeed) rightDriveSetVal = driveMaxSpeed;
+			break;
+		}
+		
+		// Apply the speed modification percentage
+		leftDriveSetVal *= speedModPercent;
+		rightDriveSetVal *= speedModPercent;
+		
+		// Actually set the motors now
+		leftMotorMaster.set(leftDriveSetVal);
+		rightMotorMaster.set(rightDriveSetVal);
+		
+		// Enable/disable braking
+		leftMotorMaster.enableBrakeMode(brakingEnabled);
+		rightMotorMaster.enableBrakeMode(brakingEnabled);
+	}
 	
-	// Unique Functions
-	// Public Manipulator Functions (setters)
-	public void setDriveValues(double left, double right) {
-		motorLeftDriveValue = left;		// Set the left and right motor values
-		motorRightDriveValue = right;
-	}
-	public void setPIDEnabled(boolean enabled) {
-		motorPIDEnabled = enabled;		// Set the motorPID Enabled boolean
-	}
-	
-	// Private Control functions
-	private void drive4Motors(double left, double right) {
-		// Check left and right against the max and min 
-		if (left > 1.0) left = 1.0;		// Check the left against the max
-		if (left < -1.0) left = -1.0;	// Check the left against the min
-		if (right > 1.0) right = 1.0;	// Same thing except for the right side
-		if (right < -1.0) right = -1.0;
-		
-		// Drive the given left and right
-		controlTwoMotors(leftMotorMaster, leftMotorSlave, left);		// Control the left side of the drive base
-		controlTwoMotors(rightMotorMaster, rightMotorSlave, right);		// Control the right side of the drive base
-	}
-	private void controlTwoMotors(CANTalon master, CANTalon slave, double power) {
-		master.set(power);		// Set the master percentage to the passed in power percentage
-		slave.set(power);		// Set the slave percentage to the same thing
-		// TODO: Set slave to follower even if it isn't using PID because it should work the same here too
+	// Function to update the control mode
+	private void updateMotorsForDriveControl() {
+		switch (driveControlType) {
+		case Percentage:
+			// Set the control mode to percentage
+			// Set the masters because the followers do what the master controllers do
+			leftMotorMaster.changeControlMode(TalonControlMode.PercentVbus);
+			rightMotorMaster.changeControlMode(TalonControlMode.PercentVbus);
+			break;
+		case Speed:
+			// Set the control mode to speed
+			// Set the masters because the followers do what the master controllers do
+			leftMotorMaster.changeControlMode(TalonControlMode.Speed);
+			rightMotorMaster.changeControlMode(TalonControlMode.Speed);
+			break;
+		}
 	}
 	
-	private void drive4MotorsPID(double left, double right) {
-		// Don't check against min or max because we are using speed instead of percentage
-		if (!motorPIDSetup) setupMotorPIDSpeed();		// If PID has not been setup, set it up
-		controlMotorsPID(leftMotorMaster, left);	// Control the left side
-		controlMotorsPID(rightMotorMaster, right);	// Control the right side
-	}
-	private void controlMotorsPID(CANTalon master, double value) {
-		master.set(value);	// Set motor passed in to the value passed in
-	}
-	private void setupMotorPIDSpeed() {
-		if (motorPIDSetup) return;
-		leftMotorMaster.changeControlMode(CANTalon.TalonControlMode.Speed);		// Set the control mode to speed instead of percentage
-		leftMotorMaster.setFeedbackDevice(FeedbackDevice.EncRising);			// Use the rising edge of the encoder
-		leftMotorMaster.reverseOutput(false);									// Don't reverse the motor output
+	// Function to update encoder values
+	private void updateEncoderVals() {
+		//leftLastEncPosition = leftEncPosition;
+		//rightLastEncPosition = rightEncPosition;
+		//leftEncPosition = leftMotorMaster.getEncPosition();
+		//rightEncPosition = rightMotorMaster.getEncPosition();
 		
-		leftMotorSlave.changeControlMode(CANTalon.TalonControlMode.Follower);	// Set the control mode to imitate the control of a master controller
-		leftMotorSlave.set(leftMotorMaster.getDeviceID());						// Set the controller to imitate to the master
+		leftEncVelocity = leftMotorMaster.getSpeed();
+		rightEncVelocity = rightMotorMaster.getSpeed();
 		
-		// Do the same stuff but for the right side
-		rightMotorMaster.changeControlMode(CANTalon.TalonControlMode.Speed);
-		rightMotorMaster.setFeedbackDevice(FeedbackDevice.EncRising);
-		rightMotorMaster.reverseOutput(false);
-		
-		rightMotorSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
-		rightMotorSlave.set(rightMotorMaster.getDeviceID());
+		Robot.sensorController.setRPMs(leftEncVelocity, rightEncVelocity);
 	}
+	////
+	
+	//// Public control functions
+	// Set the control type. This will be used in updateMotorsForDriveControl()
+	public void setDriveControlType(ControlType _type) { driveControlType = _type; }
+	
+	// Set the motor control values with two percentages (-1.0 to 1.0)
+	public void drive4Motors(double left, double right) {
+		switch (driveControlType) {
+		case Percentage:
+			// If the control mode is percentage just use left and right
+			leftDriveSetVal = left;
+			rightDriveSetVal = right;
+			break;
+		case Speed:
+			// If the control mode is speed use the product of the base speed and the left and right values
+			leftDriveSetVal = driveBaseSpeed * left;
+			rightDriveSetVal = driveBaseSpeed * right;
+			break;
+		}
+	}
+	
+	// Set the motor braking to enabled or disabled
+	public void setBraking(boolean brake) { brakingEnabled = true; }
+	
+	// Function to turn on the center of the robot
+	public void turn(double speed) { drive4Motors(speed, -speed); }
+	
+	// Function to turn to a given angle using PID
+	public boolean turnToAnglePID(double target) {
+		if (!yawZeroed) {
+			Robot.sensorController.ahrs.zeroYaw();
+			yawZeroed = true;
+		}
+		
+		double yawReport = Robot.sensorController.ahrs.getYaw();
+		double error = pid.update(target - yawReport, yawReport);
+		if (error < turnErrorTollerance && error > -turnErrorTollerance) error = 0;
+		
+		currentTurnError = error;
+		
+		if (currentTurnError == 0) {
+			drive4Motors(0,0);
+			yawZeroed = false;
+			return false;
+		}
+		return true;
+	}
+	
+	// Function to drive a given distance
+	public boolean driveDistance(double left, double right, double distance) {
+		leftEncTicks = leftMotorMaster.getPosition();
+		rightEncTicks = rightMotorMaster.getPosition();
+		
+		if (leftRotations < 0) leftLastEncTicks = leftEncTicks;
+		if (rightRotations < 0) rightLastEncTicks = rightEncTicks;
+		
+		leftRotations = Math.abs(leftEncTicks - leftLastEncTicks) / encTicksPerRotation;
+		rightRotations = Math.abs(rightEncTicks - rightLastEncTicks) / encTicksPerRotation;
+		
+		double leftDistance = leftRotations * wheelSize;
+		double rightDistance = rightRotations * wheelSize;
+		
+		System.out.println("Distance: " + leftDistance + "," + rightDistance);
+		
+		if (leftDistance >= distance || rightDistance >= distance) {
+			drive4Motors(0,0);
+			leftRotations = -1;
+			rightRotations = -1;
+			return true;
+		} else {
+			drive4Motors(left, right);
+		}
+		
+		return false;
+	}
+	////
+	
 }
