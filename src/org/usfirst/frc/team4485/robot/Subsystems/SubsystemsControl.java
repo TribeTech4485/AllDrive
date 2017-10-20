@@ -2,23 +2,25 @@ package org.usfirst.frc.team4485.robot.Subsystems;
 
 import org.usfirst.frc.team4485.robot.Robot;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.BoxPneumaticSystem;
+import org.usfirst.frc.team4485.robot.Subsystems.Systems.DriveSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.LiftSystem;
 //import org.usfirst.frc.team4485.robot.Subsystems.Systems.PowerHandlerSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.SerialSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.ShifterPneumaticSystem;
-import org.usfirst.frc.team4485.robot.Subsystems.Systems.UniformDrive;
+//import org.usfirst.frc.team4485.robot.Subsystems.Systems.UniformDrive;
 
 
-import com.kauailabs.navx.frc.AHRS;
+//import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SPI;
+//import edu.wpi.first.wpilibj.DriverStation;
+//import edu.wpi.first.wpilibj.SPI;
 
 // Master control for all subsystems
 
 public class SubsystemsControl {
 	// Subsystems
-	public UniformDrive driveSystem;
+	//public UniformDrive driveSystem;
+	public DriveSystem driveSystem;
 	public BoxPneumaticSystem boxPneumaticSystem;
 	public ShifterPneumaticSystem shifterPneumaticSystem;
 	public LiftSystem liftSystem;
@@ -31,11 +33,11 @@ public class SubsystemsControl {
 	public SubsystemsControl() {
 		createAll();
 		
-		try {
-			driveSystem.ahrs = new AHRS(SPI.Port.kMXP);
-		} catch (RuntimeException ex) {
-			DriverStation.reportError("Error AHRS: " + ex.getMessage(), true);
-		}
+		//try {
+		//	driveSystem.ahrs = new AHRS(SPI.Port.kMXP);
+		//} catch (RuntimeException ex) {
+		//	DriverStation.reportError("Error AHRS: " + ex.getMessage(), true);
+		//}
 	}
 	
 	public void killAll() {
@@ -49,7 +51,8 @@ public class SubsystemsControl {
 		sensorController = Robot.sensorController;	// This is where we refer to Robot
 		
 		// Create the other systems like normal
-		driveSystem = new UniformDrive();
+		//driveSystem = new UniformDrive();
+		driveSystem = new DriveSystem();
 		driveSystem.setID(0);	// Set the ID so the system doesn't complain and fill up the log.
 								// I'll probably remove that or implement it in a better way
 		

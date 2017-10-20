@@ -41,7 +41,7 @@ public abstract class AutoProgram {
 	public boolean runIncomplete() {
 		// Init if auto isn't started
 		if (!auto_started && !auto_complete) {
-			subsystems.driveSystem.zeroYaw();
+			//subsystems.driveSystem.zeroYaw();
 			init();
 			auto_started = true;
 		}
