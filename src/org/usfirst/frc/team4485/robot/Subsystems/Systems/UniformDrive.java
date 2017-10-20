@@ -15,6 +15,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
+// TODO: Remove this subsystem once the new one has been tested
+// This whole class is deprecated
+
+@Deprecated
 public class UniformDrive extends Subsystem {
 	public AHRS ahrs;
 	private PIDController pid;
