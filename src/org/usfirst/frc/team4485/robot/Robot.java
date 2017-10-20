@@ -15,7 +15,7 @@ public class Robot extends MichaelBot {
 	public static SensorController sensorController;		// Class that controls sensors	-	This is not very well tested or implemented at this point
 	
 	UserControl userControl;				// Class for controlling get user input
-	SubsystemsControl subsystems;			// Class that handles and updates all the subsytems
+	SubsystemsControl subsystems;			// Class that handles and updates all the subsystems
 	
 	TeleOpControl teleOpControl;			// Class for basic control using user input
 	AutonomousControl autonomousControl;	// Class that handles all the autonomous programs and starts the selected one
