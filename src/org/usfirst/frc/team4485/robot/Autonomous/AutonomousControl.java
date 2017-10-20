@@ -19,12 +19,18 @@ public class AutonomousControl {
 	AutoProgram ballChase;		// this one also
 	AutoProgram driveToPeg;		// Just don't use example, it's the only one that doesn't exist
 	
+	AutoProgram driveToZone;
+	AutoProgram placeGearForward;
+	
 	public AutonomousControl(SubsystemsControl subsystems) {	
 		driveDistance = new DriveDistance(subsystems);
 		turnToAngle = new TurnToAngle(subsystems);
 		testSerial = new TestSerial(subsystems);
 		ballChase = new BallChase(subsystems);
 		driveToPeg = new DriveToPeg(subsystems);
+		
+		driveToZone = new DriveToZone(subsystems);
+		placeGearForward = new PlaceGearForward(subsystems);
 		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
@@ -33,6 +39,8 @@ public class AutonomousControl {
 		autoChooser.addObject("Test Serial", testSerial);
 		autoChooser.addObject("Ball Chase", ballChase);
 		autoChooser.addObject("Drive To Peg", driveToPeg);
+		autoChooser.addObject("DriveToZone", driveToZone);
+		autoChooser.addObject("Place Gear Forward", placeGearForward);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);
