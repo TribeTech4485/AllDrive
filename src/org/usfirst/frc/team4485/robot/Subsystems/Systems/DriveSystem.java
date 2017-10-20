@@ -1,14 +1,3 @@
-/* 
- * TODO:Add Normal Drive Function that works with update()
- * 		Add PID Turn
- * 			Write separate class for gyro handling?
- * 		Add Drive Distance	
-*/
-/*
- * ADDED:
- * 		Speed Control with PID
- * 		Normal motor control
- */
 package org.usfirst.frc.team4485.robot.Subsystems.Systems;
 
 import org.usfirst.frc.team4485.robot.Robot;
@@ -18,6 +7,11 @@ import org.usfirst.frc.team4485.robot.Subsystems.PIDController.PIDController;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
+// TODO: Test all drive functions
 
 
 public class DriveSystem extends Subsystem {
@@ -53,11 +47,20 @@ public class DriveSystem extends Subsystem {
 	
 	// GYRO turning values
 	private boolean yawZeroed = false;
+	private double yawReport = 0.0;
 	private double currentTurnError = 0.0;
-	private double turnErrorTollerance = 0.02;
+	private double turnErrorTolerance = 0.02;
+	
+	// SmartDashboard control
+	private final boolean publishEncoderVals = true, publishGYROVals = true;
+	
+	// Drive Control modifiers
+	private final boolean reverseInput = false, flipLeftRight = false, reverseLeft = false, reverseRight = false;
 	
 	@Override
 	protected void initSystem() {
+		// TODO: Should this be in a try/catch statement? That may be handled somewhere else, let me check.
+		
 		// Set up the motors using the indexing class
 		leftMotorMaster = new CANTalon(id.leftDriveMotorMaster);
 		leftMotorSlave = new CANTalon(id.leftDriveMotorSlave);
@@ -74,10 +77,12 @@ public class DriveSystem extends Subsystem {
 
 	@Override
 	protected void updateSystem() {
-		updateEncoderVals();
+		updateEncoderVals();			// Update the encoder values
+		updateGYROVals();				// Update the GYRO values
+		updateMotorsForDriveControl();	// Update the motor control mode
+		updateMotors();					// Update the motors
 		
-		updateMotorsForDriveControl();
-		updateMotors();
+		publishToSmartDashboard();		// Put data on the SmartDashboard
 	}
 
 	@Override
@@ -118,7 +123,22 @@ public class DriveSystem extends Subsystem {
 			break;
 		}
 		
+		// Apply the drive control modifiers
+		if (reverseInput) {		// Reverse both inputs
+			leftDriveSetVal = -leftDriveSetVal;
+			rightDriveSetVal = -rightDriveSetVal;
+		}
+		if (flipLeftRight) {	// Set the left input equal to the right and vice versa
+			double newLeft = rightDriveSetVal;
+			double newRight = leftDriveSetVal;
+			leftDriveSetVal = newLeft;
+			rightDriveSetVal = newRight;
+		}
+		if (reverseLeft) leftDriveSetVal = -leftDriveSetVal;	// Reverse the left input
+		if (reverseRight) rightDriveSetVal = -rightDriveSetVal;	// Reverse the right input
+		
 		// Apply the speed modification percentage
+		// Modification should be between 0.0 and 1.0
 		leftDriveSetVal *= speedModPercent;
 		rightDriveSetVal *= speedModPercent;
 		
@@ -130,20 +150,19 @@ public class DriveSystem extends Subsystem {
 		leftMotorMaster.enableBrakeMode(brakingEnabled);
 		rightMotorMaster.enableBrakeMode(brakingEnabled);
 	}
-	
 	// Function to update the control mode
 	private void updateMotorsForDriveControl() {
 		switch (driveControlType) {
 		case Percentage:
 			// Set the control mode to percentage
 			// Set the masters because the followers do what the master controllers do
-			leftMotorMaster.changeControlMode(TalonControlMode.PercentVbus);
+			leftMotorMaster.changeControlMode(TalonControlMode.PercentVbus);	// PercentVbus is the default TalonControl mode
 			rightMotorMaster.changeControlMode(TalonControlMode.PercentVbus);
 			break;
 		case Speed:
 			// Set the control mode to speed
 			// Set the masters because the followers do what the master controllers do
-			leftMotorMaster.changeControlMode(TalonControlMode.Speed);
+			leftMotorMaster.changeControlMode(TalonControlMode.Speed);		// (TODO: speed uses PID so set that up???)
 			rightMotorMaster.changeControlMode(TalonControlMode.Speed);
 			break;
 		}
@@ -156,10 +175,23 @@ public class DriveSystem extends Subsystem {
 		//leftEncPosition = leftMotorMaster.getEncPosition();
 		//rightEncPosition = rightMotorMaster.getEncPosition();
 		
-		leftEncVelocity = leftMotorMaster.getSpeed();
-		rightEncVelocity = rightMotorMaster.getSpeed();
+		leftEncVelocity = leftMotorMaster.getEncVelocity();		// Velocity makes more sense for our use because it is displacement in position not distance.
+		rightEncVelocity = rightMotorMaster.getEncVelocity();
 		
 		Robot.sensorController.setRPMs(leftEncVelocity, rightEncVelocity);
+	}
+	// Function to update GYRO values
+	private void updateGYROVals() { yawReport = Robot.sensorController.ahrs.getYaw(); }
+	
+	// Function to publish all values to SmartDashboard
+	private void publishToSmartDashboard() {
+		if (publishEncoderVals) {	// If we need to put the encoder values on the SmartDashboard
+			SmartDashboard.putNumber("Left Enc Velocity", leftEncVelocity);
+			SmartDashboard.putNumber("Right Enc Velocity", rightEncVelocity);
+		}
+		if (publishGYROVals) {	// If we need to put the GYRO values on the SmartDashboard
+			SmartDashboard.putNumber("GYRO Yaw", yawReport);
+		}
 	}
 	////
 	
@@ -169,7 +201,7 @@ public class DriveSystem extends Subsystem {
 	
 	// Set the motor control values with two percentages (-1.0 to 1.0)
 	public void drive4Motors(double left, double right) {
-		left = -left;
+		left = -left;	// TODO: replace this with a function
 		switch (driveControlType) {
 		case Percentage:
 			// If the control mode is percentage just use left and right
@@ -192,51 +224,50 @@ public class DriveSystem extends Subsystem {
 	
 	// Function to turn to a given angle using PID
 	public boolean turnToAnglePID(double target) {
-		if (!yawZeroed) {
-			Robot.sensorController.ahrs.zeroYaw();
-			yawZeroed = true;
+		if (!yawZeroed) {	// If we haven't zeroed the YAW
+			Robot.sensorController.ahrs.zeroYaw();	// Zero the YAW
+			yawZeroed = true;	// Set this to true so we don't zero the YAW again
 		}
 		
-		double yawReport = Robot.sensorController.ahrs.getYaw();
-		double error = pid.update(target - yawReport, yawReport);
-		if (error < turnErrorTollerance && error > -turnErrorTollerance) error = 0;
+		double error = pid.update(target - yawReport, yawReport);	// Update the error with the PID Controller
+		if (error < turnErrorTolerance && error > -turnErrorTolerance) error = 0;	// If the error is within the tolerance range, set error to 0
 		
 		currentTurnError = error;
 		
-		if (currentTurnError == 0) {
-			drive4Motors(0,0);
-			yawZeroed = false;
-			return false;
+		if (currentTurnError == 0) {	// If we are on target
+			drive4Motors(0,0);	// Stop moving
+			yawZeroed = false;	// Set this to false so next time we zero it
+			return false;		// Return false when we are done. (TODO: Some of these functions return true when they are done, that makes more sense so update this)
 		}
-		return true;
+		return true;	// Return when there is still work to do (TODO: ^^^)
 	}
 	
 	// Function to drive a given distance
 	public boolean driveDistance(double left, double right, double distance) {
-		leftEncTicks = leftMotorMaster.getPosition();
-		rightEncTicks = rightMotorMaster.getPosition();
+		leftEncTicks = leftMotorMaster.getPosition();		// Update the encoder ticks
+		rightEncTicks = rightMotorMaster.getPosition();		//
 		
-		if (leftRotations < 0) leftLastEncTicks = leftEncTicks;
+		if (leftRotations < 0) leftLastEncTicks = leftEncTicks;		// If this is the first time we have updated, set the beginning tick values to the current tick values
 		if (rightRotations < 0) rightLastEncTicks = rightEncTicks;
 		
-		leftRotations = Math.abs(leftEncTicks - leftLastEncTicks) / encTicksPerRotation;
-		rightRotations = Math.abs(rightEncTicks - rightLastEncTicks) / encTicksPerRotation;
+		leftRotations = Math.abs(leftEncTicks - leftLastEncTicks) / encTicksPerRotation;		// The number of rotations is equal to 
+		rightRotations = Math.abs(rightEncTicks - rightLastEncTicks) / encTicksPerRotation;		// the total number of ticks divided by the number of ticks per rotation
 		
-		double leftDistance = leftRotations * wheelSize;
-		double rightDistance = rightRotations * wheelSize;
+		double leftDistance = leftRotations * wheelSize;		// Distance is equal to the product of the number of rotations and the wheel size
+		double rightDistance = rightRotations * wheelSize;		// For example: if we have 6" wheels and we have gone 1 rotation, we have moved 6"
 		
 		System.out.println("Distance: " + leftDistance + "," + rightDistance);
 		
-		if (leftDistance >= distance || rightDistance >= distance) {
-			drive4Motors(0,0);
-			leftRotations = -1;
+		if (leftDistance >= distance || rightDistance >= distance) {	// If we have hit our target
+			drive4Motors(0,0);	// Stop moving
+			leftRotations = -1;	// Reset rotations to -1 so we know we need to start again next time this function is called
 			rightRotations = -1;
-			return true;
+			return true;	// Return true when we are done
 		} else {
-			drive4Motors(left, right);
+			drive4Motors(left, right);	// Move the robot if we haven't hit the target
 		}
 		
-		return false;
+		return false;	// Return false when we need to do more work
 	}
 	////
 	
