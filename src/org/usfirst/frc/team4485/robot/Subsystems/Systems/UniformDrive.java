@@ -144,7 +144,7 @@ public class UniformDrive extends Subsystem {
 		SmartDashboard.putNumber("Right Encoder Velocity Value", rightMotorMaster.getEncVelocity());
 		SmartDashboard.putNumber("Left Encoder Velocity Value", leftMotorMaster.getEncVelocity());
 		
-		Robot.sensorController.setRPMs(leftMotorMaster.getSpeed(), rightMotorMaster.getSpeed());
+		Robot.sensorController.setRPMs(leftMotorMaster.getEncVelocity(), rightMotorMaster.getEncVelocity());
 	}
 	/*
 	private void getDashboardTurnPIDVals() {
@@ -203,10 +203,11 @@ public class UniformDrive extends Subsystem {
 		SmartDashboard.putNumber("Current Turn Error", currentTurnError);
 		SmartDashboard.putNumber("Last Turn Error", pastTurnError);
 		
+		// THERE'S A TERRIBLE BUG HERE
 		if (currentTurnError> 0) {
-			turn(currentTurnError, -1);
+			turn(currentTurnError, -1);		// SEE THAT FIRST NUMBER?? IT'S NEVER USED XD
 		} else if (currentTurnError < 0) {
-			turn(currentTurnError, 1);
+			turn(currentTurnError, 1);		// THIS IS SUCH A DUMB MISTAKE
 		} else {
 			drive4Motors(0,0);
 			yawZeroed = false;
@@ -286,7 +287,6 @@ public class UniformDrive extends Subsystem {
 		System.out.println("Start Ticks: " + leftStartTicks + "," + rightStartTicks + " Current Ticks: " + leftCurrentTicks + "," + rightCurrentTicks);
 		System.out.println("Distance: " + leftDistance + "," + rightDistance + " Rotations: " + leftRotations + "," + rightRotations);
 		
-		// Add leftDistance back later
 		if (leftDistance >= distIn || rightDistance >= distIn) {
 			drive4Motors(0,0);
 			leftRotations = -1;
