@@ -169,6 +169,7 @@ public class DriveSystem extends Subsystem {
 	
 	// Set the motor control values with two percentages (-1.0 to 1.0)
 	public void drive4Motors(double left, double right) {
+		left = -left;
 		switch (driveControlType) {
 		case Percentage:
 			// If the control mode is percentage just use left and right
