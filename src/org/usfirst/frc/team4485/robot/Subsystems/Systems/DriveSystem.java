@@ -193,6 +193,26 @@ public class DriveSystem extends Subsystem {
 			SmartDashboard.putNumber("GYRO Yaw", yawReport);
 		}
 	}
+	
+	// Function to turn to a given angle using PID
+	private boolean baseTurnToAnglePID(double target, boolean stopWhenDone) {
+		if (!yawZeroed) {	// If we haven't zeroed the YAW
+			Robot.sensorController.ahrs.zeroYaw();	// Zero the YAW
+			yawZeroed = true;	// Set this to true so we don't zero the YAW again
+		}
+		
+		double error = pid.update(target - yawReport, yawReport);	// Update the error with the PID Controller
+		if (error < turnErrorTolerance && error > -turnErrorTolerance) error = 0;	// If the error is within the tolerance range, set error to 0
+		
+		currentTurnError = error;
+		
+		if (currentTurnError == 0) {	// If we are on target
+			drive4Motors(0,0);	// Stop moving
+			yawZeroed = false;	// Set this to false so next time we zero it
+			return false;		// Return false when we are done. (TODO: Some of these functions return true when they are done, that makes more sense so update this)
+		}
+		return true;	// Return when there is still work to do (TODO: ^^^)
+	}
 	////
 	
 	//// Public control functions
@@ -215,31 +235,16 @@ public class DriveSystem extends Subsystem {
 		}
 	}
 	
+	// Function to call the base turn to angle with stop
+	public boolean turnToAnglePID(double target) { return baseTurnToAnglePID(target, true); }
+	// Function to call the base turn to angle without stop
+	public boolean centerToAnglePID(double target) { return baseTurnToAnglePID(target, false); }
+	
 	// Set the motor braking to enabled or disabled
 	public void setBraking(boolean brake) { brakingEnabled = true; }
 	
 	// Function to turn on the center of the robot
 	public void turn(double speed) { drive4Motors(speed, -speed); }
-	
-	// Function to turn to a given angle using PID
-	public boolean turnToAnglePID(double target) {
-		if (!yawZeroed) {	// If we haven't zeroed the YAW
-			Robot.sensorController.ahrs.zeroYaw();	// Zero the YAW
-			yawZeroed = true;	// Set this to true so we don't zero the YAW again
-		}
-		
-		double error = pid.update(target - yawReport, yawReport);	// Update the error with the PID Controller
-		if (error < turnErrorTolerance && error > -turnErrorTolerance) error = 0;	// If the error is within the tolerance range, set error to 0
-		
-		currentTurnError = error;
-		
-		if (currentTurnError == 0) {	// If we are on target
-			drive4Motors(0,0);	// Stop moving
-			yawZeroed = false;	// Set this to false so next time we zero it
-			return false;		// Return false when we are done. (TODO: Some of these functions return true when they are done, that makes more sense so update this)
-		}
-		return true;	// Return when there is still work to do (TODO: ^^^)
-	}
 	
 	// Function to drive a given distance
 	public boolean driveDistance(double left, double right, double distance) {
