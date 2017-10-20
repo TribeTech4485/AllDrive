@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class ShifterPneumaticSystem extends Subsystem {
 
+	// Two solenoids for shifter in and out
 	private Solenoid shifterSolenoid_out, shifterSolenoid_in;
 	private boolean shifterOut = true, lowGear = true;
 	
@@ -15,9 +16,9 @@ public class ShifterPneumaticSystem extends Subsystem {
 	//private final double lowGearShiftUpCurrentLimit = -1.0;
 	private final double highGearShiftDownCurrentLimit = 80.0;
 	
-	// Since we have a shifting gear box we can implement AUTO shifting
+	// Since we have a shifting gear box we can implement AUTO shifting,
 	// so we need a couple ways to know when to shift.
-	// One is current draw, so we have the current draw average.
+	// One is current draw and voltage drops, so we have the current draw average and voltage.
 	private double motorCurrentAvg = 0.0, totalVoltage = 0.0, initVoltage = -1.0;
 	private double lowGearCurrentHigh = 0.0, highGearCurrentHigh = 0.0;
 	private double voltageDropCheckPercent = 0.35;
