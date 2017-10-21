@@ -181,7 +181,13 @@ public class DriveSystem extends Subsystem {
 		Robot.sensorController.setRPMs(leftEncVelocity, rightEncVelocity);
 	}
 	// Function to update GYRO values
-	private void updateGYROVals() { yawReport = Robot.sensorController.ahrs.getYaw(); }
+	private void updateGYROVals() { 
+		if (Robot.sensorController.isAHRSError()) {	// If there is an error initializing the AHRS in the sensor controller
+			yawReport = 0;	// Set the yawReport to some number
+			return;			// Stop the function
+		}
+		yawReport = Robot.sensorController.ahrs.getYaw(); 
+	}
 	
 	// Function to publish all values to SmartDashboard
 	private void publishToSmartDashboard() {
@@ -196,6 +202,7 @@ public class DriveSystem extends Subsystem {
 	
 	// Function to turn to a given angle using PID
 	private boolean baseTurnToAnglePID(double target, boolean stopWhenDone) {
+		if (Robot.sensorController.isAHRSError()) return false;	// Say there is nothing left to do because we can't do anything
 		if (!yawZeroed) {	// If we haven't zeroed the YAW
 			Robot.sensorController.ahrs.zeroYaw();	// Zero the YAW
 			yawZeroed = true;	// Set this to true so we don't zero the YAW again

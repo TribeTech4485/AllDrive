@@ -26,7 +26,8 @@ public class SensorController {
 	
 	// Create the value objects here. You will update these with update()
 	//private double gearOpticalSensorVal;
-	public boolean ahrsYawZeroed = false;
+	private boolean ahrsError = false;
+	public boolean ahrsYawZeroed = false;	// I don't think this is ever used, check that for me?
 	
 	private double leftDriveRPM = 0.0, rightDriveRPM = 0.0;
 	
@@ -46,6 +47,7 @@ public class SensorController {
 		try {
 			ahrs = new AHRS(SPI.Port.kMXP);
 		} catch (Exception ex) {
+			ahrsError = true;
 			System.out.println("Warning: AHRS Error: " + ex.getMessage());
 		}
 	}
@@ -70,4 +72,6 @@ public class SensorController {
 	public double getAverageRPM() {
 		return (leftDriveRPM + rightDriveRPM) / 2;
 	}
+	
+	public boolean isAHRSError() { return ahrsError; }
 }
