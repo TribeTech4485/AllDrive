@@ -34,7 +34,7 @@ public class UserControl {
 	
 	// Private rumble values.
 	public final int kRumbleNone = -1, kRumbleSolid = 0, kRumbleDash = 300, kRumbleBeep = 1000;
-	private int rumbleStickID = 0;
+	private int rumbleStickID = -1;
 	private int rumbleType = kRumbleSolid;
 	private double rumbleVal = 0.0;
 	// Timing for rumble patterns
@@ -104,6 +104,7 @@ public class UserControl {
 		if (drive_leftStickY > -kDeadBand && drive_leftStickY < kDeadBand) drive_leftStickY = 0.0;
 	}
 	private void updateRumble() {
+		if (rumbleStickID < 0) rumbleVal = 0;
 		Joystick tempStick = new Joystick(rumbleStickID);
 		if (rumbleStartTime < 0) rumbleStartTime = System.currentTimeMillis();
 		
@@ -117,6 +118,8 @@ public class UserControl {
 			if (rumbleVal == 0.0) rumbleVal = 1.0;
 			else if (rumbleVal > 0) rumbleVal = 0.0;
 		}
+		
+		if (rumbleType == kRumbleNone) rumbleVal = 0.0;
 		
 		tempStick.setRumble(RumbleType.kLeftRumble, rumbleVal);
 		tempStick.setRumble(RumbleType.kRightRumble, rumbleVal);
