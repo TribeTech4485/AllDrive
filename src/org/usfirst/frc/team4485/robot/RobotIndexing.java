@@ -69,7 +69,7 @@ public class RobotIndexing {
 	
 	//// Pnewmatic indexes
 	// Box Guide Solenoids & Modules
-	public int boxSolenoidsModule = 1;//0;
+	public int boxSolenoidsModule = 0;//0;
 	public int boxGuideSolenoid1_out = 1;
 	public int boxGuideSolenoid1_in = 0;
 	public int boxGuideSolenoid2_out = 4;
@@ -83,7 +83,7 @@ public class RobotIndexing {
 	public int doorSolenoid_in = 6;
 	
 	// Shifting Gear Box Solenoids & Modules
-	public int shifterSolenoidsModule = 0;//1;
+	public int shifterSolenoidsModule = 1;//1;
 	public int shifterSolenoid_in = 0;
 	public int shifterSolenoid_out = 1;
 	////
