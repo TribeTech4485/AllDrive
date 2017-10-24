@@ -11,6 +11,9 @@ public class PowerHandlerSystem extends Subsystem {
 	// The actual power board
 	private PowerDistributionPanel pdp;
 	
+	// If there is major system error
+	private boolean error = false;
+	
 	// The information we get from the board
 	private double totalCurrent = 0.0, totalVoltage = 0.0, temperature = 0.0;
 	private double currentPerChannel[];
@@ -18,12 +21,19 @@ public class PowerHandlerSystem extends Subsystem {
 	@Override
 	protected void initSystem() {
 		currentPerChannel = new double[16];
-		pdp = new PowerDistributionPanel(1);
+		try {
+			pdp = new PowerDistributionPanel(1);
+		} catch (Exception ex) {
+			System.out.println("Warning (PowerHandlerSystem): Could not initilize PDP!");
+			error = true;
+		}
 		update();
 	}
 
 	@Override
 	protected void updateSystem() {
+		 if (error) return;
+		
 		pdp.clearStickyFaults();
 		for (int i = 0; i < 16; i++) {
 			currentPerChannel[i] = pdp.getCurrent(i);
