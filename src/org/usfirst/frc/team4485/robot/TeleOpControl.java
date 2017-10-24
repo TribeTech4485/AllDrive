@@ -21,7 +21,7 @@ public class TeleOpControl {
 				
 		// Drive using the drive subsystem
 		//subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY);
-		subsystems.driveSystem.drive4Motors(userControl.drive_rightStickY, userControl.drive_leftStickY); 	// Flip the input sticks for some robots
+		subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY); 	// Flip the input sticks for some robots
 		if (userControl.getRawDriveButton(id.d_shiftDown)) subsystems.shifterPneumaticSystem.shiftDown();
 		else if (userControl.getRawDriveButton(id.d_shiftUp)) subsystems.shifterPneumaticSystem.shiftUp();
 		//subsystems.driveSystem.setBraking(userControl.getRawDriveButton(id.d_brakeButton));
