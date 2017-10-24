@@ -27,11 +27,11 @@ public class PlaceGearForward extends AutoProgram {
 		//}
 		double startTime = System.currentTimeMillis();
 		while((System.currentTimeMillis() - startTime) < 3000) {
-			subsystems.driveSystem.centerToAnglePID(0);
+			subsystems.driveSystem.centerToAngleNoPID(0);
 			subsystems.driveSystem.update();
 			subsystems.driveSystem.drive4Motors(0.5, 0.5);
 			subsystems.driveSystem.update();
-			subsystems.driveSystem.centerToAnglePID(0);
+			subsystems.driveSystem.centerToAngleNoPID(0);
 			subsystems.driveSystem.update();
 		}
 		subsystems.driveSystem.drive4Motors(0, 0);
