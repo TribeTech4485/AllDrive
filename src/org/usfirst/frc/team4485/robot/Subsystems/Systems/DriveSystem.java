@@ -3,6 +3,7 @@ package org.usfirst.frc.team4485.robot.Subsystems.Systems;
 import org.usfirst.frc.team4485.robot.Robot;
 import org.usfirst.frc.team4485.robot.Subsystems.Subsystem;
 import org.usfirst.frc.team4485.robot.Subsystems.PIDController.PIDController;
+import org.usfirst.frc.team4485.robot.Subsystems.PIDController.SPID;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
@@ -50,6 +51,7 @@ public class DriveSystem extends Subsystem {
 	private double yawReport = 0.0;
 	private double currentTurnError = 0.0;
 	private double turnErrorTolerance = 0.02;
+	private double bangbangAngleTolerance = 1;
 	
 	// SmartDashboard control
 	private final boolean publishEncoderVals = true, publishGYROVals = true;
@@ -73,6 +75,19 @@ public class DriveSystem extends Subsystem {
 		// Set the slave motors to follower so they copy the outputs of the master controllers
 		leftMotorSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
 		rightMotorSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
+		
+		pid = new PIDController();
+		{
+			SPID spid = new SPID();
+			spid.dState = 0;
+			spid.iState = 0;
+			spid.iMax = 1.0;
+			spid.iMin = -1.0;
+			spid.iGain = 0.01;
+			spid.pGain = 0.01;
+			spid.dGain = 0.0;
+			pid.setSPID(spid);
+		}
 	}
 
 	@Override
@@ -175,8 +190,12 @@ public class DriveSystem extends Subsystem {
 		//leftEncPosition = leftMotorMaster.getEncPosition();
 		//rightEncPosition = rightMotorMaster.getEncPosition();
 		
-		leftEncVelocity = leftMotorMaster.getEncVelocity();		// Velocity makes more sense for our use because it is displacement in position not distance.
-		rightEncVelocity = rightMotorMaster.getEncVelocity();
+		try {
+			leftEncVelocity = leftMotorMaster.getEncVelocity();		// Velocity makes more sense for our use because it is displacement in position not distance.
+			rightEncVelocity = rightMotorMaster.getEncVelocity();
+		} catch (Exception ex) {
+			System.out.println("Warning (Drive System): Cannot get data from encoders!");
+		}
 		
 		Robot.sensorController.setRPMs(leftEncVelocity, rightEncVelocity);
 	}
@@ -246,6 +265,34 @@ public class DriveSystem extends Subsystem {
 	public boolean turnToAnglePID(double target) { return baseTurnToAnglePID(target, true); }
 	// Function to call the base turn to angle without stop
 	public boolean centerToAnglePID(double target) { return baseTurnToAnglePID(target, false); }
+	
+	// Function to center to angle using a bang-bang type method
+	public boolean centerToAngleNoPID(double target) {
+		// Make sure the GYRO works
+		if (Robot.sensorController.isAHRSError()) return false;
+		if (!yawZeroed) Robot.sensorController.ahrs.zeroYaw();	// Zero the YAW if it hasn't been zeroed
+		
+		// Check on the target
+		double offset = 0;
+		offset = target - yawReport;
+		
+		// Check if the offset is within the tolerance range
+		if (target == yawReport || Math.abs(offset) < bangbangAngleTolerance) offset = 0;
+		
+		if (offset == 0) return false;	// Return false if we are done
+		System.out.println("Offset:" + offset);
+		
+		// Turn
+		if (offset > 0) {
+			// turn left??
+			turn(-1);
+		} else if (offset < 0) {
+			// turn right??
+			turn(1);
+		} else return false;
+		
+		return true;	// Return true if there is still work to do
+	}
 	
 	// Set the motor braking to enabled or disabled
 	public void setBraking(boolean brake) { brakingEnabled = true; }
