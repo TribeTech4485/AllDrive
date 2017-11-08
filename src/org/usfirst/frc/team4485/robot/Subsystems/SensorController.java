@@ -28,6 +28,7 @@ public class SensorController {
 	//private double gearOpticalSensorVal;
 	private boolean ahrsError = false;
 	public boolean ahrsYawZeroed = false;	// I don't think this is ever used, check that for me?
+	public double ahrsYawMultiplier = -1;	// Invert the YAW when the GYRO is upside down
 	
 	private double leftDriveRPM = 0.0, rightDriveRPM = 0.0;
 	
@@ -50,6 +51,10 @@ public class SensorController {
 			ahrsError = true;
 			System.out.println("Warning: AHRS Error: " + ex.getMessage());
 		}
+	}
+	private boolean isAHRSYawZeroed() {
+		if (Math.abs(ahrs.getYaw()) < 1) return true;
+		return false;
 	}
 	
 	public void update() {
@@ -74,4 +79,12 @@ public class SensorController {
 	}
 	
 	public boolean isAHRSError() { return ahrsError; }
+	public boolean zeroAHRSYaw() {
+		for (int i = 0; i < 20; i++) {
+			ahrs.zeroYaw();
+			if (isAHRSYawZeroed()) return true;
+		}
+		return false;
+	}
+	public double getAHRSYaw() { if (!isAHRSError()) return ahrs.getYaw() * ahrsYawMultiplier; else return 0;}
 }
