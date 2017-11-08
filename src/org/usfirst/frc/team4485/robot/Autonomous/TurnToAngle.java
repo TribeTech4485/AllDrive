@@ -18,14 +18,14 @@ public class TurnToAngle extends AutoProgram {
 	@Override
 	protected void run() {
 		// TODO Auto-generated method stub
-		subsystems.driveSystem.update();
 		//if (!subsystems.driveSystem.turnToAngle(60)) {
 		//	auto_complete = true;
 		//}
 		
-		if (!subsystems.driveSystem.turnToAnglePID(60)) {
+		if (!subsystems.driveSystem.turnToAnglePID(90)) {
 			auto_complete = true;
 		}
+		subsystems.driveSystem.update();
 	}
 	
 }
