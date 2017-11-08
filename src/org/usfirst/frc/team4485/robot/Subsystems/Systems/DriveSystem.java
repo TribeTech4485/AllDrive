@@ -52,6 +52,10 @@ public class DriveSystem extends Subsystem {
 	private double currentTurnError = 0.0;
 	private double turnErrorTolerance = 0.02;
 	private double bangbangAngleTolerance = 1;
+	private double bangbangTurnSpeedMultiplier = 0.3;
+	private double turnCheckStart = -1;
+	private double checkDuration = 1000;
+	
 	
 	// SmartDashboard control
 	private final boolean publishEncoderVals = true, publishGYROVals = true;
@@ -83,9 +87,9 @@ public class DriveSystem extends Subsystem {
 			spid.iState = 0;
 			spid.iMax = 1.0;
 			spid.iMin = -1.0;
-			spid.iGain = 0.01;
-			spid.pGain = 0.01;
-			spid.dGain = 0.0;
+			spid.pGain = 0.1;
+			spid.iGain = 0.000;
+			spid.dGain = 0.000;
 			pid.setSPID(spid);
 		}
 	}
@@ -102,8 +106,8 @@ public class DriveSystem extends Subsystem {
 
 	@Override
 	protected void killSystem() {
-		// TODO Auto-generated method stub
-		
+		drive4Motors(0, 0);
+		update();
 	}
 
 	@Override
@@ -205,7 +209,7 @@ public class DriveSystem extends Subsystem {
 			yawReport = 0;	// Set the yawReport to some number
 			return;			// Stop the function
 		}
-		yawReport = Robot.sensorController.ahrs.getYaw(); 
+		yawReport = Robot.sensorController.getAHRSYaw(); 
 	}
 	
 	// Function to publish all values to SmartDashboard
@@ -223,20 +227,29 @@ public class DriveSystem extends Subsystem {
 	private boolean baseTurnToAnglePID(double target, boolean stopWhenDone) {
 		if (Robot.sensorController.isAHRSError()) return false;	// Say there is nothing left to do because we can't do anything
 		if (!yawZeroed) {	// If we haven't zeroed the YAW
-			Robot.sensorController.ahrs.zeroYaw();	// Zero the YAW
-			yawZeroed = true;	// Set this to true so we don't zero the YAW again
+			yawZeroed = Robot.sensorController.zeroAHRSYaw(); // Zero the YAW and check if it was successful
 		}
+		if (!yawZeroed) return true;
+		
+		System.out.println("Turn Error:" + (target-yawReport));
 		
 		double error = pid.update(target - yawReport, yawReport);	// Update the error with the PID Controller
 		if (error < turnErrorTolerance && error > -turnErrorTolerance) error = 0;	// If the error is within the tolerance range, set error to 0
 		
 		currentTurnError = error;
 		
+		System.out.println("Amount Turn:" + error);
+		
 		if (currentTurnError == 0) {	// If we are on target
 			drive4Motors(0,0);	// Stop moving
-			yawZeroed = false;	// Set this to false so next time we zero it
-			return false;		// Return false when we are done. (TODO: Some of these functions return true when they are done, that makes more sense so update this)
-		}
+			
+			if (turnCheckStart < 0) turnCheckStart = System.currentTimeMillis();
+			if (System.currentTimeMillis() - turnCheckStart >= checkDuration) {
+				turnCheckStart = -1;
+				yawZeroed = false;	// Set this to false so next time we zero it
+				return false;		// Return false when we are done. (TODO: Some of these functions return true when they are done, that makes more sense so update this)
+			}
+		} else turn(currentTurnError);
 		return true;	// Return when there is still work to do (TODO: ^^^)
 	}
 	////
@@ -270,7 +283,7 @@ public class DriveSystem extends Subsystem {
 	public boolean centerToAngleNoPID(double target) {
 		// Make sure the GYRO works
 		if (Robot.sensorController.isAHRSError()) return false;
-		if (!yawZeroed) Robot.sensorController.ahrs.zeroYaw();	// Zero the YAW if it hasn't been zeroed
+		if (!yawZeroed) yawZeroed = Robot.sensorController.zeroAHRSYaw();
 		
 		// Check on the target
 		double offset = 0;
@@ -285,10 +298,10 @@ public class DriveSystem extends Subsystem {
 		// Turn
 		if (offset > 0) {
 			// turn left??
-			turn(-1);
+			turn(1, bangbangTurnSpeedMultiplier);
 		} else if (offset < 0) {
 			// turn right??
-			turn(1);
+			turn(-1, bangbangTurnSpeedMultiplier);
 		} else return false;
 		
 		return true;	// Return true if there is still work to do
@@ -299,6 +312,7 @@ public class DriveSystem extends Subsystem {
 	
 	// Function to turn on the center of the robot
 	public void turn(double speed) { drive4Motors(speed, -speed); }
+	public void turn(double speed, double multiplier) { drive4Motors(speed*multiplier, -speed*multiplier); }
 	
 	// Function to drive a given distance
 	public boolean driveDistance(double left, double right, double distance) {
@@ -320,6 +334,12 @@ public class DriveSystem extends Subsystem {
 			drive4Motors(0,0);	// Stop moving
 			leftRotations = -1;	// Reset rotations to -1 so we know we need to start again next time this function is called
 			rightRotations = -1;
+			
+			leftEncTicks = 0.0;
+			rightEncTicks = 0.0;
+			leftLastEncTicks = 0.0;
+			rightLastEncTicks = 0.0;
+			
 			return true;	// Return true when we are done
 		} else {
 			drive4Motors(left, right);	// Move the robot if we haven't hit the target
