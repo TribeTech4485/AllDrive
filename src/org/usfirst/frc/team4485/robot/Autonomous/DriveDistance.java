@@ -21,11 +21,12 @@ public class DriveDistance extends AutoProgram {
 		subsystems.driveSystem.setBraking(true);
 		
 		//subsystems.driveSystem.drive4Motors(0.25, 0.25);
-		subsystems.driveSystem.update();
 		if (subsystems.driveSystem.driveDistance(0.25,0.25,6)) {
+			subsystems.driveSystem.drive4Motors(0,0);
 			auto_complete = true;
 			//subsystems.driveSystem.setBraking(false);
 		}
+		subsystems.driveSystem.update();
 	}
 	
 }

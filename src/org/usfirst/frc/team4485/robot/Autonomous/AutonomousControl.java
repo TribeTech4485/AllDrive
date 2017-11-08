@@ -19,6 +19,8 @@ public class AutonomousControl {
 	AutoProgram ballChase;		// this one also
 	AutoProgram driveToPeg;		// Just don't use example, it's the only one that doesn't exist
 	
+	AutoProgram zeroYaw;
+	
 	AutoProgram driveToZone;
 	AutoProgram placeGearForward;
 	
@@ -28,6 +30,8 @@ public class AutonomousControl {
 		testSerial = new TestSerial(subsystems);
 		ballChase = new BallChase(subsystems);
 		driveToPeg = new DriveToPeg(subsystems);
+		
+		zeroYaw = new ZeroYaw(subsystems);
 		
 		driveToZone = new DriveToZone(subsystems);
 		placeGearForward = new PlaceGearForward(subsystems);
@@ -41,6 +45,8 @@ public class AutonomousControl {
 		autoChooser.addObject("Drive To Peg", driveToPeg);
 		autoChooser.addObject("DriveToZone", driveToZone);
 		autoChooser.addObject("Place Gear Forward", placeGearForward);
+		
+		autoChooser.addObject("Zero Yaw", zeroYaw);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);
