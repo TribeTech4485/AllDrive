@@ -12,7 +12,7 @@ public class PlaceGearForward extends AutoProgram {
 
 	@Override
 	protected void init() {
-		Robot.sensorController.ahrs.zeroYaw();
+		Robot.sensorController.zeroAHRSYaw();
 		auto_timeLimit = 3950;
 	}
 	
@@ -27,11 +27,11 @@ public class PlaceGearForward extends AutoProgram {
 		//}
 		double startTime = System.currentTimeMillis();
 		while((System.currentTimeMillis() - startTime) < 3000) {
-			subsystems.driveSystem.centerToAngleNoPID(0);
-			subsystems.driveSystem.update();
-			subsystems.driveSystem.drive4Motors(0.5, 0.5);
-			subsystems.driveSystem.update();
-			subsystems.driveSystem.centerToAngleNoPID(0);
+			//subsystems.driveSystem.centerToAngleNoPID(0);
+			//subsystems.driveSystem.update();
+			if (!subsystems.driveSystem.centerToAngleNoPID(0)) subsystems.driveSystem.drive4Motors(0.5, 0.5);
+			//subsystems.driveSystem.update();
+			//subsystems.driveSystem.centerToAngleNoPID(0);
 			subsystems.driveSystem.update();
 		}
 		subsystems.driveSystem.drive4Motors(0, 0);
