@@ -56,6 +56,18 @@ public class DriveSystem extends Subsystem {
 	private double turnCheckStart = -1;
 	private double checkDuration = 1000;
 	
+	// Motor Power Control Values
+	private double leftDriveCurrent = -1.0;
+	private double rightDriveCurrent = -1.0;
+	/*
+	private double leftDriveMotorCurrentScaleMax = -1.0;
+	private double rightDriveMotorCurrentScaleMax = -1.0;
+	private double leftMotorReductionScale = 0.0;
+	private double rightMotorPowerReductionScale = 0.0;
+	private double leftDriveEncoderPoweredSlow = -1.0;
+	private double rightDriveEncderPoweredSlow = -1.0;
+	*/
+	
 	
 	// SmartDashboard control
 	private final boolean publishEncoderVals = true, publishGYROVals = true;
@@ -77,8 +89,8 @@ public class DriveSystem extends Subsystem {
 		leftMotorMaster.setFeedbackDevice(FeedbackDevice.EncRising);
 		rightMotorMaster.setFeedbackDevice(FeedbackDevice.EncRising);
 		// Set the slave motors to follower so they copy the outputs of the master controllers
-		leftMotorSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
-		rightMotorSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
+		//leftMotorSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
+		//rightMotorSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
 		
 		pid = new PIDController();
 		{
@@ -99,6 +111,7 @@ public class DriveSystem extends Subsystem {
 		updateEncoderVals();			// Update the encoder values
 		updateGYROVals();				// Update the GYRO values
 		updateMotorsForDriveControl();	// Update the motor control mode
+		updateMotorPowerControl();		// Update the motor power control
 		updateMotors();					// Update the motors
 		
 		publishToSmartDashboard();		// Put data on the SmartDashboard
@@ -117,6 +130,13 @@ public class DriveSystem extends Subsystem {
 	}
 	
 	//// Private functions
+	// Function to control the actual controller
+	private void controlMotors(double left, double right) {
+		leftMotorMaster.set(left);
+		leftMotorSlave.set(left);
+		rightMotorMaster.set(right);
+		rightMotorSlave.set(right);
+	}
 	// Function to control the motors
 	private void updateMotors() {
 		// Check what control mode we are in so we can check the motor control values accordingly
@@ -162,8 +182,11 @@ public class DriveSystem extends Subsystem {
 		rightDriveSetVal *= speedModPercent;
 		
 		// Actually set the motors now
-		leftMotorMaster.set(leftDriveSetVal);
-		rightMotorMaster.set(rightDriveSetVal);
+		//leftMotorMaster.set(leftDriveSetVal);
+		//rightMotorMaster.set(rightDriveSetVal);
+		controlMotors(leftDriveSetVal, rightDriveSetVal);
+		
+		
 		
 		// Enable/disable braking
 		leftMotorMaster.enableBrakeMode(brakingEnabled);
@@ -175,8 +198,8 @@ public class DriveSystem extends Subsystem {
 		case Percentage:
 			// Set the control mode to percentage
 			// Set the masters because the followers do what the master controllers do
-			leftMotorMaster.changeControlMode(TalonControlMode.PercentVbus);	// PercentVbus is the default TalonControl mode
-			rightMotorMaster.changeControlMode(TalonControlMode.PercentVbus);
+			//leftMotorMaster.changeControlMode(TalonControlMode.PercentVbus);	// PercentVbus is the default TalonControl mode
+			//rightMotorMaster.changeControlMode(TalonControlMode.PercentVbus);
 			break;
 		case Speed:
 			// Set the control mode to speed
@@ -210,6 +233,21 @@ public class DriveSystem extends Subsystem {
 			return;			// Stop the function
 		}
 		yawReport = Robot.sensorController.getAHRSYaw(); 
+	}
+	
+	// Function for motor power control
+	private void updateMotorPowerControl() {
+		if (Robot.sensorController.powerHandlerSystem.isError()) return;
+		
+		leftDriveCurrent = Robot.sensorController.powerHandlerSystem.getChannelCurrent(id.leftDriveMotorMasterPDP);
+		leftDriveCurrent += Robot.sensorController.powerHandlerSystem.getChannelCurrent(id.leftDriveMotorSlavePDP);
+		
+		rightDriveCurrent = Robot.sensorController.powerHandlerSystem.getChannelCurrent(id.rightDriveMotorMasterPDP);
+		rightDriveCurrent += Robot.sensorController.powerHandlerSystem.getChannelCurrent(id.rightDriveMotorSlavePDP);
+		
+		// See how much we reduce the motor power by
+		//// Just print out the current for now
+		System.out.println("Left Drive Current:" + leftDriveCurrent + "  Right Drive Current:" + rightDriveCurrent);
 	}
 	
 	// Function to publish all values to SmartDashboard

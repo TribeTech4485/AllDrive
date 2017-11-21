@@ -16,6 +16,8 @@ public class PlaceGearForward extends AutoProgram {
 		auto_timeLimit = 3950;
 	}
 	
+	boolean zeroYawBeforeRun = false;
+	
 	@Override
 	protected void run() {
 		//if (auto_duration < 3000) {
@@ -25,6 +27,7 @@ public class PlaceGearForward extends AutoProgram {
 		//} else {
 		//	subsystems.driveSystem.drive4Motors(0.3, 0.3);
 		//}
+		if (!zeroYawBeforeRun) zeroYawBeforeRun = Robot.sensorController.zeroAHRSYaw();
 		double startTime = System.currentTimeMillis();
 		while((System.currentTimeMillis() - startTime) < 3000) {
 			//subsystems.driveSystem.centerToAngleNoPID(0);
