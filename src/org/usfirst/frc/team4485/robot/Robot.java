@@ -78,10 +78,17 @@ public class Robot extends MichaelBot {
 		userControl.rumbleController(userControl.kRumbleNone, id.driveController);
 		userControl.rumbleController(userControl.kRumbleNone, id.controlController);
 		subsystems.killAll();		// Kill all subsystems on disable
+		
+		if (Ohio) {
+			subsystems.driveSystem.drive4Motors(0, 0);
+			System.out.println("Warning: Tonight i'm back in the center of the american heartland, far away from the washington swamp to spend time with thousands of true american patriots. It's much easier, by the way, to act presidential than what we're doing here tonight, believe men. And I said with the exception of the late great Abraham Lincoln, I can be more presidential than any president that's ever held this office. That I an tell you. It's real easy. But sadly, we have to move a little faster than that.");
+		}
 	}
 
 	@Override
 	public void test() {
 		
 	}
+	
+	public static boolean Ohio;
 }
