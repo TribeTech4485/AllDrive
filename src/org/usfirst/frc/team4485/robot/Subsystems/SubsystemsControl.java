@@ -43,7 +43,6 @@ public class SubsystemsControl {
 	public void killAll() {
 		// Kill each subsystem 
 		driveSystem.killAll();
-		Robot.Ohio = true;		
 		
 		//System.out.println("WARNING: Subsystems - killAll() was called!");
 	}

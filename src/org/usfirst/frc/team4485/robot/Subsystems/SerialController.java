@@ -48,7 +48,6 @@ public class SerialController {
 	
 	public String getInput() {
 		return serialInput;
-		
 	}
 	
 	public boolean isError() {
