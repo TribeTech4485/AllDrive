@@ -11,31 +11,16 @@ public class RobotIndexing {
 	
 	//// Motor indexes
 	// Drive motors
-	public int rightDriveMotorMaster = 7;
-	public int rightDriveMotorSlave = 6;
-	public int leftDriveMotorMaster = 5;	// Changed from 9
-	public int leftDriveMotorSlave = 8;
+	public int rightDriveMotorMaster = 1;//7;
+	public int rightDriveMotorSlave = 2;//6;
+	public int leftDriveMotorMaster = 3;//5;	// Changed from 9
+	public int leftDriveMotorSlave = 4;//8;
 	
 	// PDP power channels for the motors
 	public int rightDriveMotorMasterPDP = 14;
 	public int rightDriveMotorSlavePDP = 13;
 	public int leftDriveMotorMasterPDP = 12;
 	public int leftDriveMotorSlavePDP = 15;
-	
-	// Shooter motors	-	DON'T USE
-	public int shooterMotorMaster = 9;
-	public int shooterMotorSlave = 4;
-	
-	// Collector motors
-	public int collectorMotor = 3;
-	
-	// Lift motors
-	public int liftMotorMaster = 1;
-	public int liftMotorSlave = 2;
-	
-	// Hopper motors
-	public int hopperMotor = 10;
-	////
 	
 	//// Controller indexes
 	public int driveController = 0;
@@ -67,23 +52,9 @@ public class RobotIndexing {
 	public int cameraDistanceSensor = 0;
 	////
 	
-	//// Pnewmatic indexes
-	// Box Guide Solenoids & Modules
-	public int boxSolenoidsModule = 0;//0;
-	public int boxGuideSolenoid1_out = 1;
-	public int boxGuideSolenoid1_in = 0;
-	public int boxGuideSolenoid2_out = 4;
-	public int boxGuideSolenoid2_in = 5;
-	
-	// Box Pusher Solenoids & Modules
-	public int pusherSolenoidsModule = 0;
-	public int pusherSolenoid_out = 3;
-	public int pusherSolenoid_in = 2;
-	public int doorSolenoid_out = 7;
-	public int doorSolenoid_in = 6;
-	
+	//// Pnewmatic indexes	
 	// Shifting Gear Box Solenoids & Modules
-	public int shifterSolenoidsModule = 1;//1;
+	public int shifterSolenoidsModule = 0;
 	public int shifterSolenoid_in = 0;
 	public int shifterSolenoid_out = 1;
 	////
