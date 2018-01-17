@@ -33,23 +33,39 @@ public abstract class Subsystem {
 		time_start = -1;
 		time_duration = -1;
 		
-		//setID(id.getNextSystemID());		
-		initSystem();
+		//setID(id.getNextSystemID());
+		try {
+			initSystem();
+		} catch (Exception ex) {
+			createError(false, ex.getMessage());
+		}
 	}
 	public Subsystem(int setsystemid) {
 		setID(setsystemid);
 		time_start = -1;
 		time_duration = -1;
-		initSystem();
+		try {
+			initSystem();
+		} catch (Exception ex) {
+			createError(false, ex.getMessage());
+		}
 	}
 	
 	public void update() {
 		if (!checkTime() || !enabled) return;
 		checkSubsystem();
-		updateSystem();
+		try {
+			updateSystem();
+		} catch (Exception ex) {
+			createError(false, ex.getMessage());
+		}
 	}
 	public void killAll() {
-		killSystem();
+		try {
+			killSystem();
+		} catch (Exception ex) {
+			createError(false, ex.getMessage());
+		}
 	}
 	public void setID(int setsystemid) {
 		idSet = true;
@@ -93,8 +109,8 @@ public abstract class Subsystem {
 		System.out.println("(System ID:" + systemid + "):" + message);
 	}
 	
-	protected abstract void initSystem();
-	protected abstract void updateSystem();
-	protected abstract void killSystem();
-	protected abstract void errorHandler();
+	protected abstract void initSystem() throws Exception;
+	protected abstract void updateSystem() throws Exception;
+	protected abstract void killSystem() throws Exception;
+	protected abstract void errorHandler() throws Exception;
 }
