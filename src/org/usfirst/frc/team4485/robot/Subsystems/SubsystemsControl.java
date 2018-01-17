@@ -1,12 +1,10 @@
 package org.usfirst.frc.team4485.robot.Subsystems;
 
 import org.usfirst.frc.team4485.robot.Robot;
-import org.usfirst.frc.team4485.robot.Subsystems.Systems.BoxPneumaticSystem;
-import org.usfirst.frc.team4485.robot.Subsystems.Systems.DriveSystem;
-import org.usfirst.frc.team4485.robot.Subsystems.Systems.LiftSystem;
 //import org.usfirst.frc.team4485.robot.Subsystems.Systems.PowerHandlerSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.SerialSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.ShifterPneumaticSystem;
+import org.usfirst.frc.team4485.robot.Subsystems.Systems.DriveSystem;
 //import org.usfirst.frc.team4485.robot.Subsystems.Systems.UniformDrive;
 
 
@@ -21,9 +19,7 @@ public class SubsystemsControl {
 	// Subsystems
 	//public UniformDrive driveSystem;
 	public DriveSystem driveSystem;
-	public BoxPneumaticSystem boxPneumaticSystem;
 	public ShifterPneumaticSystem shifterPneumaticSystem;
-	public LiftSystem liftSystem;
 	public SerialSystem serialSystem;
 	//public PowerHandlerSystem powerHandlerSystem;
 	
@@ -56,14 +52,10 @@ public class SubsystemsControl {
 		driveSystem.setID(0);	// Set the ID so the system doesn't complain and fill up the log.
 								// I'll probably remove that or implement it in a better way
 		
-		boxPneumaticSystem = new BoxPneumaticSystem();
-		boxPneumaticSystem.setID(1);
+		
 		
 		shifterPneumaticSystem = new ShifterPneumaticSystem();
 		shifterPneumaticSystem.setID(2);
-		
-		liftSystem = new LiftSystem();
-		liftSystem.setID(3);
 		
 		serialSystem = new SerialSystem();
 		serialSystem.setID(4);
