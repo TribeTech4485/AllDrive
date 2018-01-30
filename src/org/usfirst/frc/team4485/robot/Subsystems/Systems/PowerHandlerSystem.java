@@ -12,7 +12,7 @@ public class PowerHandlerSystem extends Subsystem {
 	private PowerDistributionPanel pdp;
 	
 	// If there is major system error
-	private boolean error = true;
+	private boolean error = false;
 	
 	// The information we get from the board
 	private double totalCurrent = 0.0, totalVoltage = 0.0, temperature = 0.0;
