@@ -47,6 +47,7 @@ public class TestSerial extends AutoProgram {
 		SmartDashboard.putString("Last Good Angle Parse", lastGoodAngleParse);
 		SmartDashboard.putString("Parsed Distance Serial", parsedDistanceInput);
 		SmartDashboard.putString("Last Good Distance Parse", lastGoodDistanceParse);
+		SmartDashboard.putNumber("Double Rcvd Num", subsystems.serialSystem.getNumRcvd());
 	}
 	
 }
