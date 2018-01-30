@@ -109,8 +109,8 @@ public abstract class Subsystem {
 		System.out.println("(System ID:" + systemid + "):" + message);
 	}
 	
-	protected abstract void initSystem() throws Exception;
-	protected abstract void updateSystem() throws Exception;
-	protected abstract void killSystem() throws Exception;
-	protected abstract void errorHandler() throws Exception;
+	protected abstract void initSystem();// throws Exception;
+	protected abstract void updateSystem();// throws Exception;
+	protected abstract void killSystem();// throws Exception;
+	protected abstract void errorHandler();// throws Exception;
 }
