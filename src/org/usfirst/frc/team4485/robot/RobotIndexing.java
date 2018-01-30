@@ -5,22 +5,22 @@ public class RobotIndexing {
 		initPIDVals();
 	}
 	
-	//// Gyro Properties
+	//// GYRO Properties
 	public boolean flipGyro = false;
 	////
 	
 	//// Motor indexes
 	// Drive motors
-	public int rightDriveMotorMaster = 1;//7;
-	public int rightDriveMotorSlave = 2;//6;
-	public int leftDriveMotorMaster = 3;//5;	// Changed from 9
-	public int leftDriveMotorSlave = 4;//8;
+	public int rightDriveMotorMaster = 1;
+	public int rightDriveMotorSlave = 2;
+	public int leftDriveMotorMaster = 3;
+	public int leftDriveMotorSlave = 4;
 	
 	// PDP power channels for the motors
-	public int rightDriveMotorMasterPDP = 14;
-	public int rightDriveMotorSlavePDP = 13;
-	public int leftDriveMotorMasterPDP = 12;
-	public int leftDriveMotorSlavePDP = 15;
+	public int rightDriveMotorMasterPDP = 0;
+	public int rightDriveMotorSlavePDP = 1;
+	public int leftDriveMotorMasterPDP = 2;
+	public int leftDriveMotorSlavePDP = 3;
 	
 	//// Controller indexes
 	public int driveController = 0;
@@ -48,7 +48,6 @@ public class RobotIndexing {
 	
 	//// Sensor Indexes
 	// Analog inputs
-	public int gearOpticalSensor = 3;
 	public int cameraDistanceSensor = 0;
 	////
 	
