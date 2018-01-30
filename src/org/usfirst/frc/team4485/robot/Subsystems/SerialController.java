@@ -13,6 +13,9 @@ public class SerialController {
 	private boolean enabled = true;
 	private boolean error = false;
 	
+	private boolean rcvdData = false;
+	private double numRcvd = 0;
+	
 	public SerialController() {
 		init();
 	}
@@ -32,9 +35,16 @@ public class SerialController {
 	public void update() {
 		//if (error || !enabled) return;
 		if (!error && enabled) {
-			if (serial.getBytesReceived() != 0) {
-				serialInput += serial.readString();
-			}
+			numRcvd = serial.getBytesReceived();
+			if (numRcvd > 2) {
+				try {
+					rcvdData = true;
+					serialInput += serial.readString();
+				} catch (Exception ex) {
+					error = true;
+					System.out.println("Warning: (SerialController) " + ex.getMessage());
+				}
+			} else rcvdData = false;
 		}
 	}
 	
@@ -52,6 +62,14 @@ public class SerialController {
 	
 	public boolean isError() {
 		return error;
+	}
+	
+	public boolean gotData() {
+		return rcvdData;
+	}
+	
+	public double getNumRcvd() {
+		return numRcvd;
 	}
 	
 }

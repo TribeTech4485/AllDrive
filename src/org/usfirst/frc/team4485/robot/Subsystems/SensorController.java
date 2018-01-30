@@ -6,7 +6,9 @@ import org.usfirst.frc.team4485.robot.Subsystems.Systems.PowerHandlerSystem;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 
 
 /*
@@ -32,6 +34,9 @@ public class SensorController {
 	
 	private double leftDriveRPM = 0.0, rightDriveRPM = 0.0;
 	
+	// Current limits for systems
+	private double driveSystemVoltageLowLimit = 10.0, driveSystemVoltageHighLimit = 11.0, reductionLimit = 0.0;
+	
 	public SensorController() {
 		id = new RobotIndexing();
 		init();
@@ -46,7 +51,8 @@ public class SensorController {
 		
 		// Initialize the AHRS
 		try {
-			ahrs = new AHRS(SPI.Port.kMXP);
+			//ahrs = new AHRS(SPI.Port.kMXP);
+			ahrs = new AHRS(SerialPort.Port.kUSB2);
 		} catch (Exception ex) {
 			ahrsError = true;
 			System.out.println("Warning: AHRS Error: " + ex.getMessage());
@@ -87,4 +93,14 @@ public class SensorController {
 		return false;
 	}
 	public double getAHRSYaw() { if (!isAHRSError()) return ahrs.getYaw() * ahrsYawMultiplier; else return 0;}
+	
+	// Power limit control functions
+	public double getDrivePowerLimiter() {
+		if (powerHandlerSystem.getPDPTotalVoltage() > driveSystemVoltageHighLimit) return 0.0;
+		
+		System.out.println(powerHandlerSystem.getPDPTotalVoltage());
+		double reduction = driveSystemVoltageLowLimit / powerHandlerSystem.getPDPTotalVoltage();
+		if (reduction < reductionLimit) reduction = reductionLimit;
+		return reduction;
+	}
 }
