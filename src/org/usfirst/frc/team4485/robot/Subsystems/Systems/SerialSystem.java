@@ -12,8 +12,8 @@ public class SerialSystem extends Subsystem {
 	
 	// Text parsing
 	String input = "";
-	String parsedAngleInput = "";
-	String parsedDistanceInput = "";
+	String parsedAngleInput = "0";
+	String parsedDistanceInput = "0";
 	
 	@Override
 	protected void initSystem() {
@@ -22,18 +22,21 @@ public class SerialSystem extends Subsystem {
 
 	@Override
 	protected void updateSystem() {
-		// TODO Auto-generated method stub
-		serialController.update();
-		input = serialController.getInput();
 		
 		if (serialController.isError()) {
 			createError(false, "SerialController has error.");
 		}
+		// TODO Auto-generated method stub
+		serialController.update();
+		input = serialController.getInput();
 		
-		parsedAngleInput = parseInput('a', 'e');
-		parsedDistanceInput = parseInput('d', 'i');
+		//System.out.println("NumRcvd: " + serialController.getNumRcvd());
+		
+		if (serialController.getNumRcvd() >= 3) {
+			parsedAngleInput = parseInput('a', 'e');
+			parsedDistanceInput = parseInput('d', 'i');
+		}
 		if (parsedAngleInput != "" || parsedDistanceInput != "") serialController.clearSerialInput();
-		
 	}
 
 	@Override
@@ -59,7 +62,7 @@ public class SerialSystem extends Subsystem {
 			if (input.charAt(i) == beginFlag) beginChar = i;
 			else if (input.charAt(i) == endFlag) endChar = i;
 		}
-		System.out.println("Begin: " + beginChar + " End: " + endChar);
+		//System.out.println("Begin: " + beginChar + " End: " + endChar);
 		if (beginChar < 0 || endChar < 0) return "";
 		for (int i = beginChar + 1; i < endChar; i++) {
 			parsed += input.charAt(i);
@@ -77,5 +80,8 @@ public class SerialSystem extends Subsystem {
 	}
 	public String getParsedDistanceInput() {
 		return parsedDistanceInput;
+	}
+	public double getNumRcvd() {
+		return serialController.getNumRcvd();
 	}
 }
