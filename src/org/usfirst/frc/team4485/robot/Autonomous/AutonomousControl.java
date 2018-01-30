@@ -14,14 +14,24 @@ public class AutonomousControl {
 	
 	AutoProgram example;
 	
-	
+	AutoProgram cubeFollow;
+	AutoProgram testSerial;
+	AutoProgram gyroTest;
 	AutoProgram zeroYaw;
 	
 	public AutonomousControl(SubsystemsControl subsystems) {
 				
+		cubeFollow = new CubeFollow(subsystems);
+		testSerial = new TestSerial(subsystems);
+		gyroTest = new GyroTest(subsystems);
+		zeroYaw = new ZeroYaw(subsystems);
+		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
 		
+		autoChooser.addObject("Gyro Test", gyroTest);
+		autoChooser.addObject("Cube Follow", cubeFollow);
+		autoChooser.addObject("Test Serial", testSerial);
 		autoChooser.addObject("Zero Yaw", zeroYaw);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
