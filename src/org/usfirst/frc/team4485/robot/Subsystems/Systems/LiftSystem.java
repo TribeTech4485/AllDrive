@@ -6,7 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class LiftSystem extends Subsystem{
 
-	private double liftSpeed;
+	private double liftSpeed = 0;
 	private boolean reverseInput = false;
 		
 	private WPI_TalonSRX liftMotor;
@@ -19,7 +19,6 @@ public class LiftSystem extends Subsystem{
 	@Override
 	protected void updateSystem() {
 		updateMotorControl();
-		
 	}
 
 	@Override
@@ -38,6 +37,5 @@ public class LiftSystem extends Subsystem{
 		}
 		
 		liftMotor.set(liftSpeed);
-		
 	}
 }

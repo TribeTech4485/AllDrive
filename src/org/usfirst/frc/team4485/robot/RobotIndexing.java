@@ -25,8 +25,8 @@ public class RobotIndexing {
 	public int liftMotorPDP = 4;
 	
 	//// Controller indexes
-	public int driveController = 0;
-	public int controlController = 1;
+	public int driveController = 1;
+	public int controlController = 0;
 	
 	// Button indexes
 	public int c_shootButton = 0;	// 0 is unassigned
