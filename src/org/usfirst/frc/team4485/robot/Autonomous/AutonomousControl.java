@@ -18,6 +18,7 @@ public class AutonomousControl {
 	AutoProgram testSerial;
 	AutoProgram gyroTest;
 	AutoProgram zeroYaw;
+	AutoProgram i2CTest;
 	
 	public AutonomousControl(SubsystemsControl subsystems) {
 				
@@ -25,6 +26,7 @@ public class AutonomousControl {
 		testSerial = new TestSerial(subsystems);
 		gyroTest = new GyroTest(subsystems);
 		zeroYaw = new ZeroYaw(subsystems);
+		i2CTest = new I2CTestAuto(subsystems);
 		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
@@ -33,6 +35,7 @@ public class AutonomousControl {
 		autoChooser.addObject("Cube Follow", cubeFollow);
 		autoChooser.addObject("Test Serial", testSerial);
 		autoChooser.addObject("Zero Yaw", zeroYaw);
+		autoChooser.addObject("I2C Test", i2CTest);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);

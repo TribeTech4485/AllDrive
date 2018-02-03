@@ -24,7 +24,7 @@ public class CubeFollow extends AutoProgram {
 	private double angleOffset = 0.0;
 	
 	// Driving Speeds
-	private double baseSpeed = 0.3;
+	private double baseSpeed = 0.15;
 	private double percentagePerDegree = baseSpeed / 90;
 	
 	@Override

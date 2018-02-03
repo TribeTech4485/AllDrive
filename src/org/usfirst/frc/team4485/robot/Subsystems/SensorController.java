@@ -6,8 +6,6 @@ import org.usfirst.frc.team4485.robot.Subsystems.Systems.PowerHandlerSystem;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 
 
@@ -52,7 +50,7 @@ public class SensorController {
 		// Initialize the AHRS
 		try {
 			//ahrs = new AHRS(SPI.Port.kMXP);
-			ahrs = new AHRS(SerialPort.Port.kUSB2);
+			ahrs = new AHRS(SerialPort.Port.kMXP);
 		} catch (Exception ex) {
 			ahrsError = true;
 			System.out.println("Warning: AHRS Error: " + ex.getMessage());
