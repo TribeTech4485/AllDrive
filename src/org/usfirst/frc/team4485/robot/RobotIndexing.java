@@ -15,12 +15,14 @@ public class RobotIndexing {
 	public int rightDriveMotorSlave = 2;
 	public int leftDriveMotorMaster = 3;
 	public int leftDriveMotorSlave = 4;
+	public int liftMotor = 5;
 	
 	// PDP power channels for the motors
 	public int rightDriveMotorMasterPDP = 0;
 	public int rightDriveMotorSlavePDP = 1;
 	public int leftDriveMotorMasterPDP = 2;
 	public int leftDriveMotorSlavePDP = 3;
+	public int liftMotorPDP = 4;
 	
 	//// Controller indexes
 	public int driveController = 0;

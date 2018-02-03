@@ -19,7 +19,6 @@ public class AutonomousControl {
 	AutoProgram gyroTest;
 	AutoProgram zeroYaw;
 	AutoProgram i2CTest;
-	AutoProgram driveForTimeGorilla;
 	
 	public AutonomousControl(SubsystemsControl subsystems) {
 				
@@ -28,7 +27,6 @@ public class AutonomousControl {
 		gyroTest = new GyroTest(subsystems);
 		zeroYaw = new ZeroYaw(subsystems);
 		i2CTest = new I2CTestAuto(subsystems);
-		driveForTimeGorilla = new DriveForTimeGorilla(subsystems);
 		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
@@ -38,7 +36,6 @@ public class AutonomousControl {
 		autoChooser.addObject("Test Serial", testSerial);
 		autoChooser.addObject("Zero Yaw", zeroYaw);
 		autoChooser.addObject("I2C Test", i2CTest);
-		autoChooser.addObject("Drive for Time", driveForTimeGorilla);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);
