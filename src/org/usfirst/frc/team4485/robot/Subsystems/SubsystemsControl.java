@@ -5,6 +5,7 @@ import org.usfirst.frc.team4485.robot.Robot;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.SerialSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.ShifterPneumaticSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.DriveSystem;
+import org.usfirst.frc.team4485.robot.Subsystems.Systems.NetworkDeviceSystem;
 //import org.usfirst.frc.team4485.robot.Subsystems.Systems.UniformDrive;
 
 
@@ -21,10 +22,12 @@ public class SubsystemsControl {
 	public DriveSystem driveSystem;
 	public ShifterPneumaticSystem shifterPneumaticSystem;
 	public SerialSystem serialSystem;
+	public NetworkDeviceSystem cameraSystem;
 	//public PowerHandlerSystem powerHandlerSystem;
 	
 	// This System is weird. To use this one it needs to be declared only once so we will just make this a reference to a static SensorController in Robot.java
 	public SensorController sensorController;
+	
 	
 	public SubsystemsControl() {
 		createAll();
@@ -59,6 +62,9 @@ public class SubsystemsControl {
 		
 		serialSystem = new SerialSystem();
 		serialSystem.setID(4);
+		
+		cameraSystem = new NetworkDeviceSystem();
+		cameraSystem.setID(5800);
 		
 		//powerHandlerSystem = new PowerHandlerSystem();
 		//powerHandlerSystem.setID(5);

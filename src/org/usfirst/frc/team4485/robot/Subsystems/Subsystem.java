@@ -4,7 +4,7 @@ import org.usfirst.frc.team4485.robot.RobotIndexing;
 
 // TODO: Put a whole lot of comments in here
 
-public abstract class Subsystem {
+public abstract class Subsystem extends Thread {
 	protected RobotIndexing id;
 	
 	protected boolean enabled = true;

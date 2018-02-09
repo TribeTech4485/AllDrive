@@ -33,10 +33,7 @@ public class LiftSystem extends Subsystem{
 	}
 	
 	private void updateMotorControl() {
-		if (reverseInput) {
-			liftSpeed *= -1;
-		}
-		
+		if (reverseInput) liftSpeed *= -1;		
 		liftMotor.set(liftSpeed);
 		
 	}

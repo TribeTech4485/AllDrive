@@ -6,7 +6,6 @@ import org.usfirst.frc.team4485.robot.Subsystems.Systems.PowerHandlerSystem;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.SerialPort;
 
 
 /*
@@ -18,6 +17,9 @@ import edu.wpi.first.wpilibj.SerialPort;
 public class SensorController {
 	
 	RobotIndexing id;
+	
+	// Network Controller
+	public NetworkController networkController;
 	
 	// Create your sensor objects here
 	public AnalogInput cameraDistanceSensor;
@@ -31,6 +33,7 @@ public class SensorController {
 	public double ahrsYawMultiplier = -1;	// Invert the YAW when the GYRO is upside down
 	
 	private double leftDriveRPM = 0.0, rightDriveRPM = 0.0;
+	private double networkNumRcvd = 0;
 	
 	// Current limits for systems
 	private double driveSystemVoltageLowLimit = 10.0, driveSystemVoltageHighLimit = 11.0, reductionLimit = 0.0;
@@ -48,6 +51,7 @@ public class SensorController {
 		powerHandlerSystem.setID(100);
 		
 		// Initialize the AHRS
+		/*
 		try {
 			//ahrs = new AHRS(SPI.Port.kMXP);
 			ahrs = new AHRS(SerialPort.Port.kMXP);
@@ -55,6 +59,7 @@ public class SensorController {
 			ahrsError = true;
 			System.out.println("Warning: AHRS Error: " + ex.getMessage());
 		}
+		*/
 	}
 	private boolean isAHRSYawZeroed() {
 		if (Math.abs(ahrs.getYaw()) < 1) return true;
@@ -100,5 +105,12 @@ public class SensorController {
 		double reduction = driveSystemVoltageLowLimit / powerHandlerSystem.getPDPTotalVoltage();
 		if (reduction < reductionLimit) reduction = reductionLimit;
 		return reduction;
+	}
+	
+	public void setNetworkNumRcvd(double num) {
+		networkNumRcvd = num;
+	}
+	public double getNetworkNumRcvd() {
+		return networkNumRcvd;
 	}
 }
