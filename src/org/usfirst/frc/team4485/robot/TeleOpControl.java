@@ -41,8 +41,4 @@ public class TeleOpControl {
 		
 
 	}
-	
-	private void testPrint() {
-		//System.out.println("TeleOpControl Test Print");
-	}
 }

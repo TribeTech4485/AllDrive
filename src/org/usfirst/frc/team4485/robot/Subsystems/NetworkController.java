@@ -9,7 +9,7 @@ import java.net.InetAddress;
 public class NetworkController implements Runnable {
 
 	private DatagramSocket socket;
-	private byte[] buffer = new byte[256];
+	private byte[] buffer = new byte[256];	// 256 bytes	TODO: experiment with bigger buffers
 	private boolean running = true;
 	
 	private boolean enabled = true;
@@ -17,6 +17,7 @@ public class NetworkController implements Runnable {
 
 	private int port = 5800;
 	
+	private String dataSenderAddress = "";
 	private String dataReceived = "";
 	private int numRcvd = 0;
 	
@@ -56,6 +57,8 @@ public class NetworkController implements Runnable {
 			InetAddress address = packet.getAddress();
 			int port = packet.getPort();
 			
+			dataSenderAddress = address.toString();
+			
 			packet = new DatagramPacket(buffer, buffer.length, address, port);
 			dataReceived = new String(packet.getData(), 0, packet.getLength());
 			
@@ -78,10 +81,16 @@ public class NetworkController implements Runnable {
 		socket.close();
 	}
 	
+	public void stop() {
+		running = false;
+	}
+	
 	public void setPort(int _port) {
 		port = _port;
 	}
-	
+	public String getSenderAddress() {
+		return dataSenderAddress;
+	}
 	public String getRcvd() { 
 		return dataReceived; 		
 	}
