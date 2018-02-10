@@ -6,6 +6,7 @@ import org.usfirst.frc.team4485.robot.Subsystems.Systems.PowerHandlerSystem;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 
 /*
@@ -22,9 +23,14 @@ public class SensorController {
 	public NetworkController networkController;
 	
 	// Create your sensor objects here
-	public AnalogInput cameraDistanceSensor;
 	public AHRS ahrs;
 	public PowerHandlerSystem powerHandlerSystem;
+	
+	private DigitalInput armLimitSwitchSensor_left, armLimitSwitchSensor_right;
+	private AnalogInput armOpticalDistanceSensor, armUltrasonicDistanceSensor;
+	private DigitalInput clawLimitSwitchSensor_left, clawLimitSwitchSensor_right;
+	private AnalogInput clawOpticalDistanceSensor_left, clawOpticalDistanceSensor_right;
+	
 	
 	// Create the value objects here. You will update these with update()
 	//private double gearOpticalSensorVal;
@@ -45,10 +51,18 @@ public class SensorController {
 	
 	private void init() {
 		// Here is where you initialize sensors
-		cameraDistanceSensor = new AnalogInput(id.cameraDistanceSensor);
-		
 		powerHandlerSystem = new PowerHandlerSystem();
 		powerHandlerSystem.setID(100);
+		
+		armLimitSwitchSensor_left = new DigitalInput(id.armLimitSwitchSensor_left);
+		armLimitSwitchSensor_right = new DigitalInput(id.armLimitSwitchSensor_right);
+		armOpticalDistanceSensor = new AnalogInput(id.armOpticalDistanceSensor);
+		armUltrasonicDistanceSensor = new AnalogInput(id.armUltrasonicDistanceSensor);
+		
+		clawLimitSwitchSensor_left = new DigitalInput(id.clawLimitSwitchSensor_left);
+		clawLimitSwitchSensor_right = new DigitalInput(id.clawLimitSwitchSensor_right);
+		clawOpticalDistanceSensor_left = new AnalogInput(id.clawOpticalDistanceSensor_left);
+		clawOpticalDistanceSensor_right = new AnalogInput(id.clawOpticalDistanceSensor_right);
 		
 		// Initialize the AHRS
 		/*
@@ -112,5 +126,14 @@ public class SensorController {
 	}
 	public double getNetworkNumRcvd() {
 		return networkNumRcvd;
+	}
+	
+	public double getAnalogInput(int sensorID) {
+		AnalogInput analogInput = new AnalogInput(sensorID);
+		return analogInput.getValue();
+	}
+	public boolean getDigitalInput(int sensorID) {
+		DigitalInput digitalInput = new DigitalInput(sensorID);
+		return digitalInput.get();
 	}
 }

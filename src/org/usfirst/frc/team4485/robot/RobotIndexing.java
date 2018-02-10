@@ -12,9 +12,12 @@ public class RobotIndexing {
 	//// Motor indexes
 	// Drive motors
 	public int rightDriveMotorMaster = 1;
-	public int rightDriveMotorSlave = 2;
-	public int leftDriveMotorMaster = 3;
-	public int leftDriveMotorSlave = 4;
+	public int rightDriveMotorSlave1 = 2;
+	public int rightDriveMotorSlave2 = 3;
+	public int leftDriveMotorMaster = 4;
+	public int leftDriveMotorSlave1 = 5;
+	public int leftDriveMotorSlave2 = 6;
+	
 	// Lift Motors
 	public int liftMotor = 5;
 	// Arm Motors
@@ -57,10 +60,18 @@ public class RobotIndexing {
 	
 	//// Sensor Indexes
 	// Analog inputs
-	public int cameraDistanceSensor = 0;
+	public int clawOpticalDistanceSensor_left = 0;
+	public int clawOpticalDistanceSensor_right = 1;
+	public int armOpticalDistanceSensor = 2;
+	public int armUltrasonicDistanceSensor = 3;
+	// Digital inputs
+	public int clawLimitSwitchSensor_left = 0;
+	public int clawLimitSwitchSensor_right = 1;
+	public int armLimitSwitchSensor_left = 2;
+	public int armLimitSwitchSensor_right = 3;
 	////
 	
-	//// Pnewmatic indexes	
+	//// Pneumatic indexes	
 	// Shifting Gear Box Solenoids & Modules
 	public int shifterSolenoidsModule = 0;
 	public int shifterSolenoid_in = 0;

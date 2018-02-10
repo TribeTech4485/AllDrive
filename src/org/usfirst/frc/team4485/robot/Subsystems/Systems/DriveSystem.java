@@ -17,8 +17,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class DriveSystem extends Subsystem {
 
 	//// Motors
-	private WPI_TalonSRX leftMotorMaster, leftMotorSlave;
-	private WPI_TalonSRX rightMotorMaster, rightMotorSlave;
+	private WPI_TalonSRX leftMotorMaster, leftMotorSlave1, leftMotorSlave2;
+	private WPI_TalonSRX rightMotorMaster, rightMotorSlave1, rightMotorSlave2;
 	
 	//// Control Variables
 	// Sensor Control
@@ -44,9 +44,11 @@ public class DriveSystem extends Subsystem {
 	@Override
 	protected void initSystem() {
 		leftMotorMaster = new WPI_TalonSRX(id.leftDriveMotorMaster);
-		leftMotorSlave = new WPI_TalonSRX(id.leftDriveMotorSlave);
+		leftMotorSlave1 = new WPI_TalonSRX(id.leftDriveMotorSlave1);
+		leftMotorSlave2 = new WPI_TalonSRX(id.leftDriveMotorSlave2);
 		rightMotorMaster = new WPI_TalonSRX(id.rightDriveMotorMaster);
-		rightMotorSlave = new WPI_TalonSRX(id.rightDriveMotorSlave);
+		rightMotorSlave1 = new WPI_TalonSRX(id.rightDriveMotorSlave1);
+		rightMotorSlave2 = new WPI_TalonSRX(id.rightDriveMotorSlave2);
 	}
 
 	@Override
@@ -116,21 +118,27 @@ public class DriveSystem extends Subsystem {
 		
 		// Set the motor drive		
 		leftMotorMaster.set(leftDriveSet);
-		leftMotorSlave.set(leftDriveSet);
+		leftMotorSlave1.set(leftDriveSet);
+		leftMotorSlave2.set(leftDriveSet);
 		rightMotorMaster.set(rightDriveSet);
-		rightMotorSlave.set(rightDriveSet);
+		rightMotorSlave1.set(rightDriveSet);
+		rightMotorSlave2.set(rightDriveSet);
 		
 		// Set the Neutral Mode of the drive motors
 		if (brake) {
 			leftMotorMaster.setNeutralMode(NeutralMode.Brake);
-			leftMotorSlave.setNeutralMode(NeutralMode.Brake);
+			leftMotorSlave1.setNeutralMode(NeutralMode.Brake);
+			leftMotorSlave2.setNeutralMode(NeutralMode.Brake);
 			rightMotorMaster.setNeutralMode(NeutralMode.Brake);
-			rightMotorSlave.setNeutralMode(NeutralMode.Brake);
+			rightMotorSlave1.setNeutralMode(NeutralMode.Brake);
+			rightMotorSlave2.setNeutralMode(NeutralMode.Brake);
 		} else {
 			leftMotorMaster.setNeutralMode(NeutralMode.Coast);
-			leftMotorSlave.setNeutralMode(NeutralMode.Coast);
+			leftMotorSlave1.setNeutralMode(NeutralMode.Coast);
+			leftMotorSlave2.setNeutralMode(NeutralMode.Coast);
 			rightMotorMaster.setNeutralMode(NeutralMode.Coast);
-			rightMotorSlave.setNeutralMode(NeutralMode.Coast);
+			rightMotorSlave1.setNeutralMode(NeutralMode.Coast);
+			rightMotorSlave2.setNeutralMode(NeutralMode.Coast);
 		}
 	}
 	private void updatePowerLimits() {
