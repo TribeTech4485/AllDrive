@@ -15,7 +15,14 @@ public class RobotIndexing {
 	public int rightDriveMotorSlave = 2;
 	public int leftDriveMotorMaster = 3;
 	public int leftDriveMotorSlave = 4;
+	// Lift Motors
 	public int liftMotor = 5;
+	// Arm Motors
+	public int armMotorLeft = 6;
+	public int armMotorRight = 7;
+	// Claw Motors
+	public int clawMotorLeft = 8;
+	public int clawMotorRight = 9;
 	
 	// PDP power channels for the motors
 	public int rightDriveMotorMasterPDP = 0;
@@ -58,6 +65,12 @@ public class RobotIndexing {
 	public int shifterSolenoidsModule = 0;
 	public int shifterSolenoid_in = 0;
 	public int shifterSolenoid_out = 1;
+	// Arm Solenoids and Modules
+	public int armSolenoidsModule = 0;
+	public int armSolenoidLeft_in = 2;
+	public int armSolenoidLeft_out = 3;
+	public int armSolenoidRight_in = 4;
+	public int armSolenoidRight_out = 5;
 	////
 	
 	// PID speed vals
