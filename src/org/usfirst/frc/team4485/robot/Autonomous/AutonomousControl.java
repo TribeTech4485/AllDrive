@@ -18,12 +18,14 @@ public class AutonomousControl {
 	AutoProgram testSerial;
 	AutoProgram gyroTest;
 	AutoProgram zeroYaw;
+	AutoProgram networkTest;
 	
 	public AutonomousControl(SubsystemsControl subsystems) {
 				
 		cubeFollow = new CubeFollow(subsystems);
 		gyroTest = new GyroTest(subsystems);
 		zeroYaw = new ZeroYaw(subsystems);
+		networkTest = new NetworkTest(subsystems);
 		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
@@ -32,6 +34,7 @@ public class AutonomousControl {
 		autoChooser.addObject("Cube Follow", cubeFollow);
 		autoChooser.addObject("Test Serial", testSerial);
 		autoChooser.addObject("Zero Yaw", zeroYaw);
+		autoChooser.addObject("NetworkTest", networkTest);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);
