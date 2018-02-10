@@ -18,7 +18,7 @@ public abstract class AutoProgram {
 	
 	public AutoProgram(SubsystemsControl _subsystems) {
 		subsystems = _subsystems;		
-		//auto_startTime = System.currentTimeMillis();
+		///auto_startTime = System.currentTimeMillis();
 		auto_startTime = -1;
 		auto_duration = 0;
 		instanced = true;
@@ -51,6 +51,11 @@ public abstract class AutoProgram {
 		if (!auto_complete) run();
 		else stop();
 		return updateDuration();
+	}
+	public void reset() {
+		auto_started = false;
+		auto_complete = false;
+		auto_startTime = -1;
 	}
 	public void stop() {
 		// Stop the robot from moving

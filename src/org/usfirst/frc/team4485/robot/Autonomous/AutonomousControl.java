@@ -19,6 +19,7 @@ public class AutonomousControl {
 	AutoProgram gyroTest;
 	AutoProgram zeroYaw;
 	AutoProgram networkTest;
+	AutoProgram driveForTimeGorilla;
 	
 	public AutonomousControl(SubsystemsControl subsystems) {
 				
@@ -26,6 +27,7 @@ public class AutonomousControl {
 		gyroTest = new GyroTest(subsystems);
 		zeroYaw = new ZeroYaw(subsystems);
 		networkTest = new NetworkTest(subsystems);
+		driveForTimeGorilla = new DriveForTimeGorilla(subsystems);
 		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
@@ -35,6 +37,7 @@ public class AutonomousControl {
 		autoChooser.addObject("Test Serial", testSerial);
 		autoChooser.addObject("Zero Yaw", zeroYaw);
 		autoChooser.addObject("NetworkTest", networkTest);
+		autoChooser.addObject("Auto Gorilla", driveForTimeGorilla);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);
@@ -49,6 +52,7 @@ public class AutonomousControl {
 	public void disableAuto() {
 		if (autoChooser.getSelected() == null) return;
 		autoChooser.getSelected().disable();
+		autoChooser.getSelected().reset();
 		System.out.println("Warning: Autonomous is disabled.");
 	}
 	

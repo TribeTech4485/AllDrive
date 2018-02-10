@@ -16,8 +16,11 @@ public class DriveForTimeGorilla extends AutoProgram{
 
 	@Override
 	protected void run() {
-		subsystems.driveSystem.drive4Motors(0.2, 0.2);
+		if(System.currentTimeMillis()-auto_startTime<1000) {
+			subsystems.driveSystem.drive4Motors(0.2, 0.2);
+		}else if(System.currentTimeMillis()-auto_startTime>1000) {
+			subsystems.driveSystem.drive4Motors(.4, .4);
+		}
 		subsystems.driveSystem.update();
 	}
-
 }
