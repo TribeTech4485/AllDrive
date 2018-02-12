@@ -24,13 +24,7 @@ public class SensorController {
 	
 	// Create your sensor objects here
 	public AHRS ahrs;
-	public PowerHandlerSystem powerHandlerSystem;
-	
-	private DigitalInput armLimitSwitchSensor_left, armLimitSwitchSensor_right;
-	private AnalogInput armOpticalDistanceSensor, armUltrasonicDistanceSensor;
-	private DigitalInput clawLimitSwitchSensor_left, clawLimitSwitchSensor_right;
-	private AnalogInput clawOpticalDistanceSensor_left, clawOpticalDistanceSensor_right;
-	
+	public PowerHandlerSystem powerHandlerSystem;	
 	
 	// Create the value objects here. You will update these with update()
 	//private double gearOpticalSensorVal;
@@ -53,16 +47,6 @@ public class SensorController {
 		// Here is where you initialize sensors
 		powerHandlerSystem = new PowerHandlerSystem();
 		powerHandlerSystem.setID(100);
-		
-		armLimitSwitchSensor_left = new DigitalInput(id.armLimitSwitchSensor_left);
-		armLimitSwitchSensor_right = new DigitalInput(id.armLimitSwitchSensor_right);
-		armOpticalDistanceSensor = new AnalogInput(id.armOpticalDistanceSensor);
-		armUltrasonicDistanceSensor = new AnalogInput(id.armUltrasonicDistanceSensor);
-		
-		clawLimitSwitchSensor_left = new DigitalInput(id.clawLimitSwitchSensor_left);
-		clawLimitSwitchSensor_right = new DigitalInput(id.clawLimitSwitchSensor_right);
-		clawOpticalDistanceSensor_left = new AnalogInput(id.clawOpticalDistanceSensor_left);
-		clawOpticalDistanceSensor_right = new AnalogInput(id.clawOpticalDistanceSensor_right);
 		
 		// Initialize the AHRS
 		/*
@@ -116,22 +100,29 @@ public class SensorController {
 		if (powerHandlerSystem.getPDPTotalVoltage() > driveSystemVoltageHighLimit) return 0.0;
 		
 		System.out.println(powerHandlerSystem.getPDPTotalVoltage());
-		double reduction = driveSystemVoltageLowLimit / powerHandlerSystem.getPDPTotalVoltage();
-		if (reduction < reductionLimit) reduction = reductionLimit;
-		return reduction;
+		if (powerHandlerSystem.getPDPTotalVoltage() < driveSystemVoltageHighLimit) {
+			double reduction = driveSystemVoltageLowLimit / powerHandlerSystem.getPDPTotalVoltage();
+			if (reduction < reductionLimit) reduction = reductionLimit;
+			return reduction;
+		}
+		return 1;	// Returns a multiplier, so return 1 to have no affect.
 	}
 	
+	@Deprecated
 	public void setNetworkNumRcvd(double num) {
 		networkNumRcvd = num;
 	}
+	@Deprecated
 	public double getNetworkNumRcvd() {
 		return networkNumRcvd;
 	}
 	
+	// Function to get the value from a given analog port
 	public double getAnalogInput(int sensorID) {
 		AnalogInput analogInput = new AnalogInput(sensorID);
 		return analogInput.getValue();
 	}
+	// Function to get the value from a given digital port
 	public boolean getDigitalInput(int sensorID) {
 		DigitalInput digitalInput = new DigitalInput(sensorID);
 		return digitalInput.get();

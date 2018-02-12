@@ -3,6 +3,7 @@ package org.usfirst.frc.team4485.robot.Subsystems.Systems;
 import org.usfirst.frc.team4485.robot.Robot;
 import org.usfirst.frc.team4485.robot.Subsystems.Subsystem;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -35,6 +36,7 @@ public class DriveSystem extends Subsystem {
 	
 	
 	//// Sensor Values
+	private boolean encodersInitialized = false;
 	//private double leftEncVelocity = 0.0, rightEncVelocity = 0.0;
 	
 	// Drive Control modifiers
@@ -53,6 +55,7 @@ public class DriveSystem extends Subsystem {
 
 	@Override
 	protected void updateSystem() {
+		updatePowerLimiter();
 		updateMotorControl();
 		if (enableSensorUpdate) updateSensors();
 	}
@@ -141,13 +144,22 @@ public class DriveSystem extends Subsystem {
 			rightMotorSlave2.setNeutralMode(NeutralMode.Coast);
 		}
 	}
-	private void updatePowerLimits() {
+	private void updatePowerLimiter() {
 		setPowerReductionLimiter(Robot.sensorController.getDrivePowerLimiter());
 		System.out.println("Drive Power Reduction: " + drivePowerReductionLimiter);
 	}
 	private void updateEncoderVals() {
 		try {
+			if (!encodersInitialized) {
+				leftMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);	// (FeedbackDevice, id?, timeout)
+				rightMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
+				encodersInitialized = true;
+			}
 			
+			// Get the encoder values from the masters
+			double leftRPM = leftMotorMaster.getSelectedSensorVelocity(0);
+			double rightRPM = rightMotorMaster.getSelectedSensorVelocity(0);
+			Robot.sensorController.setRPMs(leftRPM, rightRPM);
 		} catch (Exception ex) {
 			createError(false, ex.getMessage());
 		}

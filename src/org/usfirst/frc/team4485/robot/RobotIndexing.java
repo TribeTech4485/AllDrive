@@ -19,24 +19,30 @@ public class RobotIndexing {
 	public int leftDriveMotorSlave2 = 6;
 	
 	// Lift Motors
-	public int liftMotor = 5;
+	public int liftMotor = 6;
 	// Arm Motors
-	public int armMotorLeft = 6;
-	public int armMotorRight = 7;
+	public int armMotorLeft = 8;
+	public int armMotorRight = 9;
 	// Claw Motors
-	public int clawMotorLeft = 8;
-	public int clawMotorRight = 9;
+	public int clawMotorLeft = 10;
+	public int clawMotorRight = 11;
 	
 	// PDP power channels for the motors
 	public int rightDriveMotorMasterPDP = 0;
-	public int rightDriveMotorSlavePDP = 1;
-	public int leftDriveMotorMasterPDP = 2;
-	public int leftDriveMotorSlavePDP = 3;
-	public int liftMotorPDP = 4;
+	public int rightDriveMotorSlave1PDP = 1;
+	public int rightDriveMotorSlave2PDP = 2;
+	public int leftDriveMotorMasterPDP = 3;
+	public int leftDriveMotorSlave1PDP = 4;
+	public int leftDriveMotorSlave2PDP = 5;
+	public int liftMotorPDP = -1;			// -1 is unassigned
+	public int armMotorLeftPDP = -1;		// -1 is unassigned
+	public int armMotorRightPDP = -1;		// -1 is unassigned
+	public int clawMotorRightPDP = -1;		// -1 is unassigned
+	public int clawMotorLeftPDP = -1;		// -1 is unassigned
 	
 	//// Controller indexes
-	public int driveController = 1;
-	public int controlController = 0;
+	public int driveController = 0;
+	public int controlController = 1;
 	
 	// Button indexes
 	public int c_shootButton = 0;	// 0 is unassigned

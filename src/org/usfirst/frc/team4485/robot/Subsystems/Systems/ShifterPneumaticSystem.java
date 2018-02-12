@@ -62,9 +62,9 @@ public class ShifterPneumaticSystem extends Subsystem {
 	private void updateCurrentAvg() {
 		Robot.sensorController.update();
 		motorCurrentAvg += Robot.sensorController.powerHandlerSystem.getChannelCurrent(id.leftDriveMotorMasterPDP);
-		motorCurrentAvg += Robot.sensorController.powerHandlerSystem.getChannelCurrent(id.leftDriveMotorSlavePDP);
+		motorCurrentAvg += Robot.sensorController.powerHandlerSystem.getChannelCurrent(id.leftDriveMotorSlave1PDP);
 		motorCurrentAvg += Robot.sensorController.powerHandlerSystem.getChannelCurrent(id.rightDriveMotorMasterPDP);
-		motorCurrentAvg += Robot.sensorController.powerHandlerSystem.getChannelCurrent(id.rightDriveMotorSlavePDP);
+		motorCurrentAvg += Robot.sensorController.powerHandlerSystem.getChannelCurrent(id.rightDriveMotorSlave1PDP);
 		motorCurrentAvg /= 4;
 		
 		if (initVoltage < 0) initVoltage = Robot.sensorController.powerHandlerSystem.getPDPTotalVoltage();
