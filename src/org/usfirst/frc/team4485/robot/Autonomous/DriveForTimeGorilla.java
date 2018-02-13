@@ -6,7 +6,6 @@ public class DriveForTimeGorilla extends AutoProgram{
 
 	public DriveForTimeGorilla(SubsystemsControl _subsystems) {
 		super(_subsystems);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

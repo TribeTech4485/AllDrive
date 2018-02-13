@@ -36,7 +36,10 @@ public class SensorController {
 	private double networkNumRcvd = 0;
 	
 	// Current limits for systems
-	private double driveSystemVoltageLowLimit = 10.0, driveSystemVoltageHighLimit = 11.0, reductionLimit = 0.0;
+	private double driveSystemVoltageLowLimit = 8, driveSystemVoltageHighLimit = 10, reductionLimit = 0.5; //redLimit was 0.0
+	private double voltageTotal = 0;
+
+	int i = 0;
 	
 	public SensorController() {
 		id = new RobotIndexing();
@@ -97,11 +100,16 @@ public class SensorController {
 	
 	// Power limit control functions
 	public double getDrivePowerLimiter() {
-		if (powerHandlerSystem.getPDPTotalVoltage() > driveSystemVoltageHighLimit) return 0.0;
+		if (powerHandlerSystem.getPDPTotalVoltage() > driveSystemVoltageHighLimit) return 1.0;
 		
-		System.out.println(powerHandlerSystem.getPDPTotalVoltage());
-		if (powerHandlerSystem.getPDPTotalVoltage() < driveSystemVoltageHighLimit) {
-			double reduction = driveSystemVoltageLowLimit / powerHandlerSystem.getPDPTotalVoltage();
+		System.out.println("getPDPTotalVoltage: "+powerHandlerSystem.getPDPTotalVoltage());
+		voltageTotal += powerHandlerSystem.getPDPTotalVoltage();
+		i++;
+		double voltageAvg = voltageTotal /i;
+		
+		System.out.println("voltageTotal/i: "+(voltageAvg));
+		if ((voltageAvg) < driveSystemVoltageHighLimit) {
+			double reduction = 1 - driveSystemVoltageLowLimit / voltageAvg;
 			if (reduction < reductionLimit) reduction = reductionLimit;
 			return reduction;
 		}

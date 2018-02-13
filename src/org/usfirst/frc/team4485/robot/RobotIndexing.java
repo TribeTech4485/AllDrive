@@ -13,7 +13,7 @@ public class RobotIndexing {
 	// Drive motors
 	public int rightDriveMotorMaster = 1;
 	public int rightDriveMotorSlave1 = 2;
-	public int rightDriveMotorSlave2 = 3;
+	public int rightDriveMotorSlave2 = -1;
 	public int leftDriveMotorMaster = 4;
 	public int leftDriveMotorSlave1 = 5;
 	public int leftDriveMotorSlave2 = 6;
