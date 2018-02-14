@@ -102,18 +102,16 @@ public class SensorController {
 	public double getDrivePowerLimiter() {
 		if (powerHandlerSystem.getPDPTotalVoltage() > driveSystemVoltageHighLimit) return 1.0;
 		
-		System.out.println("getPDPTotalVoltage: "+powerHandlerSystem.getPDPTotalVoltage());
 		voltageTotal += powerHandlerSystem.getPDPTotalVoltage();
 		i++;
 		
 		double voltageAvg = voltageTotal /i;
-		
+	
 		if(i == 200) {
 			i = 0;
 			voltageTotal = 0;
 		}
-		
-		System.out.println("voltageTotal/i: "+voltageAvg);
+
 		if (voltageAvg < driveSystemVoltageHighLimit) {
 			double reduction = 1 - driveSystemVoltageLowLimit / voltageAvg;
 			if (reduction < reductionLimit) reduction = reductionLimit;

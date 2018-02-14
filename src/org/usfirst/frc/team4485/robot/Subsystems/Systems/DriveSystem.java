@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 /*
  * USING THE BASICS FOR NOW
@@ -16,7 +18,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 
 public class DriveSystem extends Subsystem {
-
+	
+	
 	//// Motors
 	private WPI_TalonSRX leftMotorMaster, leftMotorSlave1, leftMotorSlave2;
 	private WPI_TalonSRX rightMotorMaster, rightMotorSlave1, rightMotorSlave2;
@@ -28,6 +31,7 @@ public class DriveSystem extends Subsystem {
 	// Movement control
 	private double leftDriveSet = 0.0, rightDriveSet = 0.0;
 	private boolean brake = false;
+	private double startingPositionCm;
 	
 	// Drive limiters
 	private boolean enablePowerReductionLimiter = true;
@@ -88,6 +92,14 @@ public class DriveSystem extends Subsystem {
 		enablePowerReductionLimiter = use;
 	}
 	////
+	
+	public double getDriveDistance() {
+		double position = rightMotorMaster.getSelectedSensorPosition(0);
+		System.out.println("getSelectedSensorPosition: " + position);
+		double positionCm = (position / 1440 /*4096*/) * (2 * Math.PI * 3);
+		return positionCm-startingPositionCm;
+	}
+	
 	
 	//// Private hardware control
 	private void updateMotorControl() {
@@ -151,14 +163,16 @@ public class DriveSystem extends Subsystem {
 	private void updateEncoderVals() {
 		try {
 			if (!encodersInitialized) {
-				leftMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);	// (FeedbackDevice, id?, timeout)
+				leftMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10); 	// (FeedbackDevice, id?, timeout)
 				rightMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
+				startingPositionCm = ((rightMotorMaster.getSelectedSensorPosition(0) / 1440/*4096*/) * (2 * Math.PI * 3));
 				encodersInitialized = true;
 			}
 			
 			// Get the encoder values from the masters
 			double leftRPM = leftMotorMaster.getSelectedSensorVelocity(0);
 			double rightRPM = rightMotorMaster.getSelectedSensorVelocity(0);
+			
 			Robot.sensorController.setRPMs(leftRPM, rightRPM);
 		} catch (Exception ex) {
 			createError(false, ex.getMessage());
