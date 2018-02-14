@@ -36,7 +36,7 @@ public class SensorController {
 	private double networkNumRcvd = 0;
 	
 	// Current limits for systems
-	private double driveSystemVoltageLowLimit = 8, driveSystemVoltageHighLimit = 10, reductionLimit = 0.5; //redLimit was 0.0
+	private double driveSystemVoltageLowLimit = 9, driveSystemVoltageHighLimit = 10.5, reductionLimit = 0.5; //redLimit was 0.0
 	private double voltageTotal = 0;
 
 	int i = 0;
@@ -105,10 +105,16 @@ public class SensorController {
 		System.out.println("getPDPTotalVoltage: "+powerHandlerSystem.getPDPTotalVoltage());
 		voltageTotal += powerHandlerSystem.getPDPTotalVoltage();
 		i++;
+		
 		double voltageAvg = voltageTotal /i;
 		
-		System.out.println("voltageTotal/i: "+(voltageAvg));
-		if ((voltageAvg) < driveSystemVoltageHighLimit) {
+		if(i == 200) {
+			i = 0;
+			voltageTotal = 0;
+		}
+		
+		System.out.println("voltageTotal/i: "+voltageAvg);
+		if (voltageAvg < driveSystemVoltageHighLimit) {
 			double reduction = 1 - driveSystemVoltageLowLimit / voltageAvg;
 			if (reduction < reductionLimit) reduction = reductionLimit;
 			return reduction;
