@@ -10,14 +10,14 @@ public class RobotIndexing {
 	////
 	
 	//// Motor indexes
-	// Drive motors
-	public int rightDriveMotorMaster = 4;
-	public int rightDriveMotorSlave1 = 5;
-	public int rightDriveMotorSlave2 = 6;
+	// Drive motors	
 	public int leftDriveMotorMaster = 1;
 	public int leftDriveMotorSlave1 = 2;
 	public int leftDriveMotorSlave2 = 3;
-	
+	public int rightDriveMotorMaster = 4;
+	public int rightDriveMotorSlave1 = 5;
+	public int rightDriveMotorSlave2 = 6;
+
 	// Lift Motors
 	public int liftMotor = 7;
 	// Arm Motors

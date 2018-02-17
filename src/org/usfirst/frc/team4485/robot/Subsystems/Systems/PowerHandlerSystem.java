@@ -36,7 +36,11 @@ public class PowerHandlerSystem extends Subsystem {
 		
 		pdp.clearStickyFaults();
 		for (int i = 0; i < 16; i++) {
-			currentPerChannel[i] = pdp.getCurrent(i);
+			try {
+				currentPerChannel[i] = pdp.getCurrent(i);
+			} catch (Exception ex) {
+				
+			}
 		}
 		//totalCurrent = pdp.getTotalCurrent();
 		totalVoltage = pdp.getVoltage();

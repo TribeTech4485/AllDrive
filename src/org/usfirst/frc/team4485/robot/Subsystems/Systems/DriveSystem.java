@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveSystem extends Subsystem {
 	
-	
 	//// Motors
 	private WPI_TalonSRX leftMotorMaster, leftMotorSlave1, leftMotorSlave2;
 	private WPI_TalonSRX rightMotorMaster, rightMotorSlave1, rightMotorSlave2;
@@ -37,6 +36,8 @@ public class DriveSystem extends Subsystem {
 	private boolean enablePowerReductionLimiter = true;
 	private double drivePowerReductionLimiter = 1.0;		// Limit the drive capacity based on power usage. 1.0 = full capacity 0.0 = no capacity
 	private double driveControlLimiter = 1.0;				// Limit the speed of the drive motors based on preference
+	
+	private double ticksPerRev = 1340;
 	
 	
 	//// Sensor Values
@@ -71,6 +72,7 @@ public class DriveSystem extends Subsystem {
 	@Override
 	protected void killSystem() {
 		drive4Motors(0,0);
+		encodersInitialized = false;
 		update();
 	}
 
@@ -85,6 +87,9 @@ public class DriveSystem extends Subsystem {
 		leftDriveSet = left;
 		rightDriveSet = right;
 	}
+	public void setBraking(boolean _brake) {
+		brake = _brake;
+	}
 	public void setPowerReductionLimiter(double limiter) {
 		drivePowerReductionLimiter = limiter;
 	}
@@ -96,7 +101,8 @@ public class DriveSystem extends Subsystem {
 	public double getDriveDistance() {
 		double position = rightMotorMaster.getSelectedSensorPosition(0);
 		//System.out.println("getSelectedSensorPosition: " + position);
-		double positionCm = (position / 1440 /*4096*/) * (2 * Math.PI * 3);
+		double positionCm = (position / ticksPerRev ) * (2 * Math.PI * 7.62);
+		//return position;
 		return positionCm-startingPositionCm;
 	}
 	
@@ -165,13 +171,17 @@ public class DriveSystem extends Subsystem {
 			if (!encodersInitialized) {
 				leftMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10); 	// (FeedbackDevice, id?, timeout)
 				rightMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
-				startingPositionCm = ((rightMotorMaster.getSelectedSensorPosition(0) / 1440/*4096*/) * (2 * Math.PI * 3));
+				leftMotorMaster.setSelectedSensorPosition(0, 0, 10);
+				rightMotorMaster.setSelectedSensorPosition(0, 0, 10);
+				startingPositionCm = ((rightMotorMaster.getSelectedSensorPosition(0) /  ticksPerRev) * (2 * Math.PI * 7.62));
 				encodersInitialized = true;
+				
 			}
 			
 			// Get the encoder values from the masters
 			double leftRPM = leftMotorMaster.getSelectedSensorVelocity(0);
 			double rightRPM = rightMotorMaster.getSelectedSensorVelocity(0);
+			
 			
 			Robot.sensorController.setRPMs(leftRPM, rightRPM);
 		} catch (Exception ex) {
