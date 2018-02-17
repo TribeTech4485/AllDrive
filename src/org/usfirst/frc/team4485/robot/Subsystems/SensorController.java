@@ -7,6 +7,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.SPI;
 
 
 /*
@@ -52,15 +53,14 @@ public class SensorController {
 		powerHandlerSystem.setID(100);
 		
 		// Initialize the AHRS
-		/*
+		
 		try {
-			//ahrs = new AHRS(SPI.Port.kMXP);
-			ahrs = new AHRS(SerialPort.Port.kMXP);
+			ahrs = new AHRS(SPI.Port.kMXP);// SPI Port
+			//ahrs = new AHRS(SerialPort.Port.kMXP);
 		} catch (Exception ex) {
 			ahrsError = true;
 			System.out.println("Warning: AHRS Error: " + ex.getMessage());
 		}
-		*/
 	}
 	private boolean isAHRSYawZeroed() {
 		if (Math.abs(ahrs.getYaw()) < 1) return true;
