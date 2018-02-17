@@ -11,30 +11,30 @@ public class RobotIndexing {
 	
 	//// Motor indexes
 	// Drive motors
-	public int rightDriveMotorMaster = 1;
-	public int rightDriveMotorSlave1 = 2;
-	public int rightDriveMotorSlave2 = -1;
-	public int leftDriveMotorMaster = 4;
-	public int leftDriveMotorSlave1 = 5;
-	public int leftDriveMotorSlave2 = 6;
+	public int rightDriveMotorMaster = 4;
+	public int rightDriveMotorSlave1 = 5;
+	public int rightDriveMotorSlave2 = 6;
+	public int leftDriveMotorMaster = 1;
+	public int leftDriveMotorSlave1 = 2;
+	public int leftDriveMotorSlave2 = 3;
 	
 	// Lift Motors
-	public int liftMotor = 6;
+	public int liftMotor = 7;
 	// Arm Motors
-	public int armMotorLeft = 8;
-	public int armMotorRight = 9;
+	public int armMotorLeft = 9;
+	public int armMotorRight = 8;
 	// Claw Motors
-	public int clawMotorLeft = 10;
-	public int clawMotorRight = 11;
+	public int clawMotorLeft = 0;	// 0 is unassigned
+	public int clawMotorRight = 0;	// 0 is unassigned
 	
 	// PDP power channels for the motors
 	public int rightDriveMotorMasterPDP = 0;
-	public int rightDriveMotorSlave1PDP = 1;
-	public int rightDriveMotorSlave2PDP = 2;
-	public int leftDriveMotorMasterPDP = 3;
-	public int leftDriveMotorSlave1PDP = 4;
-	public int leftDriveMotorSlave2PDP = 5;
-	public int liftMotorPDP = -1;			// -1 is unassigned
+	public int rightDriveMotorSlave1PDP = 15;
+	public int rightDriveMotorSlave2PDP = 13;
+	public int leftDriveMotorMasterPDP = 15;
+	public int leftDriveMotorSlave1PDP = 1;
+	public int leftDriveMotorSlave2PDP = 2;
+	public int liftMotorPDP = 8;
 	public int armMotorLeftPDP = -1;		// -1 is unassigned
 	public int armMotorRightPDP = -1;		// -1 is unassigned
 	public int clawMotorRightPDP = -1;		// -1 is unassigned
@@ -80,8 +80,10 @@ public class RobotIndexing {
 	//// Pneumatic indexes	
 	// Shifting Gear Box Solenoids & Modules
 	public int shifterSolenoidsModule = 0;
-	public int shifterSolenoid_in = 0;
-	public int shifterSolenoid_out = 1;
+	public int shifterSolenoidLeft_in = 2;
+	public int shifterSolenoidLeft_out = 3;
+	public int shifterSolenoidRight_in = 0;
+	public int shifterSolenoidRight_out = 1;
 	// Arm Solenoids and Modules
 	public int armSolenoidsModule = 0;
 	public int armSolenoidLeft_in = 2;

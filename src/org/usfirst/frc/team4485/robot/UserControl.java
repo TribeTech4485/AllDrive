@@ -21,7 +21,7 @@ public class UserControl {
 	
 	private Joystick driveController;
 	private Joystick controlController;
-	private static double kDeadBand = 0.13;
+	private static double kDeadBand = 0.20;
 	
 	// Boolean array for debounce
 	private boolean[] lastControlButtonState = new boolean[9];

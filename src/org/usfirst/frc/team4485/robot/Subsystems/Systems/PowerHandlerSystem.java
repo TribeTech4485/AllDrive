@@ -22,9 +22,9 @@ public class PowerHandlerSystem extends Subsystem {
 	protected void initSystem() {
 		currentPerChannel = new double[16];
 		try {
-			pdp = new PowerDistributionPanel(1);
+			pdp = new PowerDistributionPanel(62);
 		} catch (Exception ex) {
-			System.out.println("Warning (PowerHandlerSystem): Could not initilize PDP!");
+			//System.out.println("Warning (PowerHandlerSystem): Could not initilize PDP!");
 			error = true;
 		}
 		update();
@@ -38,7 +38,7 @@ public class PowerHandlerSystem extends Subsystem {
 		for (int i = 0; i < 16; i++) {
 			currentPerChannel[i] = pdp.getCurrent(i);
 		}
-		totalCurrent = pdp.getTotalCurrent();
+		//totalCurrent = pdp.getTotalCurrent();
 		totalVoltage = pdp.getVoltage();
 		temperature = pdp.getTemperature();
 	}
@@ -60,6 +60,7 @@ public class PowerHandlerSystem extends Subsystem {
 	public double getPDPTemperature() { return temperature; }
 	public double getChannelCurrent(int channel) { 
 		try {
+			if (channel < 0) return 0.0;
 			return currentPerChannel[channel];
 		} catch (Exception ex) {
 			createError(false, ex.getMessage());

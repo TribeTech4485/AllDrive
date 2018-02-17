@@ -95,7 +95,7 @@ public class DriveSystem extends Subsystem {
 	
 	public double getDriveDistance() {
 		double position = rightMotorMaster.getSelectedSensorPosition(0);
-		System.out.println("getSelectedSensorPosition: " + position);
+		//System.out.println("getSelectedSensorPosition: " + position);
 		double positionCm = (position / 1440 /*4096*/) * (2 * Math.PI * 3);
 		return positionCm-startingPositionCm;
 	}
@@ -158,7 +158,7 @@ public class DriveSystem extends Subsystem {
 	}
 	private void updatePowerLimiter() {
 		setPowerReductionLimiter(Robot.sensorController.getDrivePowerLimiter());
-		System.out.println("Drive Power Reduction: " + drivePowerReductionLimiter);
+		//System.out.println("Drive Power Reduction: " + drivePowerReductionLimiter);
 	}
 	private void updateEncoderVals() {
 		try {

@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.Solenoid;
 public class ShifterPneumaticSystem extends Subsystem {
 
 	// Two solenoids for shifter in and out
-	private Solenoid shifterSolenoid_out, shifterSolenoid_in;
+	private Solenoid shifterSolenoidRight_out, shifterSolenoidRight_in;
+	private Solenoid shifterSolenoidLeft_out, shifterSolenoidLeft_in;
 	private boolean shifterOut = true, lowGear = true;
 	
 	private boolean autoShiftEnabled = true;
@@ -31,8 +32,10 @@ public class ShifterPneumaticSystem extends Subsystem {
 	
 	@Override
 	protected void initSystem() {
-		shifterSolenoid_out = new Solenoid(id.shifterSolenoidsModule, id.shifterSolenoid_out);
-		shifterSolenoid_in = new Solenoid(id.shifterSolenoidsModule, id.shifterSolenoid_in);
+		shifterSolenoidLeft_out = new Solenoid(id.shifterSolenoidsModule, id.shifterSolenoidLeft_out);
+		shifterSolenoidLeft_in = new Solenoid(id.shifterSolenoidsModule, id.shifterSolenoidLeft_in);
+		shifterSolenoidRight_out = new Solenoid(id.shifterSolenoidsModule, id.shifterSolenoidRight_out);
+		shifterSolenoidRight_in = new Solenoid(id.shifterSolenoidsModule, id.shifterSolenoidRight_in);
 		
 		shiftDown();
 		update();
@@ -41,8 +44,10 @@ public class ShifterPneumaticSystem extends Subsystem {
 	@Override
 	protected void updateSystem() {
 		lowGear = shifterOut;	//We are in low gear if the shifter is out
-		shifterSolenoid_out.set(shifterOut);
-		shifterSolenoid_in.set(!shifterOut);
+		shifterSolenoidLeft_out.set(shifterOut);
+		shifterSolenoidLeft_in.set(!shifterOut);
+		shifterSolenoidRight_out.set(shifterOut);
+		shifterSolenoidRight_in.set(!shifterOut);
 		updateCurrentAvg();
 		autoShift();
 	}

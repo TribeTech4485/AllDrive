@@ -74,8 +74,8 @@ public abstract class Subsystem extends Thread {
 	}
 	public boolean error() {
 		//if (lastErrorMessage == errorMessage) return error;
-		if (error && majorError) System.out.println("Error (System ID:" + systemid + "): " + errorMessage);
-		else if (error) System.out.println("Warning (System ID:" + systemid + "): " + errorMessage);
+		//if (error && majorError) System.out.println("Error (System ID:" + systemid + "): " + errorMessage);
+		//else if (error) System.out.println("Warning (System ID:" + systemid + "): " + errorMessage);
 		lastErrorMessage = errorMessage;
 		return error;
 	}
@@ -106,7 +106,7 @@ public abstract class Subsystem extends Thread {
 		errorMessage = message;
 	}
 	protected void createMessage(String message) {
-		System.out.println("(System ID:" + systemid + "):" + message);
+		//System.out.println("(System ID:" + systemid + "):" + message);
 	}
 	
 	protected abstract void initSystem();// throws Exception;
