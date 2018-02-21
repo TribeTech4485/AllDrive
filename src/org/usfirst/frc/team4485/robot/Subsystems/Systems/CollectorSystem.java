@@ -7,10 +7,11 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class CollectorSystem extends Subsystem{
 
-	private double armSpeed = 0;
-	private double clawSpeed = 0;
+	private double intakeSpeed = 1.0;
+	private double expelSpeed = -1.0;
+	private double setSpeed = 0;
+	private boolean intake = false, expel = false;
 	
-	private WPI_TalonSRX clawMotorLeft, clawMotorRight;
 	private WPI_TalonSRX armMotorLeft, armMotorRight;
 	
 	private Solenoid armSolenoidRight_in, armSolenoidRight_out;
@@ -20,8 +21,6 @@ public class CollectorSystem extends Subsystem{
 	protected void initSystem() {
 		armMotorLeft = new WPI_TalonSRX(id.armMotorLeft);
 		armMotorRight = new WPI_TalonSRX(id.armMotorRight);
-		clawMotorLeft = new WPI_TalonSRX(id.clawMotorLeft);
-		clawMotorRight = new WPI_TalonSRX(id.clawMotorRight);
 		
 		armSolenoidRight_in = new Solenoid(id.armSolenoidsModule, id.armSolenoidRight_in);
 		armSolenoidRight_out = new Solenoid(id.armSolenoidsModule, id.armSolenoidRight_out);
@@ -40,14 +39,24 @@ public class CollectorSystem extends Subsystem{
 	@Override
 	protected void errorHandler() {}
 	
-	public void moveTheArm(double arm) {
-		armSpeed = arm;
+	public void setIntake(boolean run) {
+		intake = run;
+	}
+	public void setExpel(boolean run) {
+		expel = run;
+	}
+	public void setIntakeSpeed(double speed) {
+		intakeSpeed = speed;
+	}
+	public void setExpelSpeed(double speed) {
+		expelSpeed = speed;
 	}
 	
-	private void updateMotorControl() {	
-		armMotorLeft.set(armSpeed);
-		armMotorRight.set(-armSpeed);
-		clawMotorLeft.set(clawSpeed);
-		clawMotorLeft.set(-clawSpeed);
+	private void updateMotorControl() {
+		if (intake) setSpeed = intakeSpeed;
+		else if (expel) setSpeed = expelSpeed;
+		else setSpeed = 0;
+		armMotorLeft.set(setSpeed);
+		armMotorRight.set(-setSpeed);
 	}
 }
