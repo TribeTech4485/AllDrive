@@ -7,14 +7,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-/*
- * USING THE BASICS FOR NOW
- * TODO: Add more functionality for easy auto and teleOp usage
- * TODO: Add sensor usage (encoders, GYRO, distance)
- */
+// Add comments
 
 
 public class DriveSystem extends Subsystem {
@@ -30,7 +24,6 @@ public class DriveSystem extends Subsystem {
 	// Movement control
 	private double leftDriveSet = 0.0, rightDriveSet = 0.0;
 	private boolean brake = false;
-	private double startingPositionCm;
 	
 	// Drive limiters
 	private boolean enablePowerReductionLimiter = true;
@@ -42,7 +35,18 @@ public class DriveSystem extends Subsystem {
 	
 	//// Sensor Values
 	private boolean encodersInitialized = false;
+	private double wheelRadius_cm = 7.62;
+	private double startPositionLeft_cm, startPositionRight_cm;
+	private double leftOffset_cm, rightOffset_cm;
 	//private double leftEncVelocity = 0.0, rightEncVelocity = 0.0;
+	
+	// Iterative Function Values
+	private double driveToDistanceBaseSpeed = 0.15;
+	private double driveToDistanceMinSpeed = 0.10;
+	private double driveToDistanceMaxSpeed = 0.30;
+	private double driveToDistanceStartLeft = 0.0;
+	private double driveToDistanceStartRight = 0.0;
+	private boolean driveToDistanceInitialized = false;
 	
 	// Drive Control modifiers
 	private final boolean reverseInput = false, flipLeftRight = false, reverseLeft = false, reverseRight = true;
@@ -96,16 +100,42 @@ public class DriveSystem extends Subsystem {
 	public void setUsePowerReductionLimiter(boolean use) {
 		enablePowerReductionLimiter = use;
 	}
-	////
 	
-	public double getDriveDistance() {
-		double position = rightMotorMaster.getSelectedSensorPosition(0);
-		//System.out.println("getSelectedSensorPosition: " + position);
-		double positionCm = (position / ticksPerRev ) * (2 * Math.PI * 7.62);
-		//return position;
-		return positionCm-startingPositionCm;
+	public double getLeftOffset_cm() {
+		return leftOffset_cm;
+	}
+	public double getRightOffset_cm() {
+		return rightOffset_cm;
 	}
 	
+	// Function to iteratively drive a distance
+	public double driveToDistance(double distance_cm) {
+		if (!driveToDistanceInitialized) {
+			driveToDistanceStartLeft = Robot.sensorController.getLeftOffset_cm();
+			driveToDistanceStartRight = Robot.sensorController.getRightOffset_cm();
+		}
+		// Calculate offset from start
+		double leftDistance = Robot.sensorController.getLeftOffset_cm() - driveToDistanceStartLeft;
+		double rightDistance = Robot.sensorController.getRightOffset_cm() - driveToDistanceStartRight;
+		
+		double leftError = distance_cm - leftDistance;
+		double rightError = distance_cm - rightDistance;
+		
+		double percentagePer_cm = driveToDistanceBaseSpeed / distance_cm;
+		
+		// Run the control on both sides
+		double leftDriveMod = leftError * percentagePer_cm;
+		double rightDriveMod = rightError * percentagePer_cm;
+		
+		if (leftDriveMod < driveToDistanceMinSpeed) leftDriveMod = driveToDistanceMinSpeed;
+		else if (leftDriveMod > driveToDistanceMaxSpeed) leftDriveMod = driveToDistanceMaxSpeed;
+		if (rightDriveMod < driveToDistanceMinSpeed) rightDriveMod = driveToDistanceMinSpeed;
+		else if (rightDriveMod > driveToDistanceMaxSpeed) rightDriveMod = driveToDistanceMaxSpeed;
+		
+		drive4Motors(leftDriveMod, rightDriveMod);
+		return (leftError + rightError) / 2;
+	}
+	////
 	
 	//// Private hardware control
 	private void updateMotorControl() {
@@ -173,7 +203,8 @@ public class DriveSystem extends Subsystem {
 				rightMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
 				leftMotorMaster.setSelectedSensorPosition(0, 0, 10);
 				rightMotorMaster.setSelectedSensorPosition(0, 0, 10);
-				startingPositionCm = ((rightMotorMaster.getSelectedSensorPosition(0) /  ticksPerRev) * (2 * Math.PI * 7.62));
+				startPositionLeft_cm = ((leftMotorMaster.getSelectedSensorPosition(0) /  ticksPerRev) * (2 * Math.PI * wheelRadius_cm));
+				startPositionRight_cm = ((rightMotorMaster.getSelectedSensorPosition(0)/ ticksPerRev) * (2 * Math.PI * wheelRadius_cm));
 				encodersInitialized = true;
 				
 			}
@@ -182,8 +213,17 @@ public class DriveSystem extends Subsystem {
 			double leftRPM = leftMotorMaster.getSelectedSensorVelocity(0);
 			double rightRPM = rightMotorMaster.getSelectedSensorVelocity(0);
 			
+			double leftPosition = leftMotorMaster.getSelectedSensorPosition(0);
+			double rightPosition = rightMotorMaster.getSelectedSensorPosition(0);
+			
+			double leftPosition_cm = (leftPosition / ticksPerRev) * (2 * Math.PI * wheelRadius_cm);
+			double rightPosition_cm = (rightPosition / ticksPerRev) * (2 * Math.PI * wheelRadius_cm);
+			
+			leftOffset_cm = leftPosition_cm - startPositionLeft_cm;
+			rightOffset_cm = rightPosition_cm - startPositionRight_cm;
 			
 			Robot.sensorController.setRPMs(leftRPM, rightRPM);
+			Robot.sensorController.setOffsets(leftOffset_cm, rightOffset_cm);
 		} catch (Exception ex) {
 			createError(false, ex.getMessage());
 		}
