@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4485.robot.Autonomous;
 
+import org.usfirst.frc.team4485.robot.Robot;
 import org.usfirst.frc.team4485.robot.Subsystems.SubsystemsControl;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,7 +22,7 @@ public class DriveForTimeGorilla extends AutoProgram{
 	
 	@Override
 	protected void run() {
-		driveDistanceCm = subsystems.driveSystem.getDriveDistance();
+		driveDistanceCm = Robot.sensorController.getLeftOffset_cm();
 		
 		subsystems.driveSystem.setBraking(true);
 		

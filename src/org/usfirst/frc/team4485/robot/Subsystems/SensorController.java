@@ -34,13 +34,15 @@ public class SensorController {
 	public double ahrsYawMultiplier = -1;	// Invert the YAW when the GYRO is upside down
 	
 	private double leftDriveRPM = 0.0, rightDriveRPM = 0.0;
+	private double leftDriveOffset_cm = 0.0, rightDriveOffset_cm = 0.0;
 	private double networkNumRcvd = 0;
 	
 	// Current limits for systems
 	private double driveSystemVoltageLowLimit = 9, driveSystemVoltageHighLimit = 10.5, reductionLimit = 0.5; //redLimit was 0.0
 	private double voltageTotal = 0;
 
-	int i = 0;
+	// Number of times we have taken the voltage reading for smoothing of the motor limits
+	int voltageReadings = 0;
 	
 	public SensorController() {
 		id = new RobotIndexing();
@@ -62,32 +64,37 @@ public class SensorController {
 			System.out.println("Warning: AHRS Error: " + ex.getMessage());
 		}
 	}
-	private boolean isAHRSYawZeroed() {
-		if (Math.abs(ahrs.getYaw()) < 1) return true;
-		return false;
-	}
 	
 	public void update() {
 		powerHandlerSystem.update();
 	}
 	
-	public double getDistanceSensorDistance(AnalogInput sensor, double mV_in) {
-		// TODO: Figure out scaling
-		
-		// For now just divide by 2
-		if (sensor == null) return -1;
-		return sensor.getValue() / 2;
-	}
-	
+	//// Getters and setters for motors --------
 	public void setRPMs(double left, double right) {
 		leftDriveRPM = left;
 		rightDriveRPM = right;
 	}
-	
+	public void setOffsets(double left, double right) {
+		leftDriveOffset_cm = left;
+		rightDriveOffset_cm = right;
+	}
 	public double getAverageRPM() {
 		return (leftDriveRPM + rightDriveRPM) / 2;
 	}
+	public double getLeftOffset_cm() {
+		return leftDriveOffset_cm;
+	}
+	public double getRightOffset_cm() {
+		return rightDriveOffset_cm;
+	}
+	////------
 	
+	//// GYRO stuff -----
+
+	private boolean isAHRSYawZeroed() {
+		if (Math.abs(ahrs.getYaw()) < 1) return true;
+		return false;
+	}
 	public boolean isAHRSError() { return ahrsError; }
 	public boolean zeroAHRSYaw() {
 		for (int i = 0; i < 20; i++) {
@@ -97,18 +104,19 @@ public class SensorController {
 		return false;
 	}
 	public double getAHRSYaw() { if (!isAHRSError()) return ahrs.getYaw() * ahrsYawMultiplier; else return 0;}
+	//// ------
 	
-	// Power limit control functions
+	//// Power limit control functions ------
 	public double getDrivePowerLimiter() {
 		if (powerHandlerSystem.getPDPTotalVoltage() > driveSystemVoltageHighLimit) return 1.0;
 		
 		voltageTotal += powerHandlerSystem.getPDPTotalVoltage();
-		i++;
+		voltageReadings++;
 		
-		double voltageAvg = voltageTotal /i;
+		double voltageAvg = voltageTotal /voltageReadings;
 	
-		if(i == 200) {
-			i = 0;
+		if(voltageReadings == 200) {
+			voltageReadings = 0;
 			voltageTotal = 0;
 		}
 
@@ -119,6 +127,7 @@ public class SensorController {
 		}
 		return 1;	// Returns a multiplier, so return 1 to have no affect.
 	}
+	//// ------
 	
 	@Deprecated
 	public void setNetworkNumRcvd(double num) {
@@ -129,6 +138,7 @@ public class SensorController {
 		return networkNumRcvd;
 	}
 	
+	//// General IO functions ------
 	// Function to get the value from a given analog port
 	public double getAnalogInput(int sensorID) {
 		AnalogInput analogInput = new AnalogInput(sensorID);
@@ -139,4 +149,12 @@ public class SensorController {
 		DigitalInput digitalInput = new DigitalInput(sensorID);
 		return digitalInput.get();
 	}
+	public double getDistanceSensorDistance(AnalogInput sensor, double mV_in) {
+		// TODO: Figure out scaling
+		
+		// For now just divide by 2
+		if (sensor == null) return -1;
+		return sensor.getValue() / 2;
+	}
+	//// ------
 }
