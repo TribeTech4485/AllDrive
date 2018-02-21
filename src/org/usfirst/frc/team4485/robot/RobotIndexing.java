@@ -23,9 +23,6 @@ public class RobotIndexing {
 	// Arm Motors
 	public int armMotorLeft = 9;
 	public int armMotorRight = 8;
-	// Claw Motors
-	public int clawMotorLeft = 0;	// 0 is unassigned
-	public int clawMotorRight = 0;	// 0 is unassigned
 	
 	// PDP power channels for the motors
 	public int rightDriveMotorMasterPDP = 0;
@@ -42,21 +39,15 @@ public class RobotIndexing {
 	
 	//// Controller indexes
 	public int driveController = 0;
-	public int controlController = 1;
+	public int controlController = 0;
 	
 	// Button indexes
-	public int c_shootButton = 0;	// 0 is unassigned
-	public int c_collectButton = 0;	// 0 is unassigned
-	public int c_guideInButton = 3;
-	public int c_guideOutButton = 4;
-	public int c_doorOutButton = 1;
-	public int c_doorInButton = 2;
-	public int c_pusherOutButton = 5;
-	public int c_expelGearButton = 10;
+	public int c_collectorIntakeButton = 1;
+	public int c_collectorExpelButton = 2;
 	
 	public int c_hopperButton = 0;	// 0 is unassigned
 	public int c_liftAxis = 1;
-	public int c_liftButton = 6;
+	public int c_liftButton = 3;
 	
 	public int d_turnToAngleButton = 6;
 	public int d_brakeButton = 0;//5;	// Left Shoulder Button (Unassigned)
@@ -71,10 +62,8 @@ public class RobotIndexing {
 	public int armOpticalDistanceSensor = 2;
 	public int armUltrasonicDistanceSensor = 3;
 	// Digital inputs
-	public int clawLimitSwitchSensor_left = 0;
-	public int clawLimitSwitchSensor_right = 1;
-	public int armLimitSwitchSensor_left = 2;
-	public int armLimitSwitchSensor_right = 3;
+	public int liftLowerLimitSwitch = 0;
+	public int liftUpperLimitSwitch = 1;
 	////
 	
 	//// Pneumatic indexes	
