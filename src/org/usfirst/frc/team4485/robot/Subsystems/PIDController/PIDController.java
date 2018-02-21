@@ -41,7 +41,7 @@ public class PIDController {
 	
 	public double update(double error, double position) {
 		if (!checkTime()) return lastReturn;
-		else System.out.println("PID update tick!");
+		//else System.out.println("PID update tick!");
 		double pTerm,
 			dTerm, iTerm;
 		
