@@ -20,6 +20,8 @@ public class AutonomousControl {
 	AutoProgram zeroYaw;
 	AutoProgram networkTest;
 	AutoProgram driveForTimeGorilla;
+	AutoProgram sensorsTest;
+	AutoProgram liftPIDTune;
 	
 	public AutonomousControl(SubsystemsControl subsystems) {
 				
@@ -28,6 +30,8 @@ public class AutonomousControl {
 		zeroYaw = new ZeroYaw(subsystems);
 		networkTest = new NetworkTest(subsystems);
 		driveForTimeGorilla = new DriveForTimeGorilla(subsystems);
+		sensorsTest = new SensorsTest(subsystems);
+		liftPIDTune = new LiftPIDTune(subsystems);
 		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
@@ -38,6 +42,8 @@ public class AutonomousControl {
 		autoChooser.addObject("Zero Yaw", zeroYaw);
 		autoChooser.addObject("NetworkTest", networkTest);
 		autoChooser.addObject("Auto Gorilla", driveForTimeGorilla);
+		autoChooser.addObject("Sensors Test", sensorsTest);
+		autoChooser.addObject("Lift PID Tune", liftPIDTune);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);

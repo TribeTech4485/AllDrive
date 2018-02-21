@@ -26,7 +26,7 @@ public class DriveForTimeGorilla extends AutoProgram{
 		subsystems.driveSystem.setBraking(true);
 		
 		if(driveDistanceCm < distanceCm) {
-			subsystems.driveSystem.drive4Motors(1, 1);
+			//subsystems.driveSystem.drive4Motors(1, 1);
 		} else if(driveDistanceCm >= distanceCm) {
 			subsystems.driveSystem.drive4Motors(0.0, 0.0);
 		}
