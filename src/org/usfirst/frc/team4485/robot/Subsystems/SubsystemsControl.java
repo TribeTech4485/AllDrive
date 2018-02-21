@@ -4,6 +4,7 @@ import org.usfirst.frc.team4485.robot.Robot;
 //import org.usfirst.frc.team4485.robot.Subsystems.Systems.PowerHandlerSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.SerialSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.ShifterPneumaticSystem;
+import org.usfirst.frc.team4485.robot.Subsystems.Systems.CollectorSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.CubeTrackingSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.DriveSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.LiftSystem;
@@ -24,6 +25,7 @@ public class SubsystemsControl {
 	public ShifterPneumaticSystem shifterPneumaticSystem;
 	public SerialSystem serialSystem;
 	public LiftSystem liftSystem;
+	public CollectorSystem collectorSystem;
 	public CubeTrackingSystem cubeTrackingSystem;
 	//public PowerHandlerSystem powerHandlerSystem;
 	
@@ -67,6 +69,9 @@ public class SubsystemsControl {
 		
 		liftSystem = new LiftSystem();
 		liftSystem.setID(5);
+		
+		collectorSystem = new CollectorSystem();
+		collectorSystem.setID(6);
 		
 		cubeTrackingSystem = new CubeTrackingSystem();
 		cubeTrackingSystem.setID(100);
