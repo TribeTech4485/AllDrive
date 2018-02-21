@@ -19,13 +19,20 @@ public class TeleOpControl {
 		// Update the user control system
 		userControl.updateControls();
 
-		subsystems.liftSystem.moveTheLift(userControl.getAxis(id.controlController, id.c_liftAxis)); //sets lift speed to a value between -1 to 1
-
-		// Drive using the drive subsystem
-		//subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY);
-		subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY); 	// Flip the input sticks for some robots
-		if (userControl.getRawDriveButton(id.d_shiftDown)) subsystems.shifterPneumaticSystem.shiftDown();
-		else if (userControl.getRawDriveButton(id.d_shiftUp)) subsystems.shifterPneumaticSystem.shiftUp();
+		if (userControl.getRawControlButton(id.c_liftButton)) {
+			subsystems.liftSystem.setLift(userControl.getAxis(id.controlController, id.c_liftAxis)); //sets lift speed to a value between -1 to 1
+		} else {
+		
+			// Drive using the drive subsystem
+			//subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY);
+			subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY); 	// Flip the input sticks for some robots
+			if (userControl.getRawDriveButton(id.d_shiftDown)) subsystems.shifterPneumaticSystem.shiftDown();
+			else if (userControl.getRawDriveButton(id.d_shiftUp)) subsystems.shifterPneumaticSystem.shiftUp();
+		}
+		// Control the collector
+		subsystems.collectorSystem.setExpel(userControl.getRawControlButton(id.c_collectorExpelButton));
+		subsystems.collectorSystem.setIntake(userControl.getRawControlButton(id.c_collectorIntakeButton));
+		subsystems.collectorSystem.update();
 		
 		//subsystems.driveSystem.setBraking(userControl.getRawDriveButton(id.d_brakeButton));
 		// Update the drive system
