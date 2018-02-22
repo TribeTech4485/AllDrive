@@ -41,12 +41,14 @@ public class DriveSystem extends Subsystem {
 	//private double leftEncVelocity = 0.0, rightEncVelocity = 0.0;
 	
 	// Iterative Function Values
-	private double driveToDistanceBaseSpeed = 0.15;
-	private double driveToDistanceMinSpeed = 0.10;
-	private double driveToDistanceMaxSpeed = 0.30;
-	private double driveToDistanceStartLeft = 0.0;
-	private double driveToDistanceStartRight = 0.0;
-	private boolean driveToDistanceInitialized = false;
+	private double driveToDistanceBaseSpeed = 0.15;		// This is the base speed used to adjust for drive distance
+	private double driveToDistanceMinSpeed = 0.10;		// The minimum speed to drive the motors while driving for distance
+	private double driveToDistanceMaxSpeed = 0.30;		// The maximum speed to drive the motors while driving for distance
+	private double driveToDistanceStartLeft = 0.0;		// The starting position of the left wheels (in centimeters)
+	private double driveToDistanceStartRight = 0.0;		// The starting position of the right wheels (in centimeters)
+	
+	private double driveToDistanceResetThreshold_cm = 1.25;	// Threshold for resetting of driveToDistance (in centimeters)
+	private boolean driveToDistanceInitialized = false;	// Boolean to control the iterative driveToDistance function
 	
 	// Drive Control modifiers
 	private final boolean reverseInput = false, flipLeftRight = false, reverseLeft = false, reverseRight = true;
@@ -76,6 +78,7 @@ public class DriveSystem extends Subsystem {
 	@Override
 	protected void killSystem() {
 		drive4Motors(0,0);
+		resetDriveToDistance();
 		encodersInitialized = false;
 		update();
 	}
@@ -113,6 +116,7 @@ public class DriveSystem extends Subsystem {
 		if (!driveToDistanceInitialized) {
 			driveToDistanceStartLeft = Robot.sensorController.getLeftOffset_cm();
 			driveToDistanceStartRight = Robot.sensorController.getRightOffset_cm();
+			driveToDistanceInitialized = true;
 		}
 		// Calculate offset from start
 		double leftDistance = Robot.sensorController.getLeftOffset_cm() - driveToDistanceStartLeft;
@@ -133,7 +137,18 @@ public class DriveSystem extends Subsystem {
 		else if (rightDriveMod > driveToDistanceMaxSpeed) rightDriveMod = driveToDistanceMaxSpeed;
 		
 		drive4Motors(leftDriveMod, rightDriveMod);
-		return (leftError + rightError) / 2;
+		
+		// Check the reset threshold
+		double averageError = (leftError + rightError) / 2;
+		if (averageError < driveToDistanceResetThreshold_cm) {
+			driveToDistanceInitialized = false;
+			return 0;	// Return that the error is 0 centimeters if it is within the threshold
+		}
+		
+		return (leftError + rightError) / 2;	// Otherwise return the actual error
+	}
+	public void resetDriveToDistance() {
+		driveToDistanceInitialized = false;
 	}
 	////
 	
