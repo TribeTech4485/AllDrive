@@ -7,10 +7,15 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class CollectorSystem extends Subsystem{
 
+	// Motor Control Values
 	private double intakeSpeed = 1.0;
 	private double expelSpeed = -1.0;
 	private double setSpeed = 0;
 	private boolean intake = false, expel = false;
+	
+	// Pneumatic Control Values
+	private boolean leftArmOut = false;
+	private boolean rightArmOut = false;
 	
 	private WPI_TalonSRX armMotorLeft, armMotorRight;
 	
@@ -39,6 +44,7 @@ public class CollectorSystem extends Subsystem{
 	@Override
 	protected void errorHandler() {}
 	
+	// Motor Control Interface Functions
 	public void setIntake(boolean run) {
 		intake = run;
 	}
@@ -50,6 +56,15 @@ public class CollectorSystem extends Subsystem{
 	}
 	public void setExpelSpeed(double speed) {
 		expelSpeed = speed;
+	}
+	
+	// Pneumatic Control Interface Functions
+	public void setArms(boolean out) {
+		leftArmOut = out;
+		rightArmOut = out;
+	}
+	public void setLeftArm(boolean out) {
+		leftArmOut = out;
 	}
 	
 	private void updateMotorControl() {
