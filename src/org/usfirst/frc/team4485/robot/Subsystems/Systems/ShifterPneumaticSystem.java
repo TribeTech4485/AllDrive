@@ -24,11 +24,11 @@ public class ShifterPneumaticSystem extends Subsystem {
 	// One is current draw and voltage drops, so we have the current draw average and voltage.
 	private double motorCurrentAvg = 0.0, totalVoltage = 0.0, initVoltage = -1.0;
 	private double lowGearCurrentHigh = 0.0, highGearCurrentHigh = 0.0;
-	private double voltageDropCheckPercent = 0.35;
+	private double voltageDropCheckPercent = 0.20;
 	// The other is RPM
 	private double avgDriveRPM = 0.0;
-	private double lowGearShiftUpRPMLimit = 130.0;
-	private double highGearShiftDownRPMLimit = 200.0;
+	private double lowGearShiftUpRPMLimit = 400.0;
+	private double highGearShiftDownRPMLimit = 350.0;
 	
 	@Override
 	protected void initSystem() {
@@ -90,14 +90,14 @@ public class ShifterPneumaticSystem extends Subsystem {
 			// There is a drop, so shift into low gear if our motor draw is above its limit
 			shiftDown();
 			
-			System.out.println("MotorAvgCurrent: " + motorCurrentAvg + "  lowGearCurrentHigh: " + lowGearCurrentHigh + "  highGearCurrentHigh: " + highGearCurrentHigh);
-			System.out.println("TotalVoltage: " + totalVoltage + "  Voltage Drop Check Limit: " + (initVoltage - (initVoltage * voltageDropCheckPercent)));
+			//System.out.println("MotorAvgCurrent: " + motorCurrentAvg + "  lowGearCurrentHigh: " + lowGearCurrentHigh + "  highGearCurrentHigh: " + highGearCurrentHigh);
+			//System.out.println("TotalVoltage: " + totalVoltage + "  Voltage Drop Check Limit: " + (initVoltage - (initVoltage * voltageDropCheckPercent)));
 			return;
 		}
 		
 		// Now we check the average RPM 
-		avgDriveRPM = Robot.sensorController.getAverageRPM();
-		System.out.println("AVG RPM: " + avgDriveRPM);
+		//avgDriveRPM = Robot.sensorController.getAverageRPM();
+		//System.out.println("AVG RPM: " + avgDriveRPM);
 		if (avgDriveRPM >= lowGearShiftUpRPMLimit) {
 			shiftUp();
 			return;

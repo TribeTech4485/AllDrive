@@ -4,9 +4,9 @@ import org.usfirst.frc.team4485.robot.Subsystems.Subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Victor;
 
 public class CollectorSystem extends Subsystem{
-
 	// Motor Control Values
 	private double intakeSpeed = 1.0;
 	private double expelSpeed = -1.0;
@@ -14,28 +14,40 @@ public class CollectorSystem extends Subsystem{
 	private boolean intake = false, expel = false;
 	
 	// Pneumatic Control Values
-	private boolean leftArmOut = false;
+	private boolean armsOut = false;
 	private boolean rightArmOut = false;
 	
-	private WPI_TalonSRX armMotorLeft, armMotorRight;
+	private WPI_TalonSRX collectorMotorLeft, collectorMotorRight;
+	
+	// Victors (control them if they are present)
+	private Victor collectorVictorLeft, collectorVictorRight;
 	
 	private Solenoid armSolenoidRight_in, armSolenoidRight_out;
-	private Solenoid armSolenoidLeft_in, armSolenoidLeft_out;
+	private Solenoid armSolenoid_in, armSolenoid_out;
 	
 	@Override
 	protected void initSystem() {
-		armMotorLeft = new WPI_TalonSRX(id.armMotorLeft);
-		armMotorRight = new WPI_TalonSRX(id.armMotorRight);
+		// Initialize Talons
+		collectorMotorLeft = new WPI_TalonSRX(id.collectorMotorLeft);							// (Talon CAN ID)
+		collectorMotorRight = new WPI_TalonSRX(id.collectorMotorRight);
 		
-		armSolenoidRight_in = new Solenoid(id.armSolenoidsModule, id.armSolenoidRight_in);
+		// Initialize PWM for Victors
+		collectorVictorLeft = new Victor(id.collectorVictorLeft);								// (PWM pin)
+		collectorVictorRight = new Victor(id.collectorVictorRight);
+		
+		// Initialize Pneumatics
+		// TODO: replace with raise lower solenoids
+		armSolenoidRight_in = new Solenoid(id.armSolenoidsModule, id.armSolenoidRight_in);		// (module, channel on module)
 		armSolenoidRight_out = new Solenoid(id.armSolenoidsModule, id.armSolenoidRight_out);
-		armSolenoidLeft_in = new Solenoid(id.armSolenoidsModule, id.armSolenoidLeft_in);
-		armSolenoidLeft_out = new Solenoid(id.armSolenoidsModule, id.armSolenoidLeft_out);
+		
+		armSolenoid_in = new Solenoid(id.armSolenoidsModule, id.armSolenoid_in);
+		armSolenoid_out = new Solenoid(id.armSolenoidsModule, id.armSolenoid_out);
 	}
 
 	@Override
 	protected void updateSystem() {
 		updateMotorControl();
+		updatePneumaticControl();
 	}
 
 	@Override
@@ -44,6 +56,7 @@ public class CollectorSystem extends Subsystem{
 	@Override
 	protected void errorHandler() {}
 	
+	//// Public control functions ----
 	// Motor Control Interface Functions
 	public void setIntake(boolean run) {
 		intake = run;
@@ -60,18 +73,23 @@ public class CollectorSystem extends Subsystem{
 	
 	// Pneumatic Control Interface Functions
 	public void setArms(boolean out) {
-		leftArmOut = out;
-		rightArmOut = out;
+		armsOut = out;
 	}
-	public void setLeftArm(boolean out) {
-		leftArmOut = out;
-	}
+	//// ----
 	
 	private void updateMotorControl() {
 		if (intake) setSpeed = intakeSpeed;
 		else if (expel) setSpeed = expelSpeed;
 		else setSpeed = 0;
-		armMotorLeft.set(setSpeed);
-		armMotorRight.set(-setSpeed);
+		collectorMotorLeft.set(setSpeed);
+		collectorMotorRight.set(-setSpeed);
+		
+		// Update Victors
+		collectorVictorLeft.set(setSpeed);
+		collectorVictorRight.set(-setSpeed);
+	}
+	private void updatePneumaticControl() {
+		armSolenoid_in.set(!armsOut);
+		armSolenoid_out.set(armsOut);
 	}
 }

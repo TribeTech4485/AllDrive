@@ -16,6 +16,10 @@ public abstract class AutoProgram {
 	protected double auto_timeLimit = 0; // Limit of < 1 is unlimited
 	//
 	
+	// Iterative values
+	protected int step = 0;	// Step number for iterative auto programs
+	//
+	
 	public AutoProgram(SubsystemsControl _subsystems) {
 		subsystems = _subsystems;		
 		///auto_startTime = System.currentTimeMillis();
@@ -23,6 +27,7 @@ public abstract class AutoProgram {
 		auto_duration = 0;
 		instanced = true;
 		auto_complete = false;
+		step = 0;
 		
 		// Don't init here
 		// Init here will cause timer issues
@@ -66,6 +71,7 @@ public abstract class AutoProgram {
 	public void disable() {
 		auto_started = false;
 		auto_complete = false;
+		step = 0;
 		subsystems.killAll();
 	}
 	public boolean isInstanced() {

@@ -1,10 +1,8 @@
 package org.usfirst.frc.team4485.robot;
 
+import org.usfirst.frc.team4485.robot.Subsystems.PIDController.SPID;
+
 public class RobotIndexing {
-	public RobotIndexing() {
-		initPIDVals();
-	}
-	
 	//// GYRO Properties
 	public boolean flipGyro = false;
 	////
@@ -20,9 +18,12 @@ public class RobotIndexing {
 
 	// Lift Motors
 	public int liftMotor = 7;
-	// Arm Motors
-	public int armMotorLeft = 9;
-	public int armMotorRight = 8;
+	// Collector Motors
+	public int collectorMotorLeft = 9;
+	public int collectorMotorRight = 8;
+	// Victors for collector (control them if they are present)
+	public int collectorVictorLeft = 8;
+	public int collectorVictorRight = 9;
 	
 	// PDP power channels for the motors
 	public int rightDriveMotorMasterPDP = 0;
@@ -44,6 +45,7 @@ public class RobotIndexing {
 	// Button indexes
 	public int c_collectorIntakeButton = 1;
 	public int c_collectorExpelButton = 2;
+	public int c_collectorArmToggle = 4;
 	
 	public int c_hopperButton = 0;	// 0 is unassigned
 	public int c_liftAxis = 1;
@@ -75,54 +77,17 @@ public class RobotIndexing {
 	public int shifterSolenoidRight_out = 1;
 	// Arm Solenoids and Modules
 	public int armSolenoidsModule = 0;
-	public int armSolenoidLeft_in = 2;
-	public int armSolenoidLeft_out = 3;
-	public int armSolenoidRight_in = 4;
-	public int armSolenoidRight_out = 5;
+	public int armSolenoid_in = 4;
+	public int armSolenoid_out = 5;
+	public int armSolenoidRight_in = 6;
+	public int armSolenoidRight_out = 7;
 	////
 	
 	// PID speed vals
 	public double driveMaxRPM = 1500;
 	////
 	
-	//////// PID
-	//// Class for PID values
-	public class PIDVals {
-		public double F = 0.0;
-		public double P = 0.0;
-		public double I = 0.0;
-		public double D = 0.0;
-		public void setVals(double f, double p, double i, double d) { F=f; P=p; I=i; D=d; }
-	}
-	////
-	
 	//// PIDValues
-	public PIDVals shooterPIDVals;
-	public PIDVals drivePIDVals;
-	////
-	
-	//// Private Init Functions
-	private void initPIDVals() {
-		initShooterPIDVals();
-		initDrivePIDVals();
-	}
-	private void initShooterPIDVals() {
-		shooterPIDVals = new PIDVals();
-		shooterPIDVals.setVals(0.0, 0.0, 0.0, 0.0);
-	}
-	private void initDrivePIDVals() {
-		drivePIDVals = new PIDVals();
-		drivePIDVals.setVals(0.0,1.5,0.0001,4.5);
-	}
-	////
-	////////
-	
-	//////// Subsystem ID
-	//// For Error Identification
-	private int systemIDit = 0;
-	public int getNextSystemID() {
-		return systemIDit++;
-	}
-	////
+	public SPID liftSPID;
 	////////
 }

@@ -22,6 +22,10 @@ public class AutonomousControl {
 	AutoProgram driveForTimeGorilla;
 	AutoProgram sensorsTest;
 	AutoProgram liftPIDTune;
+	AutoProgram driveDistanceTest;
+	AutoProgram driveAngleTest;
+	AutoProgram driveToRight_center;
+	AutoProgram driveToLeft_center;
 	
 	public AutonomousControl(SubsystemsControl subsystems) {
 				
@@ -32,6 +36,10 @@ public class AutonomousControl {
 		driveForTimeGorilla = new DriveForTimeGorilla(subsystems);
 		sensorsTest = new SensorsTest(subsystems);
 		liftPIDTune = new LiftPIDTune(subsystems);
+		driveDistanceTest = new DriveDistanceTest(subsystems);
+		driveAngleTest = new DriveAngleTest(subsystems);
+		driveToRight_center = new DriveToRight_Center(subsystems);
+		driveToLeft_center = new DriveToLeft_Center(subsystems);
 		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
@@ -44,6 +52,10 @@ public class AutonomousControl {
 		autoChooser.addObject("Auto Gorilla", driveForTimeGorilla);
 		autoChooser.addObject("Sensors Test", sensorsTest);
 		autoChooser.addObject("Lift PID Tune", liftPIDTune);
+		autoChooser.addObject("Drive Distance Test", driveDistanceTest);
+		autoChooser.addObject("Drive Angle Test", driveAngleTest);
+		autoChooser.addObject("Drive To Right - Center", driveToRight_center);
+		autoChooser.addObject("Drive To Left - Center", driveToLeft_center);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);
@@ -66,4 +78,5 @@ public class AutonomousControl {
 		if (autoChooser.getSelected() == null) return;
 		autoChooser.getSelected().runIncomplete();
 	}
+	
 }

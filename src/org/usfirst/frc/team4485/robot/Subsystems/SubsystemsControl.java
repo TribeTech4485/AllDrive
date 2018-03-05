@@ -46,6 +46,11 @@ public class SubsystemsControl {
 	public void killAll() {
 		// Kill each subsystem 
 		driveSystem.killAll();
+		shifterPneumaticSystem.killAll();
+		serialSystem.killAll();
+		liftSystem.killAll();
+		collectorSystem.killAll();
+		cubeTrackingSystem.killAll();
 		
 		//System.out.println("WARNING: Subsystems - killAll() was called!");
 	}

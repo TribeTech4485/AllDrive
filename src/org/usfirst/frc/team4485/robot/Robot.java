@@ -57,20 +57,49 @@ public class Robot extends MichaelBot {
 			duration = System.currentTimeMillis() - cycleStartTime;
 			SmartDashboard.putNumber("Cycle Time", duration);
 		}
+				
 		autonomousControl.disableAuto();	// Stop auto
 		//subsystems.killAll;
 	}
 
 	@Override
-	public void operatorControl() {		
-		while(isEnabled() && isOperatorControl()) {		// Run while teleOp is enabled
-			cycleStartTime = System.currentTimeMillis();
+	public void operatorControl() {
+		boolean stepAuto = userControl.getRawDriveButton(2);
+		while (isEnabled() && isOperatorControl()) {
+			while(isEnabled() && isOperatorControl() && !stepAuto) {		// Run while teleOp is enabled
+				cycleStartTime = System.currentTimeMillis();
+				
+				if (userControl.getRawDriveButton(7)) {
+					stepAuto = true;
+					break;
+				}
+				
+				teleOpControl.update();			// Update teleOp
+				
+				duration = System.currentTimeMillis() - cycleStartTime;
+				SmartDashboard.putNumber("Cycle Time", duration);
+			}
 			
-			teleOpControl.update();			// Update teleOp
-			
-			duration = System.currentTimeMillis() - cycleStartTime;
-			SmartDashboard.putNumber("Cycle Time", duration);
+			int iterationNum = 0;
+			while (isEnabled() && isOperatorControl() && stepAuto) {
+				cycleStartTime = System.currentTimeMillis();
+				
+				userControl.updateControls();
+				if (userControl.getRawDriveButton(1)) {
+					autonomousControl.runAuto();
+					iterationNum++;
+				} else if (userControl.getRawDriveButton(3)) {
+					autonomousControl.disableAuto();
+					stepAuto = false;
+					break;
+				}
+				duration = System.currentTimeMillis() - cycleStartTime;
+				
+				SmartDashboard.putNumber("Auto Iteration", iterationNum);
+				SmartDashboard.putNumber("Cycle Time", duration);
+			}
 		}
+
 	}
 	
 	@Override
@@ -82,6 +111,5 @@ public class Robot extends MichaelBot {
 
 	@Override
 	public void test() {
-		
 	}
 }

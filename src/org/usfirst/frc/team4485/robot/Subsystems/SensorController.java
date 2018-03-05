@@ -15,6 +15,15 @@ import edu.wpi.first.wpilibj.SPI;
  * ------ COMMENTS --------
  */
 
+/*
+ * 
+ * SYSTEM USAGE --
+ * This system is used for general sensors (AHRS, Power Sensors, etc)
+ * For subsystem specific sensors, use the subsystem class
+ * Drive System might need to use general sensors??
+ * 
+ */
+
 
 public class SensorController {
 	
@@ -71,8 +80,8 @@ public class SensorController {
 	
 	//// Getters and setters for motors --------
 	public void setRPMs(double left, double right) {
-		leftDriveRPM = left;
-		rightDriveRPM = right;
+		leftDriveRPM = Math.abs(left);
+		rightDriveRPM = Math.abs(right);
 	}
 	public void setOffsets(double left, double right) {
 		leftDriveOffset_cm = left;
