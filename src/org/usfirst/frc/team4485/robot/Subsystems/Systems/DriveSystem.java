@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 // Add comments
 
@@ -41,11 +43,16 @@ public class DriveSystem extends Subsystem {
 	//private double leftEncVelocity = 0.0, rightEncVelocity = 0.0;
 	
 	// Iterative Function Values
-	private double driveToDistanceBaseSpeed = 0.15;		// This is the base speed used to adjust for drive distance
+	private double driveToDistanceBaseSpeed = 0.25;		// This is the base speed used to adjust for drive distance
 	private double driveToDistanceMinSpeed = 0.10;		// The minimum speed to drive the motors while driving for distance
-	private double driveToDistanceMaxSpeed = 0.30;		// The maximum speed to drive the motors while driving for distance
+	private double driveToDistanceMaxSpeed = 5.0;		// The maximum speed to drive the motors while driving for distance
 	private double driveToDistanceStartLeft = 0.0;		// The starting position of the left wheels (in centimeters)
 	private double driveToDistanceStartRight = 0.0;		// The starting position of the right wheels (in centimeters)
+	
+	private double driveToAngleBaseSpeed = 0.40;
+	private double driveToAngleMinSpeed = 0.20;
+	private double driveToAngleMaxSpeed = 0.80;
+	private double driveToAngleResetThreshold = 1.0;
 	
 	private double driveToDistanceResetThreshold_cm = 1.25;	// Threshold for resetting of driveToDistance (in centimeters)
 	private boolean driveToDistanceInitialized = false;	// Boolean to control the iterative driveToDistance function
@@ -79,8 +86,8 @@ public class DriveSystem extends Subsystem {
 	protected void killSystem() {
 		drive4Motors(0,0);
 		resetDriveToDistance();
-		encodersInitialized = false;
 		update();
+		encodersInitialized = false;
 	}
 
 	@Override
@@ -122,19 +129,35 @@ public class DriveSystem extends Subsystem {
 		double leftDistance = Robot.sensorController.getLeftOffset_cm() - driveToDistanceStartLeft;
 		double rightDistance = Robot.sensorController.getRightOffset_cm() - driveToDistanceStartRight;
 		
-		double leftError = distance_cm - leftDistance;
-		double rightError = distance_cm - rightDistance;
+		double leftError = Math.abs(distance_cm) - Math.abs(leftDistance);
+		double rightError = Math.abs(distance_cm) - Math.abs(rightDistance);
 		
-		double percentagePer_cm = driveToDistanceBaseSpeed / distance_cm;
+		double percentagePer_cm = driveToDistanceBaseSpeed / Math.abs(distance_cm);
 		
 		// Run the control on both sides
 		double leftDriveMod = leftError * percentagePer_cm;
 		double rightDriveMod = rightError * percentagePer_cm;
 		
+		leftDriveMod += driveToDistanceBaseSpeed;
+		rightDriveMod += driveToDistanceBaseSpeed;
+		
+		SmartDashboard.putNumber("Left Drive Distance", leftDistance);
+		SmartDashboard.putNumber("Right Drive Distance", rightDistance);
+		
+		SmartDashboard.putNumber("Left Drive Mod", leftDriveMod);
+		SmartDashboard.putNumber("Right Drive Mod", rightDriveMod);
+		
+		SmartDashboard.putNumber("Left Drive Offset", leftError);
+		SmartDashboard.putNumber("Right Drive Offset", rightError);
+		
 		if (leftDriveMod < driveToDistanceMinSpeed) leftDriveMod = driveToDistanceMinSpeed;
 		else if (leftDriveMod > driveToDistanceMaxSpeed) leftDriveMod = driveToDistanceMaxSpeed;
 		if (rightDriveMod < driveToDistanceMinSpeed) rightDriveMod = driveToDistanceMinSpeed;
 		else if (rightDriveMod > driveToDistanceMaxSpeed) rightDriveMod = driveToDistanceMaxSpeed;
+		
+		// Correct for direction
+		leftDriveMod *= Math.abs(distance_cm) / distance_cm;
+		rightDriveMod *= Math.abs(distance_cm) / distance_cm;
 		
 		drive4Motors(leftDriveMod, rightDriveMod);
 		
@@ -147,6 +170,39 @@ public class DriveSystem extends Subsystem {
 		
 		return (leftError + rightError) / 2;	// Otherwise return the actual error
 	}
+	
+	public double driveToAngle(double angle) {
+		double percentagePerDegree = driveToAngleBaseSpeed / 180;
+		double angleOffset = angle - Robot.sensorController.getAHRSYaw();
+		double driveMod = Math.abs(angleOffset * percentagePerDegree);
+		
+		
+		SmartDashboard.putNumber("Angle Degree", Robot.sensorController.getAHRSYaw());
+		SmartDashboard.putNumber("Angle Offset", angleOffset);
+		
+		double leftDriveMod, rightDriveMod;
+		if (angleOffset < 0) {
+			leftDriveMod = driveMod * -1;
+			rightDriveMod = driveMod;
+		} else {
+			leftDriveMod = driveMod;
+			rightDriveMod = driveMod * -1;
+		}
+		
+		if (Math.abs(leftDriveMod) < driveToAngleMinSpeed) leftDriveMod = driveToAngleMinSpeed * (Math.abs(leftDriveMod) / leftDriveMod);
+		else if (Math.abs(leftDriveMod) > driveToAngleMaxSpeed) leftDriveMod = driveToAngleMaxSpeed * (Math.abs(leftDriveMod) / leftDriveMod);
+		if (Math.abs(rightDriveMod) < driveToAngleMinSpeed) rightDriveMod = driveToAngleMinSpeed * (Math.abs(rightDriveMod) / rightDriveMod);
+		else if (Math.abs(rightDriveMod) > driveToAngleMaxSpeed) rightDriveMod = driveToAngleMaxSpeed * (Math.abs(rightDriveMod) / rightDriveMod);
+		
+		drive4Motors(leftDriveMod, rightDriveMod);
+		
+		SmartDashboard.putNumber("Left Drive Mod", leftDriveMod);
+		SmartDashboard.putNumber("Right Drive Mod", rightDriveMod);
+		
+		if (Math.abs(angleOffset) < driveToAngleResetThreshold) angleOffset = 0;
+		return Math.abs(angleOffset);
+	}
+	
 	public void resetDriveToDistance() {
 		driveToDistanceInitialized = false;
 	}
