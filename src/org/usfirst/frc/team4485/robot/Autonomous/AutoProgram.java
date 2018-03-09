@@ -2,6 +2,8 @@ package org.usfirst.frc.team4485.robot.Autonomous;
 
 import org.usfirst.frc.team4485.robot.Subsystems.SubsystemsControl;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 // TODO: Comment here too
 
 public abstract class AutoProgram {
@@ -19,6 +21,8 @@ public abstract class AutoProgram {
 	// Iterative values
 	protected int step = 0;	// Step number for iterative auto programs
 	//
+	
+	protected String gameSpecificMessage;
 	
 	public AutoProgram(SubsystemsControl _subsystems) {
 		subsystems = _subsystems;		
@@ -49,6 +53,7 @@ public abstract class AutoProgram {
 		if (!auto_started && !auto_complete) {
 			//subsystems.driveSystem.zeroYaw();
 			init();
+			gameSpecificMessage = DriverStation.getInstance().getGameSpecificMessage();
 			auto_started = true;
 		}
 		
