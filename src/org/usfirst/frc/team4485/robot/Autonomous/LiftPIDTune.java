@@ -41,6 +41,8 @@ public class LiftPIDTune extends AutoProgram {
 
 	@Override
 	protected void run() {
+		subsystems.liftSystem.setLiftPIDOverride(true);
+		
 		// Get and update the PID values from the dash board
 		spid.pGain = SmartDashboard.getNumber("Lift P", 0);
 		spid.iGain = SmartDashboard.getNumber("Lift I", 0);
@@ -68,6 +70,7 @@ public class LiftPIDTune extends AutoProgram {
 		// Control the lift
 		subsystems.liftSystem.setLift(setAmount);
 		subsystems.liftSystem.update();
+		subsystems.liftSystem.setLiftPIDOverride(false);
 	}
 
 }
