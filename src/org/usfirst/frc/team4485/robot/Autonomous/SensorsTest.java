@@ -19,6 +19,7 @@ public class SensorsTest extends AutoProgram {
 
 	@Override
 	protected void run() {
+		subsystems.liftSystem.setLiftPIDOverride(true);
 		subsystems.liftSystem.update();
 		SmartDashboard.putNumber("Lift Position", subsystems.liftSystem.getPosition());
 	}
