@@ -10,8 +10,8 @@ public class CollectorSystem extends Subsystem{
 	// Motor Control Values
 	private double intakeSpeed = 1.0;
 	private double expelSpeed = -1.0;
-	private double setSpeed = 0;
-	private boolean intake = false, expel = false;
+	private double spinSpeed = 1.0;
+	private boolean intake = false, expel = false, spin = false;;
 	
 	// Pneumatic Control Values
 	private boolean armsOut = false;
@@ -64,6 +64,9 @@ public class CollectorSystem extends Subsystem{
 	public void setExpel(boolean run) {
 		expel = run;
 	}
+	public void setSpin(boolean run) {
+		spin = run;
+	}
 	public void setIntakeSpeed(double speed) {
 		intakeSpeed = speed;
 	}
@@ -78,15 +81,28 @@ public class CollectorSystem extends Subsystem{
 	//// ----
 	
 	private void updateMotorControl() {
-		if (intake) setSpeed = intakeSpeed;
-		else if (expel) setSpeed = expelSpeed;
-		else setSpeed = 0;
-		collectorMotorLeft.set(setSpeed);
-		collectorMotorRight.set(-setSpeed);
+		double rightSpeed = 0;
+		double leftSpeed = 0;
+		
+		if (intake) {
+			leftSpeed = intakeSpeed;
+			rightSpeed = intakeSpeed;
+		}
+		else if (expel) {
+			leftSpeed = expelSpeed;
+			rightSpeed = expelSpeed;
+		}
+		else if (spin) {
+			leftSpeed = spinSpeed;
+			rightSpeed = -spinSpeed;
+		}
+		
+		collectorMotorLeft.set(leftSpeed);
+		collectorMotorRight.set(-rightSpeed);
 		
 		// Update Victors
-		collectorVictorLeft.set(setSpeed);
-		collectorVictorRight.set(-setSpeed);
+		collectorVictorLeft.set(leftSpeed);
+		collectorVictorRight.set(-rightSpeed);
 	}
 	private void updatePneumaticControl() {
 		armSolenoid_in.set(!armsOut);
