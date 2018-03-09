@@ -45,11 +45,14 @@ public class RobotIndexing {
 	// Button indexes
 	public int c_collectorIntakeButton = 1;
 	public int c_collectorExpelButton = 2;
+	public int c_collectorSpinButton = 3;
 	public int c_collectorArmToggle = 4;
+	public int c_liftHomeButton = 5;
+	public int c_liftPos2Button = 6;
+	public int c_liftPos3Button = 9;
 	
 	public int c_hopperButton = 0;	// 0 is unassigned
-	public int c_liftAxis = 1;
-	public int c_liftButton = 3;
+	public int c_liftAxis = 0;
 	
 	public int d_turnToAngleButton = 6;
 	public int d_brakeButton = 0;//5;	// Left Shoulder Button (Unassigned)
