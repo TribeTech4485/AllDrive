@@ -1,6 +1,5 @@
 package org.usfirst.frc.team4485.robot.Subsystems.Systems;
 
-import org.usfirst.frc.team4485.robot.Robot;
 import org.usfirst.frc.team4485.robot.Subsystems.Subsystem;
 import org.usfirst.frc.team4485.robot.Subsystems.PIDController.SPID;
 import org.usfirst.frc.team4485.robot.Subsystems.PIDController.PIDController;
@@ -33,7 +32,7 @@ public class LiftSystem extends Subsystem{
 	private int homingStep = 0;
 	
 	private int numLiftPresets = 7;
-	private double[] liftPresetPositions = {0, -1000, -2000, -6500, -9300, -19400, -24700};
+	private double[] liftPresetPositions = {0, -1000, -2000, -8300, -9300, -19400, -24700};
 	
 	private DigitalInput lowerLimitSwitch;
 	
@@ -102,6 +101,7 @@ public class LiftSystem extends Subsystem{
 		return liftPosition;
 	}
 	public double getLiftOffset() {
+		if (pidOverride) return 0;
 		return Math.abs(liftSetPosition - liftPosition);
 	}
 	////
