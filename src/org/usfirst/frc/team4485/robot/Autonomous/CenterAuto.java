@@ -14,11 +14,15 @@ public class CenterAuto extends AutoProgram {
 	@Override
 	protected void init() {
 		// TODO Auto-generated method stub
-		
+		subsystems.sensorController.zeroAHRSYaw();
 	}
 
 	@Override
 	protected void run() {
+		// For testing without lift use:
+		subsystems.liftSystem.setLiftPIDOverride(false);
+		// Otherwise don't set it, or set it to false
+		
 		SmartDashboard.putString("FMS Message", gameSpecificMessage);
 		subsystems.driveSystem.setBraking(true);
 		subsystems.shifterPneumaticSystem.shiftDown();
@@ -27,9 +31,13 @@ public class CenterAuto extends AutoProgram {
 		} else if (gameSpecificMessage.charAt(0) == 'L') {
 			auto_complete = driveToLeft();
 		}
+		
+		SmartDashboard.putNumber("Yaw", subsystems.sensorController.getAHRSYaw());
+		
 		subsystems.driveSystem.update();
 		subsystems.shifterPneumaticSystem.update();
 		subsystems.collectorSystem.update();
+		subsystems.liftSystem.update();
 	}
 	
 	double startTime = -1;
@@ -37,31 +45,49 @@ public class CenterAuto extends AutoProgram {
 	private boolean driveToLeft() {
 		switch (step) {
 		case 0:
+			// Move the lift to the switch preset, drive forward
+			subsystems.liftSystem.setLiftPosition_presetNum(3);
 			if (subsystems.driveSystem.driveToDistance(-91.44) < 1) step++;
 			break;
 		case 1:
-			if (subsystems.driveSystem.driveToAngle(72) < 1) step++;
+			// Turn the the left
+			if (subsystems.driveSystem.driveToAngle(-72) < 1) step++;
 			break;
 		case 2:
+			// Drive forward
 			if (subsystems.driveSystem.driveToDistance(-248.92) < 1) step++;
 			break;
 		case 3:
-			if (subsystems.driveSystem.driveToAngle(-2) < 1) step++;
+			// Straighten back up
+			if (subsystems.driveSystem.driveToAngle(0) < 1) step++;
 			break;
 		case 4:
-			// -121.92 cm
-			if (subsystems.driveSystem.driveToDistance(-91.92) < 1) step++;
+			if (subsystems.liftSystem.getLiftOffset() > 200) break;	// check if the lift is in the correct position (to avoid damage)
+			// Move forward to the switch with timeout so we can stop if we hit it early
+			// -121.92 cm	
+			if (subsystems.driveSystem.driveToDistance(-121.92, 5000) < 1) step++;	// Drive to distance with a timeout of 5000 ms
 			break;
 		case 5:
+			// Expel into the switch
 			subsystems.collectorSystem.setExpel(true);
 			if (startTime < 0) startTime = System.currentTimeMillis();
+			SmartDashboard.putNumber("Time", System.currentTimeMillis() - startTime);
 			if (System.currentTimeMillis() - startTime > 250) {
-				SmartDashboard.putNumber("Time", System.currentTimeMillis() - startTime);
 				subsystems.collectorSystem.setExpel(false);
 				startTime = -1;
 				step++;
 			}
 		case 6:
+			// Backup
+			if (subsystems.driveSystem.driveToDistance(91.92) < 1) step++;
+			break;
+		case 7:
+			subsystems.driveSystem.drive4Motors(0, 0);
+			// Home the lift
+			if (subsystems.liftSystem.homeLift()) step++;
+			break;
+		case 8:
+			// Stop
 			subsystems.driveSystem.setBraking(false);
 			subsystems.shifterPneumaticSystem.shiftDown();
 			return true;
@@ -73,11 +99,12 @@ public class CenterAuto extends AutoProgram {
 		switch (step) {	// Step is protected by the abstract class
 		case 0:
 			// Drive forward 91.44 cm (3 ft)
+			subsystems.liftSystem.setLiftPosition_presetNum(3);
 			if (subsystems.driveSystem.driveToDistance(-91.44) < 1) step ++;
 			break;
 		case 1:
 			// Turn to -40 degrees
-			if (subsystems.driveSystem.driveToAngle(-30) < 1) step ++;
+			if (subsystems.driveSystem.driveToAngle(30) < 1) step ++;
 			break;
 		case 2:
 			//-96.68
@@ -85,21 +112,35 @@ public class CenterAuto extends AutoProgram {
 			break;
 		case 3:
 			// Turn to 0 degrees
-			if (subsystems.driveSystem.driveToAngle(2) < 1) step++;
+			if (subsystems.driveSystem.driveToAngle(0) < 1) step++;
 			break;
 		case 4:
 			// Drive forward 60.96 cm (3 ft)
-			if (subsystems.driveSystem.driveToDistance(-91.44) < 1) step++;
+			if (subsystems.liftSystem.getLiftOffset() > 200) break;	// check if the lift is in the correct position (to avoid damage)
+			if (subsystems.driveSystem.driveToDistance(-91.44, 5000) < 1) step++;
 			break;
 		case 5:
+			// Expel the block into the switch
 			subsystems.collectorSystem.setExpel(true);
 			if (startTime < 0) startTime = System.currentTimeMillis();
+			SmartDashboard.putNumber("Time", System.currentTimeMillis() - startTime);
 			if (System.currentTimeMillis() - startTime > 250) {
 				subsystems.collectorSystem.setExpel(false);
 				startTime = -1;
 				step++;
 			}
+			break;
 		case 6:
+			// Backup
+			if (subsystems.driveSystem.driveToDistance(91.44) < 1) step++;
+			break;
+		case 7:
+			subsystems.driveSystem.drive4Motors(0, 0);
+			// Home the lift
+			if (subsystems.liftSystem.homeLift()) step++;
+			break;
+		case 8:
+			// Stop
 			subsystems.driveSystem.setBraking(false);
 			subsystems.shifterPneumaticSystem.shiftDown();			
 			return true;
