@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /*
@@ -41,6 +42,7 @@ public class SensorController {
 	private boolean ahrsError = false;
 	public boolean ahrsYawZeroed = false;	// I don't think this is ever used, check that for me?
 	public double ahrsYawMultiplier = -1;	// Invert the YAW when the GYRO is upside down
+	private double ahrsZeroValue = 0;
 	
 	private double leftDriveRPM = 0.0, rightDriveRPM = 0.0;
 	private double leftDriveOffset_cm = 0.0, rightDriveOffset_cm = 0.0;
@@ -106,13 +108,51 @@ public class SensorController {
 	}
 	public boolean isAHRSError() { return ahrsError; }
 	public boolean zeroAHRSYaw() {
-		for (int i = 0; i < 20; i++) {
+		/*for (int i = 0; i < 20; i++) {
 			ahrs.zeroYaw();
 			if (isAHRSYawZeroed()) return true;
 		}
-		return false;
+		return false;*/
+		ahrsZeroValue = getRawAHRSYaw();
+		return true;
 	}
-	public double getAHRSYaw() { if (!isAHRSError()) return ahrs.getYaw() * ahrsYawMultiplier; else return 0;}
+	public double getRawAHRSYaw() { if (!isAHRSError()) return ahrs.getYaw() * ahrsYawMultiplier; else return 0;}
+	public double getAHRSYaw() {
+		/*double rawYaw = getRawAHRSYaw();
+		double yaw = 0;
+		if (rawYaw < 0 && ahrsZeroValue < 0) yaw = rawYaw - ahrsZeroValue;
+		else if (rawYaw < 0 && ahrsZeroValue >= 0) yaw = Math.abs(rawYaw) + ahrsZeroValue;
+		else if (rawYaw >= 0 && ahrsZeroValue < 0) yaw = rawYaw + ahrsZeroValue;
+		else if (rawYaw >= 0 && ahrsZeroValue >= 0) yaw = rawYaw - ahrsZeroValue;
+		
+		SmartDashboard.putNumber("Zero Yaw Val", ahrsZeroValue);
+		if (yaw > 180) yaw = 180 - yaw;
+		else if (yaw < -180) yaw = -180 - yaw;
+			
+				*/
+		//ahrsZeroValue = -80;
+		
+		double rawYaw = getRawAHRSYaw();//-90;//getRawAHRSYaw();
+		double zero360d = ahrsZeroValue + 180;
+		double yaw = rawYaw + 180;
+		
+		yaw -= zero360d;
+		SmartDashboard.putNumber("Yaw Tmp", yaw);
+		while(yaw < 0) {
+			yaw += 360;
+		}
+		while (yaw > 360) {
+			yaw -= 360;
+		}
+		
+		SmartDashboard.putNumber("Zero Yaw Val", zero360d);
+		SmartDashboard.putNumber("Raw Yaw 360", rawYaw + 180);
+		SmartDashboard.putNumber("Yaw 360", yaw);
+		
+		if (yaw > 180) yaw -= 360;
+		
+		return yaw;
+	}
 	//// ------
 	
 	//// Power limit control functions ------
