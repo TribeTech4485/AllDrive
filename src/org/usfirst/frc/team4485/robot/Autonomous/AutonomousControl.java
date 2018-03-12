@@ -28,6 +28,9 @@ public class AutonomousControl {
 	AutoProgram driveToRight_center;
 	AutoProgram driveToLeft_center;
 	AutoProgram centerAuto;
+	AutoProgram rightAuto;
+	AutoProgram leftAuto;
+	AutoProgram baseLine;
 	
 
 	public AutonomousControl(SubsystemsControl subsystems) {
@@ -45,12 +48,16 @@ public class AutonomousControl {
 		driveToRight_center = new DriveToRight_Center(subsystems);
 		driveToLeft_center = new DriveToLeft_Center(subsystems);
 		centerAuto = new CenterAuto(subsystems);
+		rightAuto = new RightAuto(subsystems);
+		leftAuto = new LeftAuto(subsystems);
+		baseLine = new BaseLine(subsystems);
 		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
 		
-		//autoChooser.addObject("Gyro Test", gyroTest);
+		autoChooser.addObject("Gyro Test", gyroTest);
 		autoChooser.addObject("Cube Follow", cubeFollow);
+		autoChooser.addObject("BaseLine", baseLine);
 		//autoChooser.addObject("Test Serial", testSerial);
 		//autoChooser.addObject("Zero Yaw", zeroYaw);
 		//autoChooser.addObject("NetworkTest", networkTest);
@@ -63,6 +70,8 @@ public class AutonomousControl {
 		autoChooser.addObject("Drive To Right - Center", driveToRight_center);
 		autoChooser.addObject("Drive To Left - Center", driveToLeft_center);
 		autoChooser.addObject("Center Auto", centerAuto);
+		autoChooser.addObject("Left Auto", leftAuto);
+		autoChooser.addObject("Right Auto", rightAuto);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);
