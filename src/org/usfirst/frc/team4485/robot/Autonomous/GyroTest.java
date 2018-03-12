@@ -14,12 +14,19 @@ public class GyroTest extends AutoProgram {
 	@Override
 	protected void init() {
 		// TODO Auto-generated method stub
-		
+		subsystems.sensorController.zeroAHRSYaw();
 	}
 
 	@Override
 	protected void run() {
+		
+		//subsystems.sensorController.zeroAHRSYaw();
 		// TODO Auto-generated method stub
+		subsystems.driveSystem.setBraking(false);
+		subsystems.shifterPneumaticSystem.shiftUp();
+		subsystems.driveSystem.update();
+		subsystems.shifterPneumaticSystem.update();
+		SmartDashboard.putNumber("Raw Yaw", subsystems.sensorController.getRawAHRSYaw());
 		SmartDashboard.putNumber("Yaw", subsystems.sensorController.getAHRSYaw());
 	}
 
