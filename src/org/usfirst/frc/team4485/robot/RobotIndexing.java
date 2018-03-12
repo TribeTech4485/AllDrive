@@ -40,7 +40,7 @@ public class RobotIndexing {
 	
 	//// Controller indexes
 	public int driveController = 0;
-	public int controlController = 0;
+	public int controlController = 1;
 	
 	// Button indexes
 	public int c_collectorIntakeButton = 1;
