@@ -43,15 +43,17 @@ public class DriveSystem extends Subsystem {
 	//private double leftEncVelocity = 0.0, rightEncVelocity = 0.0;
 	
 	// Iterative Function Values
-	private double driveToDistanceBaseSpeed = 0.25;		// This is the base speed used to adjust for drive distance
-	private double driveToDistanceMinSpeed = 0.10;		// The minimum speed to drive the motors while driving for distance
+	private double driveToDistanceBaseSpeed = 0.7;//0.4;//0.25;		// This is the base speed used to adjust for drive distance
+	private double driveToDistanceMinSpeed = 0.25;//0.10;		// The minimum speed to drive the motors while driving for distance
 	private double driveToDistanceMaxSpeed = 5.0;		// The maximum speed to drive the motors while driving for distance
 	private double driveToDistanceStartLeft = 0.0;		// The starting position of the left wheels (in centimeters)
 	private double driveToDistanceStartRight = 0.0;		// The starting position of the right wheels (in centimeters)
+	private double driveToDistanceStartTime = -1;		// Start time used for timeout of drive to distance
+	private double driveToDistanceStartAngle = 0;
 	
-	private double driveToAngleBaseSpeed = 0.40;
-	private double driveToAngleMinSpeed = 0.20;
-	private double driveToAngleMaxSpeed = 0.80;
+	private double driveToAngleBaseSpeed = 0.6;//0.40;
+	private double driveToAngleMinSpeed = 0.3;//0.2;
+	private double driveToAngleMaxSpeed = 1.0;
 	private double driveToAngleResetThreshold = 1.0;
 	
 	private double driveToDistanceResetThreshold_cm = 1.25;	// Threshold for resetting of driveToDistance (in centimeters)
@@ -117,10 +119,20 @@ public class DriveSystem extends Subsystem {
 	public double getRightOffset_cm() {
 		return rightOffset_cm;
 	}
-	
+		
+	// Function to call driveToDistance with timeout
+	public double driveToDistance(double distance_cm, double timeout_ms) {
+		double driveToDistanceReturn = driveToDistance(distance_cm);
+		if (System.currentTimeMillis() - driveToDistanceStartTime > timeout_ms) {
+			drive4Motors(0,0);
+			return 0;
+		}
+		return driveToDistanceReturn;
+	}
 	// Function to iteratively drive a distance
 	public double driveToDistance(double distance_cm) {
 		if (!driveToDistanceInitialized) {
+			driveToDistanceStartTime = System.currentTimeMillis();
 			driveToDistanceStartLeft = Robot.sensorController.getLeftOffset_cm();
 			driveToDistanceStartRight = Robot.sensorController.getRightOffset_cm();
 			driveToDistanceInitialized = true;
@@ -158,7 +170,7 @@ public class DriveSystem extends Subsystem {
 		// Correct for direction
 		leftDriveMod *= Math.abs(distance_cm) / distance_cm;
 		rightDriveMod *= Math.abs(distance_cm) / distance_cm;
-		
+				
 		drive4Motors(leftDriveMod, rightDriveMod);
 		
 		// Check the reset threshold
@@ -169,6 +181,83 @@ public class DriveSystem extends Subsystem {
 		}
 		
 		return (leftError + rightError) / 2;	// Otherwise return the actual error
+	}
+	// Function to iteratively drive a distance
+	public double driveToDistanceStraight(double distance_cm) {
+		if (!driveToDistanceInitialized) {
+			driveToDistanceStartAngle = Robot.sensorController.getAHRSYaw();
+			driveToDistanceStartTime = System.currentTimeMillis();
+			driveToDistanceStartLeft = Robot.sensorController.getLeftOffset_cm();
+			driveToDistanceStartRight = Robot.sensorController.getRightOffset_cm();
+			driveToDistanceInitialized = true;
+		}
+		// Calculate offset from start
+		double leftDistance = Robot.sensorController.getLeftOffset_cm() - driveToDistanceStartLeft;
+		double rightDistance = Robot.sensorController.getRightOffset_cm() - driveToDistanceStartRight;
+		
+		double leftError = Math.abs(distance_cm) - Math.abs(leftDistance);
+		double rightError = Math.abs(distance_cm) - Math.abs(rightDistance);
+		
+		double percentagePer_cm = driveToDistanceBaseSpeed / Math.abs(distance_cm);
+		
+		// Run the control on both sides
+		double leftDriveMod = leftError * percentagePer_cm;
+		double rightDriveMod = rightError * percentagePer_cm;
+		
+		leftDriveMod += driveToDistanceBaseSpeed;
+		rightDriveMod += driveToDistanceBaseSpeed;
+		
+		// Calculate the angle offset and use the drive mod from the distance as a base speed for the turn
+		double percentagePerDegree = driveToAngleBaseSpeed / 90;
+		double angleOffset = Robot.sensorController.getAHRSYaw() - driveToDistanceStartAngle;
+		
+		double angleMod = Math.abs(angleOffset * percentagePerDegree);
+		double leftAngleMod, rightAngleMod;
+		if (angleOffset < 0) {
+			leftAngleMod = angleMod;
+			rightAngleMod = angleMod * -1;
+		} else {
+			leftAngleMod = angleMod * -1;
+			rightAngleMod = angleMod;
+		}
+		
+		// Calculate the final value with angle and distance offsets
+		leftDriveMod += leftAngleMod;
+		rightDriveMod += rightAngleMod;
+		
+		SmartDashboard.putNumber("Left Drive Distance", leftDistance);
+		SmartDashboard.putNumber("Right Drive Distance", rightDistance);
+		
+		SmartDashboard.putNumber("Left Drive Mod", leftDriveMod);
+		SmartDashboard.putNumber("Right Drive Mod", rightDriveMod);
+		
+		SmartDashboard.putNumber("Left Drive Offset", leftError);
+		SmartDashboard.putNumber("Right Drive Offset", rightError);
+		
+		if (leftDriveMod < driveToDistanceMinSpeed) leftDriveMod = driveToDistanceMinSpeed;
+		else if (leftDriveMod > driveToDistanceMaxSpeed) leftDriveMod = driveToDistanceMaxSpeed;
+		if (rightDriveMod < driveToDistanceMinSpeed) rightDriveMod = driveToDistanceMinSpeed;
+		else if (rightDriveMod > driveToDistanceMaxSpeed) rightDriveMod = driveToDistanceMaxSpeed;
+		
+		// Correct for direction
+		leftDriveMod *= Math.abs(distance_cm) / distance_cm;
+		rightDriveMod *= Math.abs(distance_cm) / distance_cm;
+				
+		drive4Motors(leftDriveMod, rightDriveMod);
+		
+		// Check the reset threshold
+		double averageError = (leftError + rightError) / 2;
+		if (averageError < driveToDistanceResetThreshold_cm) {
+			driveToDistanceInitialized = false;
+			return 0;	// Return that the error is 0 centimeters if it is within the threshold
+		}
+		
+		return (leftError + rightError) / 2;	// Otherwise return the actual error
+	}
+	
+	
+	public void cancelDriveToDistance() {
+		driveToDistanceInitialized = false;
 	}
 	
 	public double driveToAngle(double angle) {
@@ -182,11 +271,11 @@ public class DriveSystem extends Subsystem {
 		
 		double leftDriveMod, rightDriveMod;
 		if (angleOffset < 0) {
-			leftDriveMod = driveMod * -1;
-			rightDriveMod = driveMod;
-		} else {
 			leftDriveMod = driveMod;
 			rightDriveMod = driveMod * -1;
+		} else {
+			leftDriveMod = driveMod * -1;
+			rightDriveMod = driveMod;
 		}
 		
 		if (Math.abs(leftDriveMod) < driveToAngleMinSpeed) leftDriveMod = driveToAngleMinSpeed * (Math.abs(leftDriveMod) / leftDriveMod);
