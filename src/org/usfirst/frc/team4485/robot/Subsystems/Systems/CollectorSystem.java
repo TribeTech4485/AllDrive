@@ -8,21 +8,20 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class CollectorSystem extends Subsystem{
 	// Motor Control Values
-	private double intakeSpeed = 1.0;
-	private double expelSpeed = -1.0;
+	private double intakeSpeed = -1.0;
+	private double expelSpeed = 1.0;
 	private double spinSpeed = 1.0;
 	private boolean intake = false, expel = false, spin = false;;
 	
 	// Pneumatic Control Values
 	private boolean armsOut = false;
-	private boolean rightArmOut = false;
 	
 	private WPI_TalonSRX collectorMotorLeft, collectorMotorRight;
 	
 	// Victors (control them if they are present)
 	private Victor collectorVictorLeft, collectorVictorRight;
 	
-	private Solenoid armSolenoidRight_in, armSolenoidRight_out;
+	//private Solenoid armSolenoidRight_in, armSolenoidRight_out;
 	private Solenoid armSolenoid_in, armSolenoid_out;
 	
 	@Override
@@ -37,8 +36,8 @@ public class CollectorSystem extends Subsystem{
 		
 		// Initialize Pneumatics
 		// TODO: replace with raise lower solenoids
-		armSolenoidRight_in = new Solenoid(id.armSolenoidsModule, id.armSolenoidRight_in);		// (module, channel on module)
-		armSolenoidRight_out = new Solenoid(id.armSolenoidsModule, id.armSolenoidRight_out);
+		//armSolenoidRight_in = new Solenoid(id.armSolenoidsModule, id.armSolenoidRight_in);		// (module, channel on module)
+		//armSolenoidRight_out = new Solenoid(id.armSolenoidsModule, id.armSolenoidRight_out);
 		
 		armSolenoid_in = new Solenoid(id.armSolenoidsModule, id.armSolenoid_in);
 		armSolenoid_out = new Solenoid(id.armSolenoidsModule, id.armSolenoid_out);
