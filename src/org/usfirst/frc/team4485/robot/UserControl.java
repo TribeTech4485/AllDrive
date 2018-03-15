@@ -13,6 +13,8 @@ public class UserControl {
 		
 		driveController = new Joystick(id.driveController);
 		controlController = new Joystick(id.controlController);
+		buttonBoard = new Joystick(id.buttonBoard);
+		
 		
 		for (int i = 0; i < 9; i++) {
 			lastControlButtonState[i] = false;
@@ -21,6 +23,7 @@ public class UserControl {
 	
 	private Joystick driveController;
 	private Joystick controlController;
+	private Joystick buttonBoard;
 	private static double kDeadBand = 0.02;
 	
 	// Boolean array for debounce
@@ -49,6 +52,10 @@ public class UserControl {
 	public boolean getRawControlButton(int button) {
 		if (button < 1) return false;
 		return controlController.getRawButton(button);
+	}
+	public boolean getRawBoardButton(int button) {
+		if (button < 1) return false;
+		return buttonBoard.getRawButton(button);
 	}
 	public boolean getRawDriveButton(int button) {
 		if (button < 1) return false;
