@@ -10,6 +10,8 @@ public class TeleOpControl {
 	private UserControl userControl;
 	private SubsystemsControl subsystems;
 	
+	private boolean useBoard = true;
+	
 	public TeleOpControl(SubsystemsControl _subsystems, UserControl _userControl) {
 		id = new RobotIndexing();
 		
@@ -30,13 +32,37 @@ public class TeleOpControl {
 		// Drive Information on SmartDashboard
 		SmartDashboard.putNumber("Right Drive", userControl.drive_rightStickY);
 		SmartDashboard.putNumber("Left Drive", userControl.drive_leftStickY);
-		// Control the collector
-		subsystems.collectorSystem.setArms(userControl.getRawControlButton(id.c_collectorArmToggle));
-		subsystems.collectorSystem.setExpel(userControl.getRawControlButton(id.c_collectorExpelButton));
-		subsystems.collectorSystem.setIntake(userControl.getRawControlButton(id.c_collectorIntakeButton));
-		subsystems.collectorSystem.setSpin(userControl.getRawControlButton(id.c_collectorSpinButton));
-		subsystems.collectorSystem.update();
+		if (!useBoard) {
+			// Control the collector
+			subsystems.collectorSystem.setArms(userControl.getRawControlButton(id.c_collectorArmToggle));
+			subsystems.collectorSystem.setExpel(userControl.getRawControlButton(id.c_collectorExpelButton));
+			subsystems.collectorSystem.setIntake(userControl.getRawControlButton(id.c_collectorIntakeButton));
+			subsystems.collectorSystem.setSpin(userControl.getRawControlButton(id.c_collectorSpinButton));
+			
+			if (userControl.getRawControlButton(id.c_liftHomeButton)) subsystems.liftSystem.homeLift();
+			if (userControl.getRawControlButton(id.c_liftPos2Button)) subsystems.liftSystem.setLiftPosition_presetNum(3);
+			if (userControl.getRawControlButton(id.c_liftPos3Button)) subsystems.liftSystem.setLiftPosition_presetNum(6);
+			
+			subsystems.liftSystem.setLiftPIDOverride(false);	//Set this to true if PID is no wanted
+			subsystems.liftSystem.setLift(userControl.getAxis(id.controlController, id.c_liftAxis));
+		} else {
+			// Collector Control
+			subsystems.collectorSystem.setArms(userControl.getRawBoardButton(id.b_armOutButton));
+			subsystems.collectorSystem.setExpel(userControl.getRawBoardButton(id.b_collectorExpelButton));
+			subsystems.collectorSystem.setIntake(userControl.getRawBoardButton(id.b_collectorIntakeButton));
+			if (userControl.getRawBoardButton(id.b_collectorExpelButton) && userControl.getRawBoardButton(id.b_collectorIntakeButton)) subsystems.collectorSystem.setSpin(true);
+			else subsystems.collectorSystem.setSpin(false);
+			
+			if (userControl.getRawBoardButton(id.b_liftHomeButton)) subsystems.liftSystem.homeLift();
+			else if (userControl.getRawBoardButton(id.b_liftPos1Button)) subsystems.liftSystem.setLiftPosition_presetNum(3);
+			else if (userControl.getRawBoardButton(id.b_liftPos2Button)) subsystems.liftSystem.setLiftPosition_presetNum(4);
+			else if (userControl.getRawBoardButton(id.b_liftPos3Button)) subsystems.liftSystem.setLiftPosition_presetNum(5);
+			else if (userControl.getRawBoardButton(id.b_liftPos4Button)) subsystems.liftSystem.setLiftPosition_presetNum(6);
+			else if (userControl.getRawBoardButton(id.b_liftPos5Button)) subsystems.liftSystem.setLiftPosition_presetNum(7);
+		}
 		
+		
+		// Update systems
 		//subsystems.driveSystem.setBraking(userControl.getRawDriveButton(id.d_brakeButton));
 		// Update the drive system
 		//subsystems.shifterPneumaticSystem.setAutoShift(true);
@@ -44,13 +70,7 @@ public class TeleOpControl {
 		subsystems.shifterPneumaticSystem.update();
 		subsystems.driveSystem.update();
 		
-		if (userControl.getRawControlButton(id.c_liftHomeButton)) subsystems.liftSystem.homeLift();
-		if (userControl.getRawControlButton(id.c_liftPos2Button)) subsystems.liftSystem.setLiftPosition_presetNum(3);
-		if (userControl.getRawControlButton(id.c_liftPos3Button)) subsystems.liftSystem.setLiftPosition_presetNum(6);
-		
-		subsystems.liftSystem.setLiftPIDOverride(false);
-		subsystems.liftSystem.setLift(userControl.getAxis(id.controlController, id.c_liftAxis));
-		
+		subsystems.collectorSystem.update();
 		subsystems.liftSystem.update();
 		
 		SmartDashboard.putNumber("Lift Offset", subsystems.liftSystem.getLiftOffset());
