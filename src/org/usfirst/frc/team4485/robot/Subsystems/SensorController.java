@@ -102,6 +102,8 @@ public class SensorController {
 	
 	//// GYRO stuff -----
 
+	@SuppressWarnings("unused")
+	@Deprecated
 	private boolean isAHRSYawZeroed() {
 		if (Math.abs(ahrs.getYaw()) < 1) return true;
 		return false;
