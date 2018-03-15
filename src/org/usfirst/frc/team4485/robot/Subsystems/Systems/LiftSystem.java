@@ -63,9 +63,10 @@ public class LiftSystem extends Subsystem{
 	@Override
 	protected void killSystem() {
 		setLiftPIDOverride(true);
+		setLiftPosition_presetNum(0);
 		setLift(0);
-		encodersInitialized = false;
 		update();
+		encodersInitialized = false;
 		setLiftPIDOverride(false);
 	}
 
