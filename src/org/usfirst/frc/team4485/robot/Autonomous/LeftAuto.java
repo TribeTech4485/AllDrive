@@ -22,6 +22,9 @@ public class LeftAuto extends AutoProgram {
 		subsystems.shifterPneumaticSystem.shiftDown();
 		subsystems.liftSystem.setLiftPIDOverride(true);	// Set this to true if disabling the lift
 		
+		if (gameSpecificMessage.charAt(1) == 'L') {
+			auto_complete = driveToScale();
+		}
 		if (gameSpecificMessage.charAt(0) == 'L') {
 			auto_complete = driveToSwitch();
 		} else {
