@@ -43,17 +43,23 @@ public class DriveSystem extends Subsystem {
 	//private double leftEncVelocity = 0.0, rightEncVelocity = 0.0;
 	
 	// Iterative Function Values
+	// DRIVE DISTANCE SPEEDS ---------	(turn these up ++)
 	private double driveToDistanceBaseSpeed = 0.7;//0.4;//0.25;		// This is the base speed used to adjust for drive distance
-	private double driveToDistanceMinSpeed = 0.25;//0.10;		// The minimum speed to drive the motors while driving for distance
+	private double driveToDistanceMinSpeed = 1.0;//0.25;//0.10;		// The minimum speed to drive the motors while driving for distance
 	private double driveToDistanceMaxSpeed = 5.0;		// The maximum speed to drive the motors while driving for distance
+	// -------------------------------
+	
 	private double driveToDistanceStartLeft = 0.0;		// The starting position of the left wheels (in centimeters)
 	private double driveToDistanceStartRight = 0.0;		// The starting position of the right wheels (in centimeters)
 	private double driveToDistanceStartTime = -1;		// Start time used for timeout of drive to distance
 	private double driveToDistanceStartAngle = 0;
 	
+	// TURN SPEEDS ----------	( Turn these up too XD ^_^)
 	private double driveToAngleBaseSpeed = 0.6;//0.40;
-	private double driveToAngleMinSpeed = 0.3;//0.2;
+	private double driveToAngleMinSpeed = 0.3;//0.2;	// Turn this up a lot
 	private double driveToAngleMaxSpeed = 1.0;
+	// ----------------------
+	
 	private double driveToAngleResetThreshold = 1.0;
 	
 	private double driveToDistanceResetThreshold_cm = 1.25;	// Threshold for resetting of driveToDistance (in centimeters)
@@ -214,11 +220,11 @@ public class DriveSystem extends Subsystem {
 		double angleMod = Math.abs(angleOffset * percentagePerDegree);
 		double leftAngleMod, rightAngleMod;
 		if (angleOffset < 0) {
-			leftAngleMod = angleMod;
-			rightAngleMod = angleMod * -1;
+			leftAngleMod = angleMod * -1;	// Comment out for surge
+			rightAngleMod = angleMod;// * -1;	// Uncomment for surge
 		} else {
-			leftAngleMod = angleMod * -1;
-			rightAngleMod = angleMod;
+			leftAngleMod = angleMod;// * -1;	// Uncomment for surge
+			rightAngleMod = angleMod * -1;	// Comment out for surge
 		}
 		
 		// Calculate the final value with angle and distance offsets
@@ -261,6 +267,7 @@ public class DriveSystem extends Subsystem {
 	}
 	
 	public double driveToAngle(double angle) {
+		angle = angle * -1;
 		double percentagePerDegree = driveToAngleBaseSpeed / 180;
 		double angleOffset = angle - Robot.sensorController.getAHRSYaw();
 		double driveMod = Math.abs(angleOffset * percentagePerDegree);
@@ -271,11 +278,11 @@ public class DriveSystem extends Subsystem {
 		
 		double leftDriveMod, rightDriveMod;
 		if (angleOffset < 0) {
-			leftDriveMod = driveMod;
-			rightDriveMod = driveMod * -1;
+			leftDriveMod = driveMod * -1;	// Comment out for surge;
+			rightDriveMod = driveMod;// * -1;	// Uncomment for surge
 		} else {
-			leftDriveMod = driveMod * -1;
-			rightDriveMod = driveMod;
+			leftDriveMod = driveMod;// * -1;	// Uncomment for surge
+			rightDriveMod = driveMod * -1;	// Comment out for surge
 		}
 		
 		if (Math.abs(leftDriveMod) < driveToAngleMinSpeed) leftDriveMod = driveToAngleMinSpeed * (Math.abs(leftDriveMod) / leftDriveMod);
