@@ -108,12 +108,17 @@ public class LiftSystem extends Subsystem{
 	////
 	
 	private void updateMotorControl() {
+		// REMOVED ALL CONTROL SPEED LIMITERS
+		
 		//if (Math.abs(liftSpeed) > 0.3) liftSpeed = 0.3 * (Math.abs(liftSpeed) / liftSpeed);
-		if (liftSpeed > 0.3) liftSpeed = 0.9;
-		if (liftSpeed < -0.3) liftSpeed = -0.9;
+		//if (liftSpeed > 0.3) liftSpeed = 0.9;
+		//if (liftSpeed < -0.3) liftSpeed = -0.9;
+		if (liftSpeed > 1) liftSpeed = 1;
+		if (liftSpeed < -1) liftSpeed = -1;
+		
 		SmartDashboard.putNumber("Lift System - Lift Speed", liftSpeed);
 		
-		if (liftSpeed <-0.5) liftSpeed = -0.5;
+		//if (liftSpeed <-0.5) liftSpeed = -0.5;
 		if (reverseInput) liftSpeed *= -1;		
 		liftMotor.set(liftSpeed);
 	}
