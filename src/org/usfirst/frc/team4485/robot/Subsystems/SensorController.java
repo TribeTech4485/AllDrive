@@ -103,23 +103,26 @@ public class SensorController {
 	//// GYRO stuff -----
 
 	@SuppressWarnings("unused")
-	@Deprecated
+	//@Deprecated
 	private boolean isAHRSYawZeroed() {
 		if (Math.abs(ahrs.getYaw()) < 1) return true;
 		return false;
 	}
 	public boolean isAHRSError() { return ahrsError; }
 	public boolean zeroAHRSYaw() {
-		/*for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 20; i++) {
 			ahrs.zeroYaw();
 			if (isAHRSYawZeroed()) return true;
 		}
-		return false;*/
-		ahrsZeroValue = getRawAHRSYaw();
-		return true;
+		return false;
+		//ahrsZeroValue = getRawAHRSYaw();
+		//return true;
 	}
 	public double getRawAHRSYaw() { if (!isAHRSError()) return ahrs.getYaw() * ahrsYawMultiplier; else return 0;}
 	public double getAHRSYaw() {
+		SmartDashboard.putNumber("Yaw", getRawAHRSYaw());
+		return getRawAHRSYaw();
+		
 		/*double rawYaw = getRawAHRSYaw();
 		double yaw = 0;
 		if (rawYaw < 0 && ahrsZeroValue < 0) yaw = rawYaw - ahrsZeroValue;
@@ -134,7 +137,7 @@ public class SensorController {
 				*/
 		//ahrsZeroValue = -80;
 		
-		double rawYaw = getRawAHRSYaw();//-90;//getRawAHRSYaw();
+		/*double rawYaw = getRawAHRSYaw();//-90;//getRawAHRSYaw();
 		double zero360d = ahrsZeroValue + 180;
 		double yaw = rawYaw + 180;
 		
@@ -153,7 +156,7 @@ public class SensorController {
 		
 		if (yaw > 180) yaw -= 360;
 		
-		return yaw;
+		return yaw;*/
 	}
 	//// ------
 	
