@@ -31,6 +31,7 @@ public class AutonomousControl {
 	AutoProgram rightAuto;
 	AutoProgram leftAuto;
 	AutoProgram baseLine;
+	AutoProgram driveStraightTest;
 	
 
 	public AutonomousControl(SubsystemsControl subsystems) {
@@ -51,6 +52,7 @@ public class AutonomousControl {
 		rightAuto = new RightAuto(subsystems);
 		leftAuto = new LeftAuto(subsystems);
 		baseLine = new BaseLine(subsystems);
+		driveStraightTest = new DriveStraightTest(subsystems);
 		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
@@ -72,6 +74,7 @@ public class AutonomousControl {
 		autoChooser.addObject("Center Auto", centerAuto);
 		autoChooser.addObject("Left Auto", leftAuto);
 		autoChooser.addObject("Right Auto", rightAuto);
+		autoChooser.addObject("Drive Straight Test", driveStraightTest);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);
