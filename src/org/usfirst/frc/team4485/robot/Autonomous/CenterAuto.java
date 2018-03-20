@@ -20,7 +20,7 @@ public class CenterAuto extends AutoProgram {
 	@Override
 	protected void run() {
 		// For testing without lift use:
-		subsystems.liftSystem.setLiftPIDOverride(false);
+		subsystems.liftSystem.setLiftPIDOverride(true);
 		// Otherwise don't set it, or set it to false
 		
 		SmartDashboard.putString("FMS Message", gameSpecificMessage);
