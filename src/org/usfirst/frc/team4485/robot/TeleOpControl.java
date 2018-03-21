@@ -58,7 +58,7 @@ public class TeleOpControl {
 			else if (userControl.getRawBoardButton(id.b_liftPos2Button)) subsystems.liftSystem.setLiftPosition_presetNum(4);
 			else if (userControl.getRawBoardButton(id.b_liftPos3Button)) subsystems.liftSystem.setLiftPosition_presetNum(5);
 			else if (userControl.getRawBoardButton(id.b_liftPos4Button)) subsystems.liftSystem.setLiftPosition_presetNum(6);
-			else if (userControl.getRawBoardButton(id.b_liftPos5Button)) subsystems.liftSystem.setLiftPosition_presetNum(7);
+			//else if (userControl.getRawBoardButton(id.b_liftPos5Button)) subsystems.liftSystem.setLiftPosition_presetNum(7);
 		}
 		
 		
@@ -66,7 +66,9 @@ public class TeleOpControl {
 		//subsystems.driveSystem.setBraking(userControl.getRawDriveButton(id.d_brakeButton));
 		// Update the drive system
 		//subsystems.shifterPneumaticSystem.setAutoShift(true);
-		subsystems.shifterPneumaticSystem.setAutoShift(true);
+		subsystems.shifterPneumaticSystem.setAutoShift(false);
+		if (userControl.getRawDriveButton(id.d_shiftUp)) subsystems.shifterPneumaticSystem.shiftUp();
+		else if (userControl.getRawDriveButton(id.d_shiftDown)) subsystems.shifterPneumaticSystem.shiftDown();
 		subsystems.shifterPneumaticSystem.update();
 		subsystems.driveSystem.update();
 		
