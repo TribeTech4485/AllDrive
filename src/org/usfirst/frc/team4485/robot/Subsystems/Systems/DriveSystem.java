@@ -45,8 +45,8 @@ public class DriveSystem extends Subsystem {
 	// Iterative Function Values
 	// DRIVE DISTANCE SPEEDS ---------	(turn these up ++)
 	private double driveToDistanceBaseSpeed = 0.7;//0.4;//0.25;		// This is the base speed used to adjust for drive distance
-	private double driveToDistanceMinSpeed = 1.0;//0.25;//0.10;		// The minimum speed to drive the motors while driving for distance
-	private double driveToDistanceMaxSpeed = 5.0;		// The maximum speed to drive the motors while driving for distance
+	private double driveToDistanceMinSpeed = 0.30;//1.0;//0.25;//0.10;		// The minimum speed to drive the motors while driving for distance
+	private double driveToDistanceMaxSpeed = 1.0;		// The maximum speed to drive the motors while driving for distance
 	// -------------------------------
 	
 	private double driveToDistanceStartLeft = 0.0;		// The starting position of the left wheels (in centimeters)
@@ -135,6 +135,14 @@ public class DriveSystem extends Subsystem {
 		}
 		return driveToDistanceReturn;
 	}
+	public double driveToDistanceStraight(double distance_cm, double timeout_ms) {
+		double driveToDistanceReturn = driveToDistanceStraight(distance_cm);
+		if (System.currentTimeMillis() - driveToDistanceStartTime > timeout_ms) {
+			drive4Motors(0,0);
+			return 0;
+		}
+		return driveToDistanceReturn;
+	}
 	// Function to iteratively drive a distance
 	public double driveToDistance(double distance_cm) {
 		if (!driveToDistanceInitialized) {
@@ -213,24 +221,6 @@ public class DriveSystem extends Subsystem {
 		leftDriveMod += driveToDistanceBaseSpeed;
 		rightDriveMod += driveToDistanceBaseSpeed;
 		
-		// Calculate the angle offset and use the drive mod from the distance as a base speed for the turn
-		double percentagePerDegree = driveToAngleBaseSpeed / 90;
-		double angleOffset = Robot.sensorController.getAHRSYaw() - driveToDistanceStartAngle;
-		
-		double angleMod = Math.abs(angleOffset * percentagePerDegree);
-		double leftAngleMod, rightAngleMod;
-		if (angleOffset < 0) {
-			leftAngleMod = angleMod * -1;	// Comment out for surge
-			rightAngleMod = angleMod;// * -1;	// Uncomment for surge
-		} else {
-			leftAngleMod = angleMod;// * -1;	// Uncomment for surge
-			rightAngleMod = angleMod * -1;	// Comment out for surge
-		}
-		
-		// Calculate the final value with angle and distance offsets
-		leftDriveMod += leftAngleMod;
-		rightDriveMod += rightAngleMod;
-		
 		SmartDashboard.putNumber("Left Drive Distance", leftDistance);
 		SmartDashboard.putNumber("Right Drive Distance", rightDistance);
 		
@@ -244,6 +234,25 @@ public class DriveSystem extends Subsystem {
 		else if (leftDriveMod > driveToDistanceMaxSpeed) leftDriveMod = driveToDistanceMaxSpeed;
 		if (rightDriveMod < driveToDistanceMinSpeed) rightDriveMod = driveToDistanceMinSpeed;
 		else if (rightDriveMod > driveToDistanceMaxSpeed) rightDriveMod = driveToDistanceMaxSpeed;
+		
+		// Calculate the angle offset and use the drive mod from the distance as a base speed for the turn
+		double percentagePerDegree = driveToAngleBaseSpeed / 90;
+		double angleOffset = Robot.sensorController.getAHRSYaw() - driveToDistanceStartAngle;
+		
+		double angleMod = Math.abs(angleOffset * percentagePerDegree);
+		double leftAngleMod, rightAngleMod;
+		if (angleOffset < 0) {
+			leftAngleMod = angleMod;// * -1;	// Comment out for surge
+			rightAngleMod = angleMod * -1;	// Uncomment for surge
+		} else {
+			leftAngleMod = angleMod * -1;	// Uncomment for surge
+			rightAngleMod = angleMod;// * -1;	// Comment out for surge
+		}
+		
+		// Calculate the final value with angle and distance offsets
+		leftDriveMod += leftAngleMod;
+		rightDriveMod += rightAngleMod;
+		
 		
 		// Correct for direction
 		leftDriveMod *= Math.abs(distance_cm) / distance_cm;
@@ -278,11 +287,11 @@ public class DriveSystem extends Subsystem {
 		
 		double leftDriveMod, rightDriveMod;
 		if (angleOffset < 0) {
-			leftDriveMod = driveMod * -1;	// Comment out for surge;
-			rightDriveMod = driveMod;// * -1;	// Uncomment for surge
+			leftDriveMod = driveMod;// * -1;	// Comment out for surge;
+			rightDriveMod = driveMod * -1;	// Uncomment for surge
 		} else {
-			leftDriveMod = driveMod;// * -1;	// Uncomment for surge
-			rightDriveMod = driveMod * -1;	// Comment out for surge
+			leftDriveMod = driveMod * -1;	// Uncomment for surge
+			rightDriveMod = driveMod;// * -1;	// Comment out for surge
 		}
 		
 		if (Math.abs(leftDriveMod) < driveToAngleMinSpeed) leftDriveMod = driveToAngleMinSpeed * (Math.abs(leftDriveMod) / leftDriveMod);
