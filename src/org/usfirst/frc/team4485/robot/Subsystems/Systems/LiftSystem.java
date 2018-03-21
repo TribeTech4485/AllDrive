@@ -31,8 +31,8 @@ public class LiftSystem extends Subsystem{
 	private boolean homing = false;	// if the lift is in the process of homing
 	private int homingStep = 0;
 	
-	private int numLiftPresets = 7;
-	private double[] liftPresetPositions = {0, -1000, -2000, -8300, -9300, -19400, -24700};
+	private int numLiftPresets = 8;
+	private double[] liftPresetPositions = {0, -1000, -2000, -8300, -9300, -19400, -24700, -26000};
 	
 	private DigitalInput lowerLimitSwitch;
 	
