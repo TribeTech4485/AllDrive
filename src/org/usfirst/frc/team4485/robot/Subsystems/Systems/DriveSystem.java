@@ -242,11 +242,11 @@ public class DriveSystem extends Subsystem {
 		double angleMod = Math.abs(angleOffset * percentagePerDegree);
 		double leftAngleMod, rightAngleMod;
 		if (angleOffset < 0) {
-			leftAngleMod = angleMod;// * -1;	// Comment out for surge
-			rightAngleMod = angleMod * -1;	// Uncomment for surge
+			leftAngleMod = angleMod * -1;	// Comment out for surge
+			rightAngleMod = angleMod;// * -1;	// Uncomment for surge
 		} else {
-			leftAngleMod = angleMod * -1;	// Uncomment for surge
-			rightAngleMod = angleMod;// * -1;	// Comment out for surge
+			leftAngleMod = angleMod;// * -1;	// Uncomment for surge
+			rightAngleMod = angleMod * -1;	// Comment out for surge
 		}
 		
 		// Calculate the final value with angle and distance offsets
@@ -287,11 +287,11 @@ public class DriveSystem extends Subsystem {
 		
 		double leftDriveMod, rightDriveMod;
 		if (angleOffset < 0) {
-			leftDriveMod = driveMod;// * -1;	// Comment out for surge;
-			rightDriveMod = driveMod * -1;	// Uncomment for surge
+			leftDriveMod = driveMod * -1;	// Comment out for surge;
+			rightDriveMod = driveMod;// * -1;	// Uncomment for surge
 		} else {
-			leftDriveMod = driveMod * -1;	// Uncomment for surge
-			rightDriveMod = driveMod;// * -1;	// Comment out for surge
+			leftDriveMod = driveMod;// * -1;	// Uncomment for surge
+			rightDriveMod = driveMod * -1;	// Comment out for surge
 		}
 		
 		if (Math.abs(leftDriveMod) < driveToAngleMinSpeed) leftDriveMod = driveToAngleMinSpeed * (Math.abs(leftDriveMod) / leftDriveMod);
@@ -380,7 +380,7 @@ public class DriveSystem extends Subsystem {
 				leftMotorMaster.setSelectedSensorPosition(0, 0, 10);
 				rightMotorMaster.setSelectedSensorPosition(0, 0, 10);
 				startPositionLeft_cm = ((leftMotorMaster.getSelectedSensorPosition(0) /  ticksPerRev) * (2 * Math.PI * wheelRadius_cm));
-				startPositionRight_cm = ((rightMotorMaster.getSelectedSensorPosition(0)/ ticksPerRev) * (2 * Math.PI * wheelRadius_cm));
+				startPositionRight_cm = ((rightMotorMaster.getSelectedSensorPosition(0) / ticksPerRev) * (2 * Math.PI * wheelRadius_cm));
 				encodersInitialized = true;
 				
 			}

@@ -53,12 +53,17 @@ public class TeleOpControl {
 			if (userControl.getRawBoardButton(id.b_collectorExpelButton) && userControl.getRawBoardButton(id.b_collectorIntakeButton)) subsystems.collectorSystem.setSpin(true);
 			else subsystems.collectorSystem.setSpin(false);
 			
+			subsystems.liftSystem.setLiftPIDOverride(false);
 			if (userControl.getRawBoardButton(id.b_liftHomeButton)) subsystems.liftSystem.homeLift();
 			else if (userControl.getRawBoardButton(id.b_liftPos1Button)) subsystems.liftSystem.setLiftPosition_presetNum(3);
 			else if (userControl.getRawBoardButton(id.b_liftPos2Button)) subsystems.liftSystem.setLiftPosition_presetNum(4);
 			else if (userControl.getRawBoardButton(id.b_liftPos3Button)) subsystems.liftSystem.setLiftPosition_presetNum(5);
 			else if (userControl.getRawBoardButton(id.b_liftPos4Button)) subsystems.liftSystem.setLiftPosition_presetNum(6);
 			//else if (userControl.getRawBoardButton(id.b_liftPos5Button)) subsystems.liftSystem.setLiftPosition_presetNum(7);
+			else {
+				subsystems.liftSystem.setLiftPIDOverride(true);
+				subsystems.liftSystem.setLift(0);
+			}
 		}
 		
 		

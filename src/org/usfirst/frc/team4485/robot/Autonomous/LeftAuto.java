@@ -85,7 +85,7 @@ public class LeftAuto extends AutoProgram {
 		// Drive to the switch
 		switch (step) {
 		case 0:
-			if (subsystems.driveSystem.driveToDistanceStraight(-365.76, 10000) < 1) step++;
+			if (subsystems.driveSystem.driveToDistanceStraight(-426.72, 10000) < 1) step++;
 			break;
 		case 1:
 			if (subsystems.driveSystem.driveToAngle(90) < 1) step++;
