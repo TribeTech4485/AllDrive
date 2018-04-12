@@ -44,8 +44,8 @@ public class DriveSystem extends Subsystem {
 	
 	// Iterative Function Values
 	// DRIVE DISTANCE SPEEDS ---------	(turn these up ++)
-	private double driveToDistanceBaseSpeed = 0.7;//0.4;//0.25;		// This is the base speed used to adjust for drive distance
-	private double driveToDistanceMinSpeed = 0.30;//1.0;//0.25;//0.10;		// The minimum speed to drive the motors while driving for distance
+	private double driveToDistanceBaseSpeed = 0.1;//0.3;//0.7;//0.4;//0.25;		// This is the base speed used to adjust for drive distance
+	private double driveToDistanceMinSpeed = 0.50;//1.0;//0.25;//0.10;		// The minimum speed to drive the motors while driving for distance
 	private double driveToDistanceMaxSpeed = 1.0;		// The maximum speed to drive the motors while driving for distance
 	// -------------------------------
 	
@@ -56,7 +56,7 @@ public class DriveSystem extends Subsystem {
 	
 	// TURN SPEEDS ----------	( Turn these up too XD ^_^)
 	private double driveToAngleBaseSpeed = 0.6;//0.40;
-	private double driveToAngleMinSpeed = 0.3;//0.2;	// Turn this up a lot
+	private double driveToAngleMinSpeed = 0.4;//0.3;//0.2;	// Turn this up a lot
 	private double driveToAngleMaxSpeed = 1.0;
 	// ----------------------
 	
@@ -380,7 +380,7 @@ public class DriveSystem extends Subsystem {
 				leftMotorMaster.setSelectedSensorPosition(0, 0, 10);
 				rightMotorMaster.setSelectedSensorPosition(0, 0, 10);
 				startPositionLeft_cm = ((leftMotorMaster.getSelectedSensorPosition(0) /  ticksPerRev) * (2 * Math.PI * wheelRadius_cm));
-				startPositionRight_cm = ((rightMotorMaster.getSelectedSensorPosition(0) / ticksPerRev) * (2 * Math.PI * wheelRadius_cm));
+				startPositionRight_cm = ((rightMotorMaster.getSelectedSensorPosition(0)/ ticksPerRev) * (2 * Math.PI * wheelRadius_cm));
 				encodersInitialized = true;
 				
 			}
