@@ -20,12 +20,13 @@ public class CenterAuto extends AutoProgram {
 	@Override
 	protected void run() {
 		// For testing without lift use:
-		subsystems.liftSystem.setLiftPIDOverride(true);
+		subsystems.liftSystem.setLiftPIDOverride(false);
 		// Otherwise don't set it, or set it to false
 		
 		SmartDashboard.putString("FMS Message", gameSpecificMessage);
 		subsystems.driveSystem.setBraking(true);
-		subsystems.shifterPneumaticSystem.shiftDown();
+		//subsystems.shifterPneumaticSystem.shiftDown();
+		subsystems.shifterPneumaticSystem.shiftUp();
 		if (gameSpecificMessage.charAt(0) == 'R') {
 			auto_complete = driveToRight();
 		} else if (gameSpecificMessage.charAt(0) == 'L') {
@@ -51,11 +52,11 @@ public class CenterAuto extends AutoProgram {
 			break;
 		case 1:
 			// Turn the the left
-			if (subsystems.driveSystem.driveToAngle(-72) < 1) step++;
+			if (subsystems.driveSystem.driveToAngle(-70) < 1) step++;
 			break;
 		case 2:
 			// Drive forward
-			if (subsystems.driveSystem.driveToDistance(-248.92) < 1) step++;
+			if (subsystems.driveSystem.driveToDistance(-218.44) < 1) step++;
 			break;
 		case 3:
 			// Straighten back up
@@ -65,7 +66,7 @@ public class CenterAuto extends AutoProgram {
 			if (subsystems.liftSystem.getLiftOffset() > 200) break;	// check if the lift is in the correct position (to avoid damage)
 			// Move forward to the switch with timeout so we can stop if we hit it early
 			// -121.92 cm	
-			if (subsystems.driveSystem.driveToDistance(-121.92, 5000) < 1) step++;	// Drive to distance with a timeout of 5000 ms
+			if (subsystems.driveSystem.driveToDistance(-60.96,500) < 1) step++;	// Drive to distance with a timeout of 5000 ms
 			break;
 		case 5:
 			// Expel into the switch
@@ -117,7 +118,7 @@ public class CenterAuto extends AutoProgram {
 		case 4:
 			// Drive forward 60.96 cm (3 ft)
 			if (subsystems.liftSystem.getLiftOffset() > 200) break;	// check if the lift is in the correct position (to avoid damage)
-			if (subsystems.driveSystem.driveToDistance(-91.44, 5000) < 1) step++;
+			if (subsystems.driveSystem.driveToDistance(-60.96, 500) < 1) step++;
 			break;
 		case 5:
 			// Expel the block into the switch
