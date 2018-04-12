@@ -14,6 +14,7 @@ public class LiftSystem extends Subsystem{
 
 	private double liftSpeed = 0;
 	private double liftSetPosition = 0;
+	private double liftHomePosition = 0;
 	private boolean reverseInput = true;
 		
 	private WPI_TalonSRX liftMotor;
@@ -58,6 +59,8 @@ public class LiftSystem extends Subsystem{
 		iterativeHome();
 		updateLiftPID();
 		updateMotorControl();
+		
+		SmartDashboard.putNumber("Lift System - Set Position", liftSetPosition);
 	}
 
 	@Override
@@ -98,6 +101,11 @@ public class LiftSystem extends Subsystem{
 		} else if (!homing) homing = true;
 		return false;
 	}
+	public void cancelHomeLift() {
+		setLiftPIDOverride(false);
+		homing = false;
+		homingStep = 0;
+	}
 	public double getPosition() {
 		return liftPosition;
 	}
@@ -111,8 +119,8 @@ public class LiftSystem extends Subsystem{
 		// REMOVED ALL CONTROL SPEED LIMITERS
 		
 		//if (Math.abs(liftSpeed) > 0.3) liftSpeed = 0.3 * (Math.abs(liftSpeed) / liftSpeed);
-		//if (liftSpeed > 0.3) liftSpeed = 0.9;
-		//if (liftSpeed < -0.3) liftSpeed = -0.9;
+		if (liftSpeed > 0.3) liftSpeed = 0.9;
+		if (liftSpeed < -0.3) liftSpeed = -0.9;
 		if (liftSpeed > 1) liftSpeed = 1;
 		if (liftSpeed < -1) liftSpeed = -1;
 		
@@ -126,7 +134,6 @@ public class LiftSystem extends Subsystem{
 	private void updateLiftPID() {
 		if (pidOverride) return;
 		double pidReturn = pid.update(liftPosition - liftSetPosition, liftPosition);
-		SmartDashboard.putNumber("Lift System - Set Position", liftSetPosition);
 		SmartDashboard.putNumber("Lift System - pidReturn", pidReturn);
 		if (pidReturn > 1) pidReturn = 1;
 		if (pidReturn < -1) pidReturn = -1;
@@ -164,16 +171,18 @@ public class LiftSystem extends Subsystem{
 			// Initialize encoders
 			liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
 			liftMotor.setSelectedSensorPosition(0,0,10);
+			liftHomePosition = liftMotor.getSelectedSensorPosition(0);
 			encodersInitialized = true;
 		}
-			liftPosition = liftMotor.getSelectedSensorPosition(0);
-			
+			liftPosition = liftMotor.getSelectedSensorPosition(0) - liftHomePosition;
+			SmartDashboard.putNumber("Lift System Calc Pos - ", liftPosition);
 			// Check the lower limit switch
 			boolean lowPosition = lowerLimitSwitch.get();
 			SmartDashboard.putBoolean("Lift - Home Switch", lowPosition);
 			if (lowPosition) {
-				liftMotor.setSelectedSensorPosition(0, 0, 10);
+				//liftMotor.setSelectedSensorPosition(0, 0, 10);
 				// reset the encoder to 0
+				liftHomePosition = liftMotor.getSelectedSensorPosition(0);
 			}
 		} catch (Exception ex) {
 			
