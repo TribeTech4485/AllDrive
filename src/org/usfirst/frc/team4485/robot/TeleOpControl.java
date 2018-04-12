@@ -19,6 +19,8 @@ public class TeleOpControl {
 		userControl = _userControl;
 	}
 	
+	boolean homeSet = false;
+	
 	public void update() {
 		// Update the user control system
 		userControl.updateControls();
@@ -48,22 +50,29 @@ public class TeleOpControl {
 		} else {
 			// Collector Control
 			subsystems.collectorSystem.setArms(userControl.getRawBoardButton(id.b_armOutButton));
-			subsystems.collectorSystem.setExpel(userControl.getRawBoardButton(id.b_collectorExpelButton));
-			subsystems.collectorSystem.setIntake(userControl.getRawBoardButton(id.b_collectorIntakeButton));
 			if (userControl.getRawBoardButton(id.b_collectorExpelButton) && userControl.getRawBoardButton(id.b_collectorIntakeButton)) subsystems.collectorSystem.setSpin(true);
-			else subsystems.collectorSystem.setSpin(false);
+			else {
+				subsystems.collectorSystem.setSpin(false);
+				subsystems.collectorSystem.setExpel(userControl.getRawBoardButton(id.b_collectorExpelButton));
+				subsystems.collectorSystem.setIntake(userControl.getRawBoardButton(id.b_collectorIntakeButton));
+			}
 			
-			subsystems.liftSystem.setLiftPIDOverride(false);
-			if (userControl.getRawBoardButton(id.b_liftHomeButton)) subsystems.liftSystem.homeLift();
+			if (userControl.getRawBoardButton(id.b_liftHomeButton)) {
+				if (!homeSet) {
+					subsystems.liftSystem.homeLift();
+					homeSet = true;
+				} 
+			}
 			else if (userControl.getRawBoardButton(id.b_liftPos1Button)) subsystems.liftSystem.setLiftPosition_presetNum(3);
 			else if (userControl.getRawBoardButton(id.b_liftPos2Button)) subsystems.liftSystem.setLiftPosition_presetNum(4);
 			else if (userControl.getRawBoardButton(id.b_liftPos3Button)) subsystems.liftSystem.setLiftPosition_presetNum(5);
-			else if (userControl.getRawBoardButton(id.b_liftPos4Button)) subsystems.liftSystem.setLiftPosition_presetNum(6);
-			//else if (userControl.getRawBoardButton(id.b_liftPos5Button)) subsystems.liftSystem.setLiftPosition_presetNum(7);
-			else {
-				subsystems.liftSystem.setLiftPIDOverride(true);
-				subsystems.liftSystem.setLift(0);
+			else if (userControl.getRawBoardButton(id.b_liftPos4Button)) subsystems.liftSystem.setLiftPosition_presetNum(7);
+			
+			if (!userControl.getRawBoardButton(id.b_liftHomeButton)) {
+				subsystems.liftSystem.cancelHomeLift();	// Cancel home if home isn't set
+				homeSet = false;
 			}
+			//else if (userControl.getRawBoardButton(id.b_liftPos5Button)) subsystems.liftSystem.setLiftPosition_presetNum(7);
 		}
 		
 		
