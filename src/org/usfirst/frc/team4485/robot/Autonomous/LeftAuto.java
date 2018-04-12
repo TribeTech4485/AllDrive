@@ -13,18 +13,16 @@ public class LeftAuto extends AutoProgram {
 
 	@Override
 	protected void init() {
-		
+		//step = 4;
 	}
 
 	@Override
 	protected void run() {
 		subsystems.driveSystem.setBraking(true);
-		subsystems.shifterPneumaticSystem.shiftDown();
+		subsystems.shifterPneumaticSystem.shiftUp();
 		subsystems.liftSystem.setLiftPIDOverride(false);	// Set this to true if disabling the lift
 		
-		if (gameSpecificMessage.charAt(1) == 'L') {
-			auto_complete = driveToScale();
-		} else if (gameSpecificMessage.charAt(0) == 'L') {
+		if (gameSpecificMessage.charAt(0) == 'L') {
 			auto_complete = driveToSwitch();
 		} else {
 			auto_complete = driveBaseLine();
@@ -39,6 +37,7 @@ public class LeftAuto extends AutoProgram {
 	}
 	
 	double startTime = -1;
+	double startWaitTime = -1;
 	
 	private boolean driveToScale() {
 		// Drive to the scale
@@ -49,7 +48,7 @@ public class LeftAuto extends AutoProgram {
 			break;
 		case 1:
 			// Turn 90 degrees clockwise
-			if (subsystems.driveSystem.driveToAngle(-105) < 1) {
+			if (subsystems.driveSystem.driveToAngle(105) < 1) {
 				subsystems.driveSystem.drive4Motors(0, 0);
 				step++;
 			}
@@ -85,16 +84,18 @@ public class LeftAuto extends AutoProgram {
 		// Drive to the switch
 		switch (step) {
 		case 0:
-			if (subsystems.driveSystem.driveToDistanceStraight(-426.72, 10000) < 1) step++;
+			subsystems.liftSystem.setLiftPosition_presetNum(3);
+			if (subsystems.driveSystem.driveToDistanceStraight(-335.25/*-365.76*/) < 1) step++;
 			break;
 		case 1:
-			if (subsystems.driveSystem.driveToAngle(90) < 1) step++;
+			if (subsystems.driveSystem.driveToAngle(100) < 1) step++;
 			break;
 		case 2:
-			if (subsystems.driveSystem.driveToDistance(-121.96, 2000) < 1) step++;
+			if (subsystems.liftSystem.getLiftOffset() > 200) break;	// check if the lift is in the correct position (to avoid damage)
+			if (subsystems.driveSystem.driveToDistanceStraight(-121.96, 500) < 1) step++;
 			break;
 		case 3:
-			// Expel into the switch
+			// Expel the block into the switch
 			subsystems.collectorSystem.setExpel(true);
 			if (startTime < 0) startTime = System.currentTimeMillis();
 			SmartDashboard.putNumber("Time", System.currentTimeMillis() - startTime);
@@ -103,14 +104,31 @@ public class LeftAuto extends AutoProgram {
 				startTime = -1;
 				step++;
 			}
+			break;
 		case 4:
 			// Backup
-			if (subsystems.driveSystem.driveToDistanceStraight(91.92) < 1) step++;
+			subsystems.driveSystem.drive4Motors(0.5, 0.5);
+			if (startTime < 0) startTime = System.currentTimeMillis();
+			SmartDashboard.putNumber("Time", System.currentTimeMillis() - startTime);
+			if (System.currentTimeMillis() - startTime > 800) {
+				subsystems.driveSystem.drive4Motors(0,0);
+				startTime = -1;
+				step++;
+			}
 			break;
+			/*if (subsystems.driveSystem.driveToDistance(30) < 1) step++;
+			break;*/
+			/*double offset = subsystems.driveSystem.driveToDistanceStraight(25);
+			SmartDashboard.putNumber("Auto - Offset", offset);
+			if (offset < 1) step++;
+			break;*/
 		case 5:
 			// Home the lift
-			if (subsystems.liftSystem.homeLift())step++;
+			subsystems.driveSystem.drive4Motors(0, 0);
+			subsystems.driveSystem.setBraking(false);
 			subsystems.shifterPneumaticSystem.shiftDown();
+			if (subsystems.liftSystem.homeLift())step++;
+			break;
 		}
 		if (step >= 6) return true;
 		return false;
