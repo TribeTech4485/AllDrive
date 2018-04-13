@@ -39,6 +39,7 @@ public class LeftAuto extends AutoProgram {
 	double startTime = -1;
 	double startWaitTime = -1;
 	
+	@SuppressWarnings("unused")
 	private boolean driveToScale() {
 		// Drive to the scale
 		switch(step) {

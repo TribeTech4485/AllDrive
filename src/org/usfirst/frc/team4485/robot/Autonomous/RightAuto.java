@@ -38,6 +38,7 @@ public class RightAuto extends AutoProgram {
 	
 	double startTime = -1;
 	
+	@SuppressWarnings("unused")
 	private boolean driveToScale() {
 		// Drive to the scale
 		switch(step) {
