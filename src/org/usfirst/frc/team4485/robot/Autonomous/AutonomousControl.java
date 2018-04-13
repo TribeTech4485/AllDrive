@@ -14,6 +14,7 @@ public class AutonomousControl {
 	
 	AutoProgram example;
 	
+	/*
 	AutoProgram cubeFollow;
 	AutoProgram testSerial;
 	AutoProgram gyroTest;
@@ -27,15 +28,20 @@ public class AutonomousControl {
 	AutoProgram liftAutoTest;
 	AutoProgram driveToRight_center;
 	AutoProgram driveToLeft_center;
+	AutoProgram baseLine;
+	AutoProgram driveStraightTest;
+	*/
+	
+	AutoProgram cubeTrackingSystemTest;
+	
 	AutoProgram centerAuto;
 	AutoProgram rightAuto;
 	AutoProgram leftAuto;
-	AutoProgram baseLine;
-	AutoProgram driveStraightTest;
 	
 
 	public AutonomousControl(SubsystemsControl subsystems) {
-				
+		
+		/*
 		cubeFollow = new CubeFollow(subsystems);
 		gyroTest = new GyroTest(subsystems);
 		zeroYaw = new ZeroYaw(subsystems);
@@ -48,15 +54,21 @@ public class AutonomousControl {
 		liftAutoTest = new LiftAutoTest(subsystems);
 		driveToRight_center = new DriveToRight_Center(subsystems);
 		driveToLeft_center = new DriveToLeft_Center(subsystems);
+		baseLine = new BaseLine(subsystems);
+		driveStraightTest = new DriveStraightTest(subsystems);
+		*/
+		
+		
+		cubeTrackingSystemTest = new CubeTrackingSystemTest(subsystems);
+		
 		centerAuto = new CenterAuto(subsystems);
 		rightAuto = new RightAuto(subsystems);
 		leftAuto = new LeftAuto(subsystems);
-		baseLine = new BaseLine(subsystems);
-		driveStraightTest = new DriveStraightTest(subsystems);
 		
 		autoChooser.addDefault("None", null);
 		autoChooser.addObject("Example", example);
 		
+		/*
 		autoChooser.addObject("Gyro Test", gyroTest);
 		autoChooser.addObject("Cube Follow", cubeFollow);
 		autoChooser.addObject("BaseLine", baseLine);
@@ -71,10 +83,14 @@ public class AutonomousControl {
 		autoChooser.addObject("Lift Auto Test", liftAutoTest);
 		autoChooser.addObject("Drive To Right - Center", driveToRight_center);
 		autoChooser.addObject("Drive To Left - Center", driveToLeft_center);
+		autoChooser.addObject("Drive Straight Test", driveStraightTest);
+		*/
+		
+		autoChooser.addObject("System Test - Cube Tracking", cubeTrackingSystemTest);
+		
 		autoChooser.addObject("Center Auto", centerAuto);
 		autoChooser.addObject("Left Auto", leftAuto);
 		autoChooser.addObject("Right Auto", rightAuto);
-		autoChooser.addObject("Drive Straight Test", driveStraightTest);
 		
 		//autoChooser.addObject("Test Auto", testAuto);
 		//autoChooser.addObject("Rotate to Angle", rotateToAngle);
