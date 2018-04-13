@@ -21,10 +21,26 @@ public class TeleOpControl {
 	
 	boolean homeSet = false;
 	
+	double cubeStartAngle = 400.0;
+	
 	public void update() {
 		// Update the user control system
 		userControl.updateControls();
 
+		// Use the cube tracking system to assist
+		if (userControl.getRawDriveButton(id.d_alignButton)) {
+			if (cubeStartAngle > 180) cubeStartAngle = subsystems.sensorController.getAHRSYaw();
+			double angleOffset = subsystems.cubeTrackingSystem.getAngleToCube();
+			double angleToMoveTo = cubeStartAngle + angleOffset;
+			
+			if (angleOffset <= 180) {	// Check if the offset is in bounds
+				// Drive the Robot
+				subsystems.driveSystem.driveToAngle(angleToMoveTo);
+			}
+		} else {
+			cubeStartAngle = 400.0;
+		}
+		
 		// Drive using the drive subsystem
 		//subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY);
 		subsystems.driveSystem.drive4Motors(userControl.drive_leftStickY, userControl.drive_rightStickY); 	// Flip the input sticks for some robots
