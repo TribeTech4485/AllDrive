@@ -71,6 +71,7 @@ public class RobotIndexing {
 	
 	public int d_turnToAngleButton = 6;
 	public int d_brakeButton = 0;//5;	// Left Shoulder Button (Unassigned)
+	public int d_alignButton = 1;	// A button
 	public int d_shiftUp = 6;		// Right Shoulder Button
 	public int d_shiftDown = 5;		// Left Shoulder Button
 	////
