@@ -80,8 +80,6 @@ public class LiftSystem extends Subsystem{
 	public void setLift(double lift) {
 		if (!pidOverride) return;
 		liftSpeed = lift;
-		if (lift > 0.1) lift = 0.1;
-		if (lift < -0.1) lift = -0.1;
 	}
 	public void setLiftPIDOverride(boolean override) {
 		pidOverride = override;
@@ -119,8 +117,8 @@ public class LiftSystem extends Subsystem{
 		// REMOVED ALL CONTROL SPEED LIMITERS
 		
 		//if (Math.abs(liftSpeed) > 0.3) liftSpeed = 0.3 * (Math.abs(liftSpeed) / liftSpeed);
-		if (liftSpeed > 0.3) liftSpeed = 0.9;
-		if (liftSpeed < -0.3) liftSpeed = -0.9;
+		//if (liftSpeed > 0.3) liftSpeed = 0.9;
+		//if (liftSpeed < -0.3) liftSpeed = -0.9;
 		if (liftSpeed > 1) liftSpeed = 1;
 		if (liftSpeed < -1) liftSpeed = -1;
 		
@@ -142,17 +140,17 @@ public class LiftSystem extends Subsystem{
 	
 	private boolean iterativeHome() {
 		if (!homing) return true;
-		double liftOffset = Math.abs(liftSetPosition - liftPosition);
+		//double liftOffset = Math.abs(liftSetPosition - liftPosition);
 		switch (homingStep) {
 		case 0:
 			setLiftPosition_presetNum(1);
-			if (liftOffset <= 200) homingStep++;
+			if (getLiftOffset() <= 200) homingStep++;
 			break;
 		case 1:
 			// Move the lift down
 			setLiftPIDOverride(true);
 			setLift(0);
-			if (liftOffset <= 200) homingStep++;
+			if (getLiftOffset() <= 200) homingStep++;
 			break;
 		case 2:
 			setLiftPosition_presetNum(0);
@@ -167,17 +165,25 @@ public class LiftSystem extends Subsystem{
 	
 	private void updateSensors() {
 		try {
-		if (!encodersInitialized) {
-			// Initialize encoders
-			liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
-			liftMotor.setSelectedSensorPosition(0,0,10);
-			liftHomePosition = liftMotor.getSelectedSensorPosition(0);
-			encodersInitialized = true;
-		}
+			boolean lowPosition = lowerLimitSwitch.get();
+			if (!encodersInitialized) {
+				if (lowPosition) {
+					setLiftPIDOverride(false);
+					// Initialize encoders
+					liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+					//liftMotor.setSelectedSensorPosition(0,0,10);
+					liftHomePosition = liftMotor.getSelectedSensorPosition(0);
+					encodersInitialized = true;
+				} else {
+					// Move the lift down
+					setLiftPIDOverride(true);
+					setLift(-0.5);
+				}
+			}
 			liftPosition = liftMotor.getSelectedSensorPosition(0) - liftHomePosition;
 			SmartDashboard.putNumber("Lift System Calc Pos - ", liftPosition);
+			SmartDashboard.putNumber("Lift System - Home", liftHomePosition);
 			// Check the lower limit switch
-			boolean lowPosition = lowerLimitSwitch.get();
 			SmartDashboard.putBoolean("Lift - Home Switch", lowPosition);
 			if (lowPosition) {
 				//liftMotor.setSelectedSensorPosition(0, 0, 10);
