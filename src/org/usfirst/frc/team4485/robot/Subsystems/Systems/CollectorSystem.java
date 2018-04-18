@@ -8,9 +8,10 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class CollectorSystem extends Subsystem{
 	// Motor Control Values
+	private double expelSpeedInitial = 0.75;
 	private double intakeSpeed = -1.0;
-	private double expelSpeed = 1.0;
-	private double spinSpeed = 1.0;
+	private double expelSpeed = expelSpeedInitial;
+	private double spinSpeed = 0.65;
 	private boolean intake = false, expel = false, spin = false;;
 	
 	// Pneumatic Control Values
@@ -73,6 +74,8 @@ public class CollectorSystem extends Subsystem{
 		expelSpeed = speed;
 	}
 	
+	public double getExpelSpeedInitial() { return expelSpeedInitial; }
+	
 	// Pneumatic Control Interface Functions
 	public void setArms(boolean out) {
 		armsOut = out;
@@ -92,7 +95,8 @@ public class CollectorSystem extends Subsystem{
 			rightSpeed = expelSpeed;
 		}
 		else if (spin) {
-			leftSpeed = spinSpeed;
+			//leftSpeed = spinSpeed;
+			leftSpeed = spinSpeed/2;
 			rightSpeed = -spinSpeed;
 		}
 		
