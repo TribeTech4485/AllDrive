@@ -73,7 +73,10 @@ public class TeleOpControl {
 				subsystems.collectorSystem.setIntake(userControl.getRawBoardButton(id.b_collectorIntakeButton));
 			}
 			
+			subsystems.collectorSystem.setExpelSpeed(subsystems.collectorSystem.getExpelSpeedInitial());
+			subsystems.liftSystem.setLiftPIDOverride(false);
 			if (userControl.getRawBoardButton(id.b_liftHomeButton)) {
+				subsystems.collectorSystem.setExpelSpeed(1.0);
 				if (!homeSet) {
 					subsystems.liftSystem.homeLift();
 					homeSet = true;
@@ -83,6 +86,12 @@ public class TeleOpControl {
 			else if (userControl.getRawBoardButton(id.b_liftPos2Button)) subsystems.liftSystem.setLiftPosition_presetNum(4);
 			else if (userControl.getRawBoardButton(id.b_liftPos3Button)) subsystems.liftSystem.setLiftPosition_presetNum(5);
 			else if (userControl.getRawBoardButton(id.b_liftPos4Button)) subsystems.liftSystem.setLiftPosition_presetNum(7);
+			else if (userControl.getRawBoardButton(id.b_liftPos5Button)) {
+				// Cancel home
+				// Move lift down
+				subsystems.liftSystem.setLiftPIDOverride(true);
+				subsystems.liftSystem.setLift(0.5);
+			}
 			
 			if (!userControl.getRawBoardButton(id.b_liftHomeButton)) {
 				subsystems.liftSystem.cancelHomeLift();	// Cancel home if home isn't set
