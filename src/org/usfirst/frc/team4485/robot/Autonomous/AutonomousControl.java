@@ -33,6 +33,7 @@ public class AutonomousControl {
 	*/
 	
 	AutoProgram cubeTrackingSystemTest;
+	AutoProgram brokenLiftTest;
 	
 	AutoProgram centerAuto;
 	AutoProgram rightAuto;
@@ -60,6 +61,7 @@ public class AutonomousControl {
 		
 		
 		cubeTrackingSystemTest = new CubeTrackingSystemTest(subsystems);
+		brokenLiftTest = new BrokenLiftTest(subsystems);
 		
 		centerAuto = new CenterAuto(subsystems);
 		rightAuto = new RightAuto(subsystems);
@@ -87,6 +89,7 @@ public class AutonomousControl {
 		*/
 		
 		autoChooser.addObject("System Test - Cube Tracking", cubeTrackingSystemTest);
+		autoChooser.addObject("System Test - Broken Lift", brokenLiftTest);
 		
 		autoChooser.addObject("Center Auto", centerAuto);
 		autoChooser.addObject("Left Auto", leftAuto);
