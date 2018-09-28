@@ -10,7 +10,7 @@ public class TeleOpControl {
 	private UserControl userControl;
 	private SubsystemsControl subsystems;
 	
-	private boolean useBoard = true;
+	private boolean useBoard = false;
 	
 	public TeleOpControl(SubsystemsControl _subsystems, UserControl _userControl) {
 		id = new RobotIndexing();
@@ -22,6 +22,9 @@ public class TeleOpControl {
 	boolean homeSet = false;
 	
 	double cubeStartAngle = 400.0;
+	
+	boolean liftAxisReleased = true;
+	int currentLiftPresetPosition = 0;
 	
 	public void update() {
 		// Update the user control system
@@ -57,12 +60,26 @@ public class TeleOpControl {
 			subsystems.collectorSystem.setIntake(userControl.getRawControlButton(id.c_collectorIntakeButton));
 			subsystems.collectorSystem.setSpin(userControl.getRawControlButton(id.c_collectorSpinButton));
 			
+			// Use the trigger axis for lift control
+			double liftAxisValue = userControl.getAxis(id.controlController, id.c_liftAxis);
+			if (liftAxisValue > 0 && liftAxisReleased) {
+				liftAxisReleased = false;
+				
+			} else if (liftAxisValue < 0 && liftAxisReleased) {
+				liftAxisReleased = false;
+				
+			} else {
+				liftAxisReleased = true;
+			}
+			
+			/*
 			if (userControl.getRawControlButton(id.c_liftHomeButton)) subsystems.liftSystem.homeLift();
 			if (userControl.getRawControlButton(id.c_liftPos2Button)) subsystems.liftSystem.setLiftPosition_presetNum(3);
 			if (userControl.getRawControlButton(id.c_liftPos3Button)) subsystems.liftSystem.setLiftPosition_presetNum(6);
+			*/
 			
-			subsystems.liftSystem.setLiftPIDOverride(false);	//Set this to true if PID is no wanted
-			subsystems.liftSystem.setLift(userControl.getAxis(id.controlController, id.c_liftAxis));
+			//subsystems.liftSystem.setLiftPIDOverride(false);	//Set this to true if PID is no wanted
+			//subsystems.liftSystem.setLift(userControl.getAxis(id.controlController, id.c_liftAxis));
 		} else {
 			// Collector Control
 			subsystems.collectorSystem.setArms(userControl.getRawBoardButton(id.b_armOutButton));

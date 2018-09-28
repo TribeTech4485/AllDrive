@@ -53,7 +53,7 @@ public class RobotIndexing {
 	public int c_liftPos3Button = 9;
 	
 	public int c_hopperButton = 0;	// 0 is unassigned
-	public int c_liftAxis = 0;
+	public int c_liftAxis = 3;
 	
 	public int b_collectorIntakeButton = 2;
 	public int b_collectorExpelButton = 3;
