@@ -4,9 +4,11 @@ import org.usfirst.frc.team4485.robot.Robot;
 //import org.usfirst.frc.team4485.robot.Subsystems.Systems.PowerHandlerSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.SerialSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.ShifterPneumaticSystem;
+import org.usfirst.frc.team4485.robot.Subsystems.Systems.BlastOffSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.CollectorSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.CubeTrackingSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.DriveSystem;
+import org.usfirst.frc.team4485.robot.Subsystems.Systems.HopperSystem;
 import org.usfirst.frc.team4485.robot.Subsystems.Systems.LiftSystem;
 //import org.usfirst.frc.team4485.robot.Subsystems.Systems.UniformDrive;
 
@@ -27,7 +29,10 @@ public class SubsystemsControl {
 	public LiftSystem liftSystem;
 	public CollectorSystem collectorSystem;
 	public CubeTrackingSystem cubeTrackingSystem;
+	public HopperSystem hopperSystem;
 	//public PowerHandlerSystem powerHandlerSystem;
+	
+	public BlastOffSystem blastOffSystem;
 	
 	// This System is weird. To use this one it needs to be declared only once so we will just make this a reference to a static SensorController in Robot.java
 	public SensorController sensorController;
@@ -51,6 +56,8 @@ public class SubsystemsControl {
 		liftSystem.killAll();
 		collectorSystem.killAll();
 		cubeTrackingSystem.killAll();
+		blastOffSystem.killAll();
+		hopperSystem.killAll();
 		
 		//System.out.println("WARNING: Subsystems - killAll() was called!");
 	}
@@ -82,6 +89,12 @@ public class SubsystemsControl {
 		cubeTrackingSystem.setID(100);
 		
 		//powerHandlerSystem = new PowerHandlerSystem();
-		//powerHandlerSystem.setID(5);
+		//powerHandlerSystem.setID(8);
+		
+		blastOffSystem = new BlastOffSystem();
+		blastOffSystem.setID(7);
+		
+		hopperSystem = new HopperSystem();
+		hopperSystem.setID(8);
 	}
 }

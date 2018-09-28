@@ -10,7 +10,7 @@ public class TeleOpControl {
 	private UserControl userControl;
 	private SubsystemsControl subsystems;
 	
-	private boolean useBoard = true;
+	private boolean useBoard = false;
 	
 	public TeleOpControl(SubsystemsControl _subsystems, UserControl _userControl) {
 		id = new RobotIndexing();
@@ -100,19 +100,32 @@ public class TeleOpControl {
 			//else if (userControl.getRawBoardButton(id.b_liftPos5Button)) subsystems.liftSystem.setLiftPosition_presetNum(7);
 		}
 		
+		if (userControl.getRawDriveButton(id.d_shiftUp)) subsystems.blastOffSystem.setOut(true);
+		else if (userControl.getRawDriveButton(id.d_shiftDown)) subsystems.blastOffSystem.setOut(false); 
 		
 		// Update systems
-		//subsystems.driveSystem.setBraking(userControl.getRawDriveButton(id.d_brakeButton));
+		subsystems.driveSystem.setBraking(userControl.getRawDriveButton(id.d_brakeButton));
+		
+		//if (userControl.getRawControlButton(id.d_hopperButton)) subsystems.hopperSystem.setHopper(0.8);
+		//else subsystems.hopperSystem.setHopper(0);
+		
+		subsystems.hopperSystem.setHopper(userControl.getAxis(id.driveController, 3));
+		
 		// Update the drive system
 		//subsystems.shifterPneumaticSystem.setAutoShift(true);
+		/*
 		subsystems.shifterPneumaticSystem.setAutoShift(false);
 		if (userControl.getRawDriveButton(id.d_shiftUp)) subsystems.shifterPneumaticSystem.shiftUp();
 		else if (userControl.getRawDriveButton(id.d_shiftDown)) subsystems.shifterPneumaticSystem.shiftDown();
+		*/
 		subsystems.shifterPneumaticSystem.update();
 		subsystems.driveSystem.update();
+		subsystems.blastOffSystem.update();
 		
 		subsystems.collectorSystem.update();
 		subsystems.liftSystem.update();
+		
+		subsystems.hopperSystem.update();
 		
 		SmartDashboard.putNumber("Lift Offset", subsystems.liftSystem.getLiftOffset());
 		SmartDashboard.putNumber("Lift Position", subsystems.liftSystem.getPosition());

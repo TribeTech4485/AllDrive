@@ -15,7 +15,14 @@ public class RobotIndexing {
 	public int rightDriveMotorMaster = 4;
 	public int rightDriveMotorSlave1 = 5;
 	public int rightDriveMotorSlave2 = 6;
+	
+	public int leftDriveMotorMaster_victor = 7;
+	public int leftDriveMotorSlave_victor = 6;
+	public int rightDriveMotorMaster_victor = 9;
+	public int rightDriveMotorSlave_victor = 8;
 
+	// Hopper motor
+	public int hopperMotor = 5;
 	// Lift Motors
 	public int liftMotor = 7;
 	// Collector Motors
@@ -40,7 +47,7 @@ public class RobotIndexing {
 	
 	//// Controller indexes
 	public int driveController = 0;
-	public int controlController = 2;
+	public int controlController = 0;
 	public int buttonBoard = 1;
 	
 	// Button indexes
@@ -52,7 +59,6 @@ public class RobotIndexing {
 	public int c_liftPos2Button = 6;
 	public int c_liftPos3Button = 9;
 	
-	public int c_hopperButton = 0;	// 0 is unassigned
 	public int c_liftAxis = 0;
 	
 	public int b_collectorIntakeButton = 2;
@@ -74,6 +80,7 @@ public class RobotIndexing {
 	public int d_alignButton = 1;	// A button
 	public int d_shiftUp = 6;		// Right Shoulder Button
 	public int d_shiftDown = 5;		// Left Shoulder Button
+	public int d_hopperButton = 4; // Y button
 	////
 	
 	//// Sensor Indexes
@@ -100,6 +107,10 @@ public class RobotIndexing {
 	public int armSolenoid_out = 5;
 	public int armSolenoidRight_in = 6;
 	public int armSolenoidRight_out = 7;
+	// Pneumatic Blast-Off Solenoids and Modules
+	public int pneumaticBlastOffModule = 1;
+	public int pneumaticBlastOff_in = 1;
+	public int pneumaticBlastOff_out = 0;
 	////
 	
 	// PID speed vals

@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -18,6 +19,8 @@ public class DriveSystem extends Subsystem {
 	//// Motors
 	private WPI_TalonSRX leftMotorMaster, leftMotorSlave1, leftMotorSlave2;
 	private WPI_TalonSRX rightMotorMaster, rightMotorSlave1, rightMotorSlave2;
+	private Victor leftMotorMaster_victor, leftMotorSlave_victor;
+	private Victor rightMotorMaster_victor, rightMotorSlave_victor;
 	
 	//// Control Variables
 	// Sensor Control
@@ -66,7 +69,7 @@ public class DriveSystem extends Subsystem {
 	private boolean driveToDistanceInitialized = false;	// Boolean to control the iterative driveToDistance function
 	
 	// Drive Control modifiers
-	private final boolean reverseInput = false, flipLeftRight = false, reverseLeft = false, reverseRight = true;
+	private final boolean reverseInput = true, flipLeftRight = true, reverseLeft = false, reverseRight = true;
 	
 	
 	@Override
@@ -77,6 +80,11 @@ public class DriveSystem extends Subsystem {
 		rightMotorMaster = new WPI_TalonSRX(id.rightDriveMotorMaster);
 		rightMotorSlave1 = new WPI_TalonSRX(id.rightDriveMotorSlave1);
 		rightMotorSlave2 = new WPI_TalonSRX(id.rightDriveMotorSlave2);
+		
+		leftMotorMaster_victor = new Victor(id.leftDriveMotorMaster_victor);
+		leftMotorSlave_victor = new Victor(id.leftDriveMotorSlave_victor);
+		rightMotorMaster_victor = new Victor(id.rightDriveMotorMaster_victor);
+		rightMotorSlave_victor = new Victor(id.rightDriveMotorSlave_victor);
 	}
 
 	@Override
@@ -350,6 +358,11 @@ public class DriveSystem extends Subsystem {
 		rightMotorMaster.set(rightDriveSet);
 		rightMotorSlave1.set(rightDriveSet);
 		rightMotorSlave2.set(rightDriveSet);
+		
+		leftMotorMaster_victor.set(leftDriveSet);
+		leftMotorSlave_victor.set(leftDriveSet);
+		rightMotorMaster_victor.set(rightDriveSet);
+		rightMotorSlave_victor.set(rightDriveSet);
 		
 		// Set the Neutral Mode of the drive motors
 		if (brake) {
