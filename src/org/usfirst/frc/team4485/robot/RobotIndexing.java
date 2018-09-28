@@ -6,9 +6,9 @@ public class RobotIndexing {
 	//// GYRO Properties
 	public boolean flipGyro = false;
 	////
-	
+
 	//// Motor indexes
-	// Drive motors	
+	// Drive motors
 	public int leftDriveMotorMaster = 1;
 	public int leftDriveMotorSlave1 = 2;
 	public int leftDriveMotorSlave2 = 3;
@@ -24,7 +24,7 @@ public class RobotIndexing {
 	// Victors for collector (control them if they are present)
 	public int collectorVictorLeft = 8;
 	public int collectorVictorRight = 9;
-	
+
 	// PDP power channels for the motors
 	public int rightDriveMotorMasterPDP = 0;
 	public int rightDriveMotorSlave1PDP = 15;
@@ -37,45 +37,43 @@ public class RobotIndexing {
 	public int armMotorRightPDP = -1;		// -1 is unassigned
 	public int clawMotorRightPDP = -1;		// -1 is unassigned
 	public int clawMotorLeftPDP = -1;		// -1 is unassigned
-	
+
 	//// Controller indexes
 	public int driveController = 0;
 	public int controlController = 2;
 	public int buttonBoard = 1;
-	
+
 	// Button indexes
 	public int c_collectorIntakeButton = 1;
 	public int c_collectorExpelButton = 2;
 	public int c_collectorSpinButton = 3;
 	public int c_collectorArmToggle = 4;
-	public int c_liftHomeButton = 5;
-	public int c_liftPos2Button = 6;
-	public int c_liftPos3Button = 9;
-	
+
 	public int c_hopperButton = 0;	// 0 is unassigned
 	public int c_liftAxis = 3;
-	
+	public int c_liftOverrideButton = 9;
+
 	public int b_collectorIntakeButton = 2;
 	public int b_collectorExpelButton = 3;
 	public int b_armOutButton = 4;
-	
+
 	public int b_liftHomeButton = 11;
 	public int b_liftPos1Button = 10;
 	public int b_liftPos2Button = 9;
 	public int b_liftPos3Button = 8;
 	public int b_liftPos4Button = 7;
 	public int b_liftPos5Button = 6;
-	
+
 	public int b_liftPositionNum = 6;
 	public int[] b_liftPositionButtons = {10,9,8,7,6,5};	// Lift position buttons in order from home to top
-	
+
 	public int d_turnToAngleButton = 6;
 	public int d_brakeButton = 0;//5;	// Left Shoulder Button (Unassigned)
 	public int d_alignButton = 1;	// A button
 	public int d_shiftUp = 6;		// Right Shoulder Button
 	public int d_shiftDown = 5;		// Left Shoulder Button
 	////
-	
+
 	//// Sensor Indexes
 	// Analog inputs
 	public int clawOpticalDistanceSensor_left = 0;
@@ -86,8 +84,8 @@ public class RobotIndexing {
 	public int liftLowerLimitSwitch = 0;
 	public int liftUpperLimitSwitch = 1;
 	////
-	
-	//// Pneumatic indexes	
+
+	//// Pneumatic indexes
 	// Shifting Gear Box Solenoids & Modules
 	public int shifterSolenoidsModule = 0;
 	public int shifterSolenoidLeft_in = 2;
@@ -101,11 +99,11 @@ public class RobotIndexing {
 	public int armSolenoidRight_in = 6;
 	public int armSolenoidRight_out = 7;
 	////
-	
+
 	// PID speed vals
 	public double driveMaxRPM = 1500;
 	////
-	
+
 	//// PIDValues
 	public SPID liftSPID;
 	////////
